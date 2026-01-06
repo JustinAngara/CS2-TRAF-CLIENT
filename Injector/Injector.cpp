@@ -84,7 +84,7 @@ int main()
 	DWORD processId = 0;
 	while (!processId)
 	{
-		processId = GetProcessIdByName(L"csgo.exe");
+		processId = GetProcessIdByName(L"cs2.exe");
 		Sleep(1000);
 	}
 
