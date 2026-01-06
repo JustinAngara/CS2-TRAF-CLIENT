@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injector", "Injector\Inject
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mintest", "mintest\mintest.vcxproj", "{61B7896A-ECAF-41EC-8E4C-673A14958F74}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Internal Base", "working codebase\Internal Base\Internal Base.vcxproj", "{BBD6859F-03EA-4E0C-87C9-1759AC2E0F23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,10 @@ Global
 		{61B7896A-ECAF-41EC-8E4C-673A14958F74}.Debug|x64.Build.0 = Debug|x64
 		{61B7896A-ECAF-41EC-8E4C-673A14958F74}.Release|x64.ActiveCfg = Release|x64
 		{61B7896A-ECAF-41EC-8E4C-673A14958F74}.Release|x64.Build.0 = Release|x64
+		{BBD6859F-03EA-4E0C-87C9-1759AC2E0F23}.Debug|x64.ActiveCfg = Debug|x64
+		{BBD6859F-03EA-4E0C-87C9-1759AC2E0F23}.Debug|x64.Build.0 = Debug|x64
+		{BBD6859F-03EA-4E0C-87C9-1759AC2E0F23}.Release|x64.ActiveCfg = Release|x64
+		{BBD6859F-03EA-4E0C-87C9-1759AC2E0F23}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

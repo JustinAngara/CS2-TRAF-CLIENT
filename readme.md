@@ -1,5 +1,9 @@
 ﻿# ASPHYXIA: CS2 BASE
 # Traf: Modified CS2 BASE
+# CS2 Version: 1.41.2.8
+
+![Alt text](images/1.png)
+![Alt text](images/2.png)
 
 ## Table of Contents :scroll:
 - [About](#about)
