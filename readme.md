@@ -1,11 +1,10 @@
-﻿# ASPHYXIA: CS2 BASE
-# Traf: Modified CS2 BASE
+﻿# Traf: CS2 Hack
 # CS2 Version: 1.41.2.8
 
 ![Alt text](images/1.png)
 ![Alt text](images/2.png)
 
-## Table of Contents :scroll:
+## Table of Contents
 - [About](#about)
 - [Contact](#contact)
 - [Credits](#credits)
@@ -20,18 +19,10 @@
 - [imgui](https://github.com/ocornut/imgui) - framework
 - [freetype](https://freetype.org/) - font rasterizer
 - [minhook](https://github.com/TsudaKageyu/minhook) - hooking library
-- [qo0:csgo](https://github.com/rollraw/qo0-csgo) - where this base is inspired
 - [unknowncheats](https://www.unknowncheats.me/) - for helping building this base
 
 ## Reminder
 - this project is for educational purposes only.
-- it will now be more focus on the 'base' rather than the 'cheat' itself.
-
-  [✓] ESP - basic esp feature like: name, hp, armor... (comes with interactive menu preview, not draggable)
-  
-  [✓] CHAMS - basic chams system
-  
-  [✓] AIMBOT - simple head aimbot with smoothing
 
 ## License
 
