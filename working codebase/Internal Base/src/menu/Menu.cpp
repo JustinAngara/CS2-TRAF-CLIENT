@@ -4,9 +4,6 @@
 #include <Windows.h>
 #include <algorithm> 
 
-static bool wait_for_bind = false;
-static ImVec2 bind_popup_pos = {};
-static constexpr int SIZE_X = 320, SIZE_Y = 260;
 
 static bool Menu::PollKey(int& out)
 {
@@ -30,8 +27,7 @@ static void Menu::CustomCheckbox(const char* label, bool* v)
     float sz = 18.f;
 
     ImGui::InvisibleButton("checkbox", { sz, sz });
-    if (ImGui::IsItemClicked())
-        *v = !*v;
+    if (ImGui::IsItemClicked()) *v = !*v;
 
     ImU32 col = *v ? IM_COL32(130, 90, 255, 255) : IM_COL32(45, 45, 45, 255);
     dl->AddRectFilled(p, { p.x + sz, p.y + sz }, col, 4.f);
@@ -128,100 +124,117 @@ static void Menu::CustomSlider(const char* label, float* v, float minVal, float 
 	ImGui::PopID();
 }
 
+void Menu::createESP()
+{
+	CustomCheckbox("Enable ESP", &Globals::esp_enabled);
+
+	ImGui::SameLine(ImGui::GetWindowWidth() - 35.f);
+	ImGui::Text("...");
+	if (ImGui::IsItemClicked())
+	{
+		bind_popup_pos = ImGui::GetMousePos();
+		wait_for_bind = false;
+		ImGui::OpenPopup("ESP Bind");
+	}
+
+	ImGui::SetNextWindowPos(bind_popup_pos, ImGuiCond_Appearing);
+	if (ImGui::BeginPopupModal("ESP Bind", nullptr,
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::TextUnformatted("ESP Toggle Bind");
+		ImGui::Separator();
+
+		if (!wait_for_bind)
+		{
+			if (ImGui::Button("Set bind", { 140, 0 }))
+				wait_for_bind = true;
+
+			ImGui::SameLine();
+			if (ImGui::Button("Close", { 80, 0 }))
+				ImGui::CloseCurrentPopup();
+		}
+		else
+		{
+			ImGui::TextUnformatted("Press a key...");
+			ImGui::TextDisabled("ESC to cancel");
+
+			int key = 0;
+			if (PollKey(key))
+			{
+				if (key != VK_ESCAPE)
+					Globals::esp_bind = key;
+
+				wait_for_bind = false;
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+
+	}
+	createSubESP();
+}
+
+void Menu::createSubESP()
+{
+	CustomCheckbox("Box", &Globals::esp_box);
+	CustomColor("Box color", Globals::esp_box_color);
+
+	ImGui::Spacing();
+
+	CustomCheckbox("Skeleton", &Globals::esp_skeleton);
+	CustomColor("Skeleton color", Globals::esp_skeleton_color);
+
+	ImGui::Spacing();
+
+	CustomCheckbox("Name", &Globals::esp_name);
+	CustomCheckbox("Health bar", &Globals::esp_health);
+}
+
+void Menu::createAimbot()
+{
+	CustomCheckbox("Enable Aimbot", &Globals::aimbot_enabled);
+	CustomSlider("FOV", &Globals::aimbot_fov, 0.f, 89.f);
+}
+
+
+
+
 void Menu::Render()
 {
-    ImGui::SetNextWindowSize({ SIZE_X, SIZE_Y }, ImGuiCond_Once);
-    ImGui::Begin("VISUALS", &IsOpen,
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoScrollbar);
+	ImGui::SetNextWindowSize({ SIZE_X, SIZE_Y }, ImGuiCond_Once);
+	ImGui::Begin("VISUALS", &IsOpen,
+	ImGuiWindowFlags_NoResize |
+	ImGuiWindowFlags_NoCollapse |
+	ImGuiWindowFlags_NoScrollbar);
 
-    ImDrawList* dl = ImGui::GetWindowDrawList();
-    ImVec2 wp = ImGui::GetWindowPos();
+	ImDrawList* dl = ImGui::GetWindowDrawList();
+	ImVec2 wp = ImGui::GetWindowPos();
 
-    dl->AddRectFilled(
-        wp,
-        { wp.x + ImGui::GetWindowWidth(), wp.y + 3 },
-        IM_COL32(130, 90, 255, 255)
-    );
+	dl->AddRectFilled(
+	wp,
+	{ wp.x + ImGui::GetWindowWidth(), wp.y + 3 },
+	IM_COL32(130, 90, 255, 255));
 
-    ImGui::Spacing();
-    ImGui::Spacing();
+	ImGui::Spacing();
+	ImGui::Spacing();
 
-    CustomCheckbox("Enable ESP", &Globals::esp_enabled);
+	createESP();
 
-    ImGui::SameLine(ImGui::GetWindowWidth() - 35.f);
-    ImGui::Text("...");
-    if (ImGui::IsItemClicked())
-    {
-        bind_popup_pos = ImGui::GetMousePos();
-        wait_for_bind = false;
-        ImGui::OpenPopup("ESP Bind");
-    }
+	ImGui::Separator();
+	ImGui::Spacing();
 
-    ImGui::SetNextWindowPos(bind_popup_pos, ImGuiCond_Appearing);
-    if (ImGui::BeginPopupModal("ESP Bind", nullptr,
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_AlwaysAutoResize))
-    {
-        ImGui::TextUnformatted("ESP Toggle Bind");
-        ImGui::Separator();
-
-        if (!wait_for_bind)
-        {
-            if (ImGui::Button("Set bind", { 140, 0 }))
-                wait_for_bind = true;
-
-            ImGui::SameLine();
-            if (ImGui::Button("Close", { 80, 0 }))
-                ImGui::CloseCurrentPopup();
-        }
-        else
-        {
-            ImGui::TextUnformatted("Press a key...");
-            ImGui::TextDisabled("ESC to cancel");
-
-            int key = 0;
-            if (PollKey(key))
-            {
-                if (key != VK_ESCAPE)
-                    Globals::esp_bind = key;
-
-                wait_for_bind = false;
-                ImGui::CloseCurrentPopup();
-            }
-        }
-
-        ImGui::EndPopup();
-    }
-
-    ImGui::Separator();
-    ImGui::Spacing();
-
-    CustomCheckbox("Box", &Globals::esp_box);
-    CustomColor("Box color", Globals::esp_box_color);
-
-    ImGui::Spacing();
-
-    CustomCheckbox("Skeleton", &Globals::esp_skeleton);
-    CustomColor("Skeleton color", Globals::esp_skeleton_color);
-
-    ImGui::Spacing();
-
-    CustomCheckbox("Name", &Globals::esp_name);
-    CustomCheckbox("Health bar", &Globals::esp_health);
+	createSubESP();
 
 	ImGui::Spacing();
 
 	// aimbot stuff
 	ImGui::Separator();
 	ImGui::Spacing();
-	CustomCheckbox("Enable Aimbot", &Globals::aimbot_enabled);
-	CustomSlider("FOV", &Globals::aimbot_fov, 0.f, 89.f);
 
-    ImGui::End();
+	createAimbot();
+
+	ImGui::End();
 }
-
-
-
