@@ -4,10 +4,10 @@
 #include <Windows.h>
 #include <vector>
 #include <cmath>
-#include <cstdint>
 #include <algorithm>
 #include "../utils/Vector.h"
 #include "../entity/Classes.h"
+
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -239,7 +239,7 @@ namespace Utils
 			{
 				char c;
 				memcpy(&c, reinterpret_cast<void*>(addr + i), 1);
-
+				
 				if (c == '\0')
 				{
 					out[i] = '\0';

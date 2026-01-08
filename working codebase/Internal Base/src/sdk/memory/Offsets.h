@@ -16,6 +16,7 @@ namespace Offsets
     constexpr uintptr_t m_vOldOrigin = 0x15A0;
     constexpr uintptr_t m_pGameSceneNode = 0x330;
 
+
 	// -> CbaseModelEntity
     constexpr uintptr_t m_vecViewOffset = 0xD80;
 

@@ -275,10 +275,11 @@ void Menu::Render()
 	dl->AddRectFilledMultiColor(
 	wp,
 	{ wp.x + ImGui::GetWindowWidth(), wp.y + 3 },
-	IM_COL32(100, 70, 200, 255),
-	IM_COL32(130, 90, 255, 255),
-	IM_COL32(130, 90, 255, 255),
-	IM_COL32(100, 70, 200, 255));
+		IM_COL32(100, 70, 200, 255),
+		IM_COL32(130, 90, 255, 255),
+		IM_COL32(130, 90, 255, 255),
+		IM_COL32(100, 70, 200, 255)
+	);
 
 	ImGui::Spacing();
 	ImGui::Spacing();

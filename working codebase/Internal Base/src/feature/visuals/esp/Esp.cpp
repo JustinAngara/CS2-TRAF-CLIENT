@@ -4,6 +4,8 @@
 #include "../../../sdk/utils/Globals.h"
 #include "../../../../ext/imgui/imgui.h"
 #include <algorithm>
+#include <iostream>
+
 
 void ESP::render()
 {
@@ -34,16 +36,14 @@ void ESP::render()
     for (const auto& ent : entities)
     {
         C_CSPlayerPawn* pawn = ent.pawn;
-        if (!pawn || !pawn->IsAlive())
-            continue;
+        if (!pawn || !pawn->IsAlive()) continue;
 
-        if (pawn->m_iTeamNum() == localPawn->m_iTeamNum())
-            continue;
+        if (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) continue;
 
         Vector feet = pawn->m_vOldOrigin();
         Vector head = Utils::GetBonePos(pawn, BoneID::Head);
-        if (head.IsZero())
-            continue;
+        if (head.IsZero()) continue;
+
 
         head.z += 8.2f;
 
@@ -83,7 +83,9 @@ void ESP::render()
             {
                 ImVec2 ts = ImGui::CalcTextSize(nameBuf);
                 dl->AddText({ x + (w - ts.x) * 0.5f, y - ts.y - 2 }, nameCol, nameBuf);
-            }
+			}
+
+			
         }
 
         if (Globals::esp_skeleton)
@@ -94,8 +96,8 @@ void ESP::render()
             {
                 Vector b1 = Utils::GetBonePos(pawn, conn.bone1);
                 Vector b2 = Utils::GetBonePos(pawn, conn.bone2);
-                if (b1.IsZero() || b2.IsZero())
-                    continue;
+
+				if (b1.IsZero() || b2.IsZero()) continue;
 
                 Vector sb1, sb2;
                 if (Utils::WorldToScreen(b1, sb1, (float*)Globals::ViewMatrix, sw, sh) &&
