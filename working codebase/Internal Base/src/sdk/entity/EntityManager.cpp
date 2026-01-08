@@ -19,12 +19,10 @@ EntityManager& EntityManager::Get()
 
 void EntityManager::Update()
 {
-    if (!entityListAddress)
-        return;
+    if (!entityListAddress) return;
 
     uintptr_t listPtr = *reinterpret_cast<uintptr_t*>(entityListAddress);
-    if (!listPtr)
-        return;
+    if (!listPtr) return;
 
     uintptr_t client = Memory::GetModuleBase("client.dll");
     C_CSPlayerPawn* currentLocalPawn = nullptr;
@@ -41,35 +39,29 @@ void EntityManager::Update()
     for (int i = 1; i < 64; ++i)
     {
         uintptr_t listEntry =
-            *reinterpret_cast<uintptr_t*>(listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
-        if (!listEntry)
-            continue;
+			*reinterpret_cast<uintptr_t*>(listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
+        if (!listEntry) continue;
 
         uintptr_t controllerPtr =
             *reinterpret_cast<uintptr_t*>(listEntry + 112 * (i & 0x1FF));
-        if (!controllerPtr)
-            continue;
+        if (!controllerPtr) continue;
 
         auto controller = reinterpret_cast<C_CSPlayerController*>(controllerPtr);
         uint32_t pawnHandle = controller->m_hPlayerPawn();
 
-        if (!pawnHandle || pawnHandle == static_cast<uint32_t>(-1))
-            continue;
+        if (!pawnHandle || pawnHandle == static_cast<uint32_t>(-1)) continue;
 
         uintptr_t pawnListEntry =
             *reinterpret_cast<uintptr_t*>(listPtr + 8 * ((pawnHandle & 0x7FFF) >> 9) + 16);
-        if (!pawnListEntry)
-            continue;
+        if (!pawnListEntry) continue;
 
         uintptr_t pawnPtr =
             *reinterpret_cast<uintptr_t*>(pawnListEntry + 112 * (pawnHandle & 0x1FF));
-        if (!pawnPtr)
-            continue;
+        if (!pawnPtr) continue;
 
         auto pawn = reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);
 
-        if (!pawn || pawn == currentLocalPawn || !pawn->IsAlive())
-            continue;
+        if (!pawn || pawn == currentLocalPawn || !pawn->IsAlive()) continue;
 
         Entity_t ent{};
         ent.controller = controller;
@@ -80,7 +72,10 @@ void EntityManager::Update()
         temp.push_back(ent);
     }
 
+
+
     {
+		// for mutex to go close
         std::unique_lock lock(mutex);
         entities.swap(temp);
         localPawn = currentLocalPawn;

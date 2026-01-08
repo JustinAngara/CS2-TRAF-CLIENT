@@ -5,10 +5,9 @@
 #include "../../../../ext/imgui/imgui.h"
 #include <algorithm>
 
-void ESP::Render()
+void ESP::render()
 {
-    if (!Globals::esp_enabled)
-        return;
+    if (!Globals::esp_enabled) return;
 
     ImDrawList* dl = ImGui::GetBackgroundDrawList();
     const float sw = ImGui::GetIO().DisplaySize.x;
@@ -54,8 +53,7 @@ void ESP::Render()
             continue;
 
         float h = sFeet.y - sHead.y;
-        if (h < 5.f)
-            continue;
+        if (h < 5.f) continue;
 
         float w = h * 0.5f;
         float x = sHead.x - w * 0.5f;

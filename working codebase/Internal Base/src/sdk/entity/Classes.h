@@ -41,6 +41,7 @@ public:
     // this is for the fFlag
     SCHEMA(int, m_fFlags, Offsets::m_fFlags);
     bool IsOnGround() const { return (m_fFlags() & 1) != 0; }
+	
 };
 
 class C_CSPlayerController : public C_BaseEntity

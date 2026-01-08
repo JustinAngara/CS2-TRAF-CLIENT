@@ -24,7 +24,6 @@ namespace Globals
 
     inline bool esp_health = true;
 
-
 	inline bool aimbot_enabled = true;
 	inline int aimbot_key = VK_LBUTTON;
 	inline float aimbot_fov = 15.0f;

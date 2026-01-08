@@ -1,5 +1,9 @@
 #pragma once
 
-namespace ESP {
-    void Render();
-}
+class ESP
+{
+
+public:
+	static void render();
+
+};

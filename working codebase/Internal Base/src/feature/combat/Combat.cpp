@@ -2,6 +2,7 @@
 #include "legitbot/Aimbot.h"
 #include <iostream>
 void Combat::Render() {
-	Aimbot::Run();
-	std::cout << "now in combat;\n";
+
+	Aimbot::run();
+	//std::cout << "now in combat;\n";
 }
