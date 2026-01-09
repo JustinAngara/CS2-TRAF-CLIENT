@@ -2,6 +2,8 @@
 #include "../../../sdk/entity/EntityManager.h"
 #include "../../../sdk/memory/PatternScan.h"
 #include "../../../sdk/memory/Offsets.h"
+#include "../../../sdk/utils/Globals.h"
+
 #include <chrono>
 #include "Bhop.h"
 
@@ -16,26 +18,26 @@ namespace Bhop
 
 	void Run()
 	{
+		if (!Globals::bhop_enabled) return;
+
+
 		auto& em = EntityManager::Get();
 		C_CSPlayerPawn* local = em.GetLocalPawn();
 		if (!local || !local->IsAlive())
 		{
-			if (jumpActive)
-				jumpActive = false;
+			if (jumpActive) jumpActive = false;
 			return;
 		}
 
 		bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
 		if (!keyPressed)
 		{
-			if (jumpActive)
-				jumpActive = false;
+			if (jumpActive) jumpActive = false;
 			return;
 		}
 
 		uintptr_t client = Memory::GetModuleBase("client.dll");
-		if (!client)
-			return;
+		if (!client) return;
 
 		uintptr_t jumpAddress = client + Offsets::jump;
 		uint32_t* jumpButton = reinterpret_cast<uint32_t*>(jumpAddress);

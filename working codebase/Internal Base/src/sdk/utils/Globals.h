@@ -32,4 +32,5 @@ namespace Globals
 	inline bool aimbot_smooth = true;
 	inline float aimbot_smoothness = 0.1f;
 	
+	inline bool bhop_enabled = true;
 }

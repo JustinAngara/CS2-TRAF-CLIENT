@@ -264,6 +264,11 @@ void Menu::createAimbot()
 	CustomCheckbox("Enable Friendly Fire", &Globals::aimbot_friendly_fire);
 }
 
+void Menu::createBhop()
+{
+	CustomCheckbox("Enable Bhop", &Globals::bhop_enabled);
+}
+
 void Menu::Render()
 {
 	ImGui::SetNextWindowSize({ SIZE_X, SIZE_Y }, ImGuiCond_Once);
@@ -315,8 +320,10 @@ void Menu::Render()
 	ImGui::Text("AIMBOT");
 	ImGui::PopStyleColor();
 	ImGui::Spacing();
-
 	createAimbot();
+
+	ImGui::Spacing();
+	createBhop();
 
 	ImGui::End();
 }
