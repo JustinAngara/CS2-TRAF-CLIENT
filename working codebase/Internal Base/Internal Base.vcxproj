@@ -42,6 +42,7 @@
     <ClCompile Include="src\feature\visuals\enemycounter\EnemyCounter.cpp" />
     <ClCompile Include="src\feature\visuals\Visuals.cpp" />
     <ClCompile Include="src\menu\Menu.cpp" />
+    <ClCompile Include="src\menu\MenuStyles.cpp" />
     <ClCompile Include="src\sdk\entity\EntityManager.cpp" />
     <ClCompile Include="src\sdk\memory\PatternScan.cpp" />
   </ItemGroup>
@@ -70,6 +71,7 @@
     <ClInclude Include="src\feature\visuals\enemycounter\EnemyCounter.h" />
     <ClInclude Include="src\feature\visuals\Visuals.h" />
     <ClInclude Include="src\menu\Menu.h" />
+    <ClInclude Include="src\menu\MenuStyles.h" />
     <ClInclude Include="src\sdk\entity\Classes.h" />
     <ClInclude Include="src\sdk\entity\EntityManager.h" />
     <ClInclude Include="src\sdk\memory\Offsets.h" />

@@ -90,6 +90,9 @@
     <ClCompile Include="src\feature\combat\Combat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\menu\MenuStyles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">
@@ -186,6 +189,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\feature\visuals\enemycounter\EnemyCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menu\MenuStyles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
