@@ -23,7 +23,8 @@ namespace Offsets
 	// -> C_CSPlayerPawn
     constexpr uintptr_t m_iShotsFired = 0x272C;
     constexpr uintptr_t m_aimPunchAngle = 0x16E4;
-    constexpr uintptr_t m_fFlags = 0x4C4;  
+	constexpr uintptr_t m_fFlags = 0x3F8;
+	
 
 	// -> C_CSPlayerController
     constexpr uintptr_t m_iszPlayerName = 0x6E8;
@@ -39,5 +40,9 @@ namespace Offsets
     constexpr std::ptrdiff_t m_pObserverServices = 0x1408;
     constexpr std::ptrdiff_t m_hObserverTarget = 0x44;
 	constexpr std::ptrdiff_t m_iObserverMode = 0x40;
+
+	// -> Buttons
+	constexpr std::ptrdiff_t jump = 0x1851DF0;
+
 
 }
