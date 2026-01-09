@@ -13,7 +13,7 @@ namespace Globals
 
     inline bool esp_box = true;
     inline float esp_box_color[4] = { 0.f, 0.f, 1.f, 1.f };
-	inline float esp_box_color_2[4] = { 0.f, 1.f, 0.f, 1.f };
+	inline float esp_box_color_2[4] = { 1.f, 0.f, 0.f, 1.f };
     inline float esp_box_thickness = 1.5f;
 
     inline bool esp_skeleton = true;

@@ -47,7 +47,8 @@ void ESP::render()
 		//std::cout << "this is a pawn: " << pawn->m_iTeamNum(); // 3 ct
 		//std::cout << "this is a my pawn: " << localPawn->m_iTeamNum(); // 2 t
 
-		const ImU32 boxCol = pawn->m_iTeamNum() != localPawn->m_iTeamNum() ? boxCol1 : boxCol2;
+		/// blue is the same, green is opposite
+		const ImU32 boxCol = pawn->m_iTeamNum() == localPawn->m_iTeamNum() ? boxCol1 : boxCol2;
 
         // if (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) continue;
 		

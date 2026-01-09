@@ -11,7 +11,7 @@ namespace Bhop
 {
 	static bool jumpActive = false;
 	static std::chrono::steady_clock::time_point lastActionTime = std::chrono::steady_clock::now();
-	static const int jumpDelayMs = 10;
+	static const int jumpDelayMs = 3;
 
 	const int FORCE_JUMP_ACTIVE = 65537;
 	const int FORCE_JUMP_INACTIVE = 256;
