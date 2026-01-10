@@ -47,11 +47,12 @@ void Menu::createESP()
 	dl->AddRectFilled(bind_p, { bind_p.x + 32, bind_p.y + 24 }, bind_col, 4.f);
 
 	dl->AddRectFilledMultiColor(
-	bind_p, { bind_p.x + 32, bind_p.y + 12 },
-	IM_COL32(255, 255, 255, 20),
-	IM_COL32(255, 255, 255, 20),
-	IM_COL32(255, 255, 255, 0),
-	IM_COL32(255, 255, 255, 0));
+		bind_p, { bind_p.x + 32, bind_p.y + 12 },
+		IM_COL32(255, 255, 255, 20),
+		IM_COL32(255, 255, 255, 20),
+		IM_COL32(255, 255, 255, 0),
+		IM_COL32(255, 255, 255, 0)
+	);
 
 	dl->AddRect(bind_p, { bind_p.x + 32, bind_p.y + 24 }, IM_COL32(100, 100, 110, 200), 4.f, 0, 2.f);
 
@@ -112,7 +113,9 @@ void Menu::createSubESP()
 
 	MenuStyles::CustomCheckbox("Box", &Globals::esp_box);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
-	MenuStyles::CustomColor("Box color", Globals::esp_box_color);
+	MenuStyles::CustomColor("Team color", Globals::esp_box_color);
+	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
+
 
 	ImGui::Spacing();
 
@@ -124,6 +127,11 @@ void Menu::createSubESP()
 
 	MenuStyles::CustomCheckbox("Name", &Globals::esp_name);
 	MenuStyles::CustomCheckbox("Health bar", &Globals::esp_health);
+
+	ImGui::Spacing();
+
+	MenuStyles::CustomCheckbox("Team ESP", &Globals::esp_teamate);
+
 
 	ImGui::Unindent(25.f);
 }
@@ -141,6 +149,12 @@ void Menu::createAimbot()
 
 	MenuStyles::CustomSlider("Smoothness", &Globals::aimbot_smoothness, 0.f, 1.f);
 	MenuStyles::CustomCheckbox("Enable Friendly Fire", &Globals::aimbot_friendly_fire);
+
+	MenuStyles::CustomCheckbox("Enable Body Aim", &Globals::aimbot_force_baim);
+	MenuStyles::CustomSlider("Body Aim", &Globals::aimbot_baim_min, 0, 100);
+
+
+
 }
 
 void Menu::createBhop()

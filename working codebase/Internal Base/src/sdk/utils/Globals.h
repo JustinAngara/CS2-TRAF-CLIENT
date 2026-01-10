@@ -25,12 +25,18 @@ namespace Globals
 
     inline bool esp_health = true;
 
+    inline bool esp_teamate = true;
+
+
 	inline bool aimbot_enabled = true;
 	inline bool aimbot_friendly_fire = false;
 	inline int aimbot_key = VK_LBUTTON;
 	inline float aimbot_fov = 15.0f;
 	inline bool aimbot_smooth = true;
 	inline float aimbot_smoothness = 0.1f;
+	inline bool aimbot_force_baim = true;
+	inline int aimbot_baim_min = 30;
+
 	
 	inline bool bhop_enabled = true;
 }

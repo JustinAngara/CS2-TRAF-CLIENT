@@ -4,9 +4,10 @@
 #include "../../ext/imgui/imgui.h"
 
 struct ImDrawList;
-
 namespace MenuStyles
 {
+
+
 	// time
 	void AdvanceTime(float dt);
 	float Time();
@@ -29,5 +30,10 @@ namespace MenuStyles
 	// custom controls
 	void CustomCheckbox(const char* label, bool* v);
 	void CustomColor(const char* label, float col[4]);
-	void CustomSlider(const char* label, float* v, float minVal, float maxVal);
+
+	template<typename T>
+	void CustomSlider(const char* label, T* v, T minVal, T maxVal);
 }
+
+
+#include "MenuStyles.inl"

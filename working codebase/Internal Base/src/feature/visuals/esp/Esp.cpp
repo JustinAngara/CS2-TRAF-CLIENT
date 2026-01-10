@@ -50,7 +50,7 @@ void ESP::render()
 		/// blue is the same, green is opposite
 		const ImU32 boxCol = pawn->m_iTeamNum() == localPawn->m_iTeamNum() ? boxCol1 : boxCol2;
 
-        // if (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) continue;
+        if (pawn->m_iTeamNum() == localPawn->m_iTeamNum() && !Globals::esp_teamate) continue;
 		
 
 

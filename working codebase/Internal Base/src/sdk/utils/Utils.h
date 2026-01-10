@@ -86,6 +86,7 @@ enum class BoneID : int
 	Head = 6,
 	Neck = 5,
 	Spine = 4,
+	Stomach = 3,
 	Pelvis = 0,
 	LeftShoulder = 8,
 	LeftArm = 9,

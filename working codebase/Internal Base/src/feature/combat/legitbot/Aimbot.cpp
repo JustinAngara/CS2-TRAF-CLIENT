@@ -70,13 +70,20 @@ BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
 	if (!local || !target) return BoneID::Head;
 
+	int start = 0;
 	const BoneID iterateBones[] = {
 		BoneID::Head,
 		BoneID::Neck,
+		BoneID::Spine, // will start here if baim is on
+		BoneID::Stomach,
 		BoneID::LeftShoulder,
 		BoneID::RightShoulder,
-		BoneID::Spine
 	};
+
+	if (Globals::aimbot_force_baim &&  target->m_iHealth() <= Globals::aimbot_baim_min)
+	{
+		start = 2;
+	}
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
 	if (!client) return BoneID::Head;
@@ -90,7 +97,7 @@ BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	float bestFov = FLT_MAX;
 
 
-	for (int i = 0; i < sizeof(iterateBones) / sizeof(BoneID); i++)
+	for (int i = start; i < sizeof(iterateBones) / sizeof(BoneID); i++)
 	{
 		Vector bonePos = Utils::GetBonePos(target, iterateBones[i]);
 		if (bonePos.IsZero()) continue;

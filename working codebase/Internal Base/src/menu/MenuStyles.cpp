@@ -4,6 +4,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
+#include <type_traits>
+
 
 struct Particle
 {
@@ -337,74 +339,5 @@ namespace MenuStyles
 		ImGui::PopID();
 	}
 
-	void CustomSlider(const char* label, float* v, float minVal, float maxVal)
-	{
-		ImGui::PushID(label);
-		ImVec2 p = ImGui::GetCursorScreenPos();
-		ImDrawList* dl = ImGui::GetWindowDrawList();
 
-		float slider_width = 200.f;
-		float slider_height = 24.f;
-		float grab_size = 10.f;
-
-		ImGui::InvisibleButton("slider", { slider_width, slider_height });
-
-		bool is_active = ImGui::IsItemActive();
-		bool is_hovered = ImGui::IsItemHovered();
-
-		if (is_active && ImGui::IsMouseDragging(0, 0.f))
-		{
-			float mouse_x = ImGui::GetMousePos().x - p.x;
-			float percentage = std::clamp(mouse_x / slider_width, 0.0f, 1.0f);
-			*v = minVal + percentage * (maxVal - minVal);
-		}
-
-		float percentage = (*v - minVal) / (maxVal - minVal);
-		percentage = std::clamp(percentage, 0.0f, 1.0f);
-		float grab_x = p.x + percentage * slider_width;
-
-		if (is_hovered || is_active)
-			dl->AddRectFilled({ p.x - 2, p.y - 2 }, { p.x + slider_width + 2, p.y + slider_height + 2 }, IM_COL32(130, 90, 255, 30), 7.f);
-
-		dl->AddRectFilled({ p.x, p.y + 2 }, { p.x + slider_width, p.y + slider_height - 2 }, IM_COL32(30, 30, 40, 255), 6.f);
-		dl->AddRectFilled({ p.x + 1, p.y + 3 }, { p.x + slider_width - 1, p.y + 6 }, IM_COL32(0, 0, 0, 80), 5.f);
-
-		if (percentage > 0.01f)
-		{
-			dl->AddRectFilledMultiColor(
-			{ p.x, p.y + 2 }, { grab_x, p.y + slider_height - 2 },
-			IM_COL32(90, 60, 180, 255),
-			IM_COL32(140, 100, 255, 255),
-			IM_COL32(140, 100, 255, 255),
-			IM_COL32(90, 60, 180, 255));
-
-			dl->AddRectFilledMultiColor(
-			{ p.x + 2, p.y + 4 }, { grab_x - 2, p.y + 10 },
-			IM_COL32(255, 255, 255, 40),
-			IM_COL32(255, 255, 255, 40),
-			IM_COL32(255, 255, 255, 0),
-			IM_COL32(255, 255, 255, 0));
-		}
-
-		dl->AddRect({ p.x, p.y + 2 }, { p.x + slider_width, p.y + slider_height - 2 }, IM_COL32(70, 70, 80, 255), 6.f, 0, 1.5f);
-
-		float grab_y = p.y + slider_height / 2;
-
-		dl->AddCircleFilled({ grab_x + 1, grab_y + 1 }, grab_size + 2, IM_COL32(0, 0, 0, 100), 20);
-
-		if (is_active)
-			dl->AddCircleFilled({ grab_x, grab_y }, grab_size + 4, IM_COL32(160, 120, 255, 60), 20);
-
-		ImU32 grab_col1 = is_active ? IM_COL32(180, 140, 255, 255) : IM_COL32(240, 240, 250, 255);
-		dl->AddCircleFilled({ grab_x, grab_y }, grab_size, grab_col1, 20);
-		dl->AddCircleFilled({ grab_x, grab_y - 3 }, grab_size - 3, IM_COL32(255, 255, 255, 60), 20);
-
-		dl->AddCircle({ grab_x, grab_y }, grab_size, IM_COL32(100, 100, 110, 200), 20, 2.f);
-
-		ImGui::SameLine();
-		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
-		ImGui::Text("%s: %.1f", label, *v);
-
-		ImGui::PopID();
-	}
 }

@@ -81,6 +81,9 @@
     <ClInclude Include="src\sdk\utils\Utils.h" />
     <ClInclude Include="src\sdk\utils\Vector.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\menu\MenuStyles.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
