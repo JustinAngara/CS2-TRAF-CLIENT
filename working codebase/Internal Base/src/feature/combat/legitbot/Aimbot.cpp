@@ -31,7 +31,6 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 
 	BoneID targetBone = findNearestBoneId(local, target);
-	std::cout << "this is target bone: " << (int)targetBone << '\n';
 	// tchange bone pos
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
     if (targetPos.IsZero()) return;
