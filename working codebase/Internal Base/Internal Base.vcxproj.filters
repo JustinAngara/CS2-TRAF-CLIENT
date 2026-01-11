@@ -24,7 +24,7 @@
     <ClCompile Include="src\feature\visuals\esp\Esp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\feature\combat\legitbot\Aimbot.cpp">
+    <ClCompile Include="src\feature\combat\Attack\Aimbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\menu\Menu.cpp">
@@ -93,6 +93,9 @@
     <ClCompile Include="src\menu\MenuStyles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\feature\combat\legitbot\LegitAimbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">
@@ -104,7 +107,7 @@
     <ClInclude Include="src\feature\visuals\esp\Esp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\feature\combat\legitbot\Aimbot.h">
+    <ClInclude Include="src\feature\combat\Attack\Aimbot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\feature\combat\Combat.h">
@@ -197,10 +200,14 @@
     <ClInclude Include="src\sdk\utils\MenuColors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\menu\MenuStyles.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

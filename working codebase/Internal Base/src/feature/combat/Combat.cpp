@@ -1,8 +1,13 @@
 #include "Combat.h"
-#include "legitbot/Aimbot.h"
+#include "Attack/Aimbot.h"
+
 #include <iostream>
 void Combat::Render() {
+	
+	static Aimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
+	aimbot.run();
+	
 
-	Aimbot::run();
+
 	//std::cout << "now in combat;\n";
 }

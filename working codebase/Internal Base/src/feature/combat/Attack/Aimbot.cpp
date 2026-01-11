@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 
-void Aimbot::run() 
+void Aimbot::run()
 {
 
 	if (!Globals::aimbot_enabled) return;
