@@ -1,10 +1,10 @@
 #include "Combat.h"
-#include "Attack/Aimbot.h"
-
+#include "../combat/legitbot/LegitAimbot.h"
 #include <iostream>
-void Combat::Render() {
+void Combat::Render()
+{
 	
-	static Aimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
+	static LegitAimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
 	aimbot.run();
 	
 
