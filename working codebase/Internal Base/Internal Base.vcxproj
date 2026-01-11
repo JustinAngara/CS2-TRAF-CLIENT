@@ -33,7 +33,6 @@
     <ClCompile Include="ext\minhook\trampoline.c" />
     <ClCompile Include="src\core\Hooks.cpp" />
     <ClCompile Include="src\core\Main.cpp" />
-    <ClCompile Include="src\feature\combat\aimbot\Aimbot.cpp" />
     <ClCompile Include="src\feature\combat\Combat.cpp" />
     <ClCompile Include="src\feature\combat\legitbot\Aimbot.cpp" />
     <ClCompile Include="src\feature\misc\bhop\Bhop.cpp" />
@@ -65,7 +64,6 @@
     <ClInclude Include="ext\minhook\MinHook.h" />
     <ClInclude Include="ext\minhook\trampoline.h" />
     <ClInclude Include="src\core\Hooks.h" />
-    <ClInclude Include="src\feature\combat\aimbot\Aimbot.h" />
     <ClInclude Include="src\feature\combat\Combat.h" />
     <ClInclude Include="src\feature\combat\legitbot\Aimbot.h" />
     <ClInclude Include="src\feature\misc\Misc.h" />

@@ -93,9 +93,6 @@
     <ClCompile Include="src\menu\MenuStyles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\feature\combat\aimbot\Aimbot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">
@@ -195,9 +192,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\menu\MenuStyles.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\feature\combat\aimbot\Aimbot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\sdk\utils\MenuColors.h">
