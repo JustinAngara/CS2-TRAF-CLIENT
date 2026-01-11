@@ -114,7 +114,6 @@ void Menu::createSubESP()
 	MenuStyles::CustomCheckbox("Box", &Globals::esp_box);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Team color", Globals::esp_box_color);
-	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
 
 
 	ImGui::Spacing();
@@ -122,6 +121,7 @@ void Menu::createSubESP()
 	MenuStyles::CustomCheckbox("Skeleton", &Globals::esp_skeleton);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Skeleton color", Globals::esp_skeleton_color);
+	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
 
 	ImGui::Spacing();
 
