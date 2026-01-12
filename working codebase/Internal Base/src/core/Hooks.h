@@ -9,15 +9,14 @@ public:
 	static void Setup();
 	static void Destroy();
 
-	// Existing hooks
+	// Hooks
 	static LRESULT __stdcall hkWndProc(HWND, UINT, WPARAM, LPARAM);
 	static HRESULT __stdcall hkPresent(IDXGISwapChain*, UINT, UINT);
+	static void __fastcall hkCreateMove(void* thisptr, int slot, bool active);
 
-	// Add CreateMove hook
-	static void __fastcall hkCreateMove(void* thisptr, int slot, float flInputSampleTime, bool bActive);
-	inline static void(__fastcall* oCreateMove)(void*, int, float, bool) = nullptr;
-
+	// Originals
+	using CreateMove_t = void(__fastcall*)(void*, int, bool);
+	inline static CreateMove_t oCreateMove = nullptr;
 	inline static WNDPROC oWndProc = nullptr;
 	inline static HRESULT(__stdcall* oPresent)(IDXGISwapChain*, UINT, UINT) = nullptr;
-
 };

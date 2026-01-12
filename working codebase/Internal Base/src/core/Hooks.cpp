@@ -20,133 +20,143 @@
 static ID3D11Device* g_Device = nullptr;
 static ID3D11DeviceContext* g_Context = nullptr;
 static ID3D11RenderTargetView* g_RTV = nullptr;
-static HWND                     g_Window = nullptr;
-static bool                     g_Init = false;
+static HWND g_Window = nullptr;
+static bool g_Init = false;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
-    HWND, UINT, WPARAM, LPARAM
-);
+HWND, UINT, WPARAM, LPARAM);
 
-void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, float flInputSampleTime, bool bActive)
+/*
+void* __fastcall Hooks::hkCreateMove(void* thisptr, void* edx, int slot, float flInputSampleTime, bool bActive)
 {
-	std::cout << "[DEBUG] Okay i am here\n";
-	oCreateMove(thisptr, slot, flInputSampleTime, bActive);
+	std::cout << "[DEBUG] hkCreateMove called! thisptr=" << thisptr << "\n";
 
-	static bool once = false;
-	if (!once)
+	// Call original first
+	void* result = oCreateMove(thisptr, edx, slot, flInputSampleTime, bActive);
+
+	// Try multiple possible offsets for CUserCmd
+	CUserCmd* pCmd = nullptr;
+
+	// Common offsets to try (these vary by CS2 version)
+	uintptr_t offsets[] = { 0x5540, 0x5548, 0x5550, 0x5538, 0x5530 };
+
+	for (auto offset : offsets)
 	{
-		std::cout << "[DEBUG] CreateMove called\n";
-		once = true;
+		pCmd = *reinterpret_cast<CUserCmd**>((uintptr_t)thisptr + offset);
+		if (pCmd && pCmd->csgoUserCmd.pBaseCmd)
+		{
+			std::cout << "[DEBUG] Found valid CUserCmd at offset: 0x" << std::hex << offset << std::dec << "\n";
+			break;
+		}
 	}
-
-	// Get CUserCmd from CInput class - offset is around 0x5540 but may change
-	CUserCmd* pCmd = *reinterpret_cast<CUserCmd**>((uintptr_t)thisptr + 0x5540);
 
 	if (!pCmd)
 	{
-		static bool once2 = false;
-		if (!once2)
+		static bool once = false;
+		if (!once)
 		{
-			std::cout << "[DEBUG] pCmd is NULL (offset might be wrong)\n";
-			once2 = true;
+			std::cout << "[DEBUG] pCmd is NULL - all offsets failed\n";
+			once = true;
 		}
-		return;
+		return result;
 	}
 
 	if (!pCmd->csgoUserCmd.pBaseCmd)
 	{
-		static bool once3 = false;
-		if (!once3)
+		static bool once2 = false;
+		if (!once2)
 		{
 			std::cout << "[DEBUG] pBaseCmd is NULL\n";
-			once3 = true;
+			once2 = true;
 		}
-		return;
+		return result;
 	}
 
-	std::cout << "[DEBUG] Calling Bhop::Run\n";
 	Bhop::Run(pCmd);
+
+	return result;
 }
+*/
 
 LRESULT __stdcall Hooks::hkWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (Menu::IsOpen)
-    {
-        ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
-        return true;
-    }
+	if (Menu::IsOpen)
+	{
+		ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
+		return true;
+	}
 
-    return CallWindowProc(oWndProc, hWnd, msg, wParam, lParam);
+	return CallWindowProc(oWndProc, hWnd, msg, wParam, lParam);
 }
 
 HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT flags)
 {
-    if (!g_Init)
-    {
-        if (FAILED(swapChain->GetDevice(__uuidof(ID3D11Device), (void**)&g_Device)))
-            return oPresent(swapChain, sync, flags);
+	if (!g_Init)
+	{
+		if (FAILED(swapChain->GetDevice(__uuidof(ID3D11Device), (void**)&g_Device)))
+			return oPresent(swapChain, sync, flags);
 
-        g_Device->GetImmediateContext(&g_Context);
+		g_Device->GetImmediateContext(&g_Context);
 
-        DXGI_SWAP_CHAIN_DESC sd{};
-        swapChain->GetDesc(&sd);
-        g_Window = sd.OutputWindow;
+		DXGI_SWAP_CHAIN_DESC sd{};
+		swapChain->GetDesc(&sd);
+		g_Window = sd.OutputWindow;
 
-        ID3D11Texture2D* backBuffer = nullptr;
-        swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
-        g_Device->CreateRenderTargetView(backBuffer, nullptr, &g_RTV);
-        backBuffer->Release();
+		ID3D11Texture2D* backBuffer = nullptr;
+		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+		g_Device->CreateRenderTargetView(backBuffer, nullptr, &g_RTV);
+		backBuffer->Release();
 
-        oWndProc = (WNDPROC)SetWindowLongPtr(
-            g_Window, GWLP_WNDPROC, (LONG_PTR)hkWndProc
-        );
+		oWndProc = (WNDPROC)SetWindowLongPtr(
+		g_Window, GWLP_WNDPROC, (LONG_PTR)hkWndProc);
 
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = nullptr;
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.IniFilename = nullptr;
 
-        ImGui_ImplWin32_Init(g_Window);
-        ImGui_ImplDX11_Init(g_Device, g_Context);
+		ImGui_ImplWin32_Init(g_Window);
+		ImGui_ImplDX11_Init(g_Device, g_Context);
 
-        g_Init = true;
-    }
+		g_Init = true;
+	}
 
-    EntityManager::Get().Update();
+	EntityManager::Get().Update();
 
-    uintptr_t client = Memory::GetModuleBase("client.dll");
-    memcpy(
-        &Globals::ViewMatrix,
-        (void*)(client + Offsets::dwViewMatrix),
-        sizeof(Globals::ViewMatrix)
-    );
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	memcpy(
+	&Globals::ViewMatrix,
+	(void*)(client + Offsets::dwViewMatrix),
+	sizeof(Globals::ViewMatrix));
 
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
-    if (GetAsyncKeyState(VK_INSERT) & 1)
-        Menu::IsOpen = !Menu::IsOpen;
+	if (GetAsyncKeyState(VK_INSERT) & 1)
+		Menu::IsOpen = !Menu::IsOpen;
 
-    if (Menu::IsOpen)
-        Menu::Render();
+	if (Menu::IsOpen)
+		Menu::Render();
 
-    Visuals::Render();
-    Combat::Render();
+	Visuals::Render();
+	Combat::Render();
 	Misc::Render();
 
-    ImGui::Render();
-    g_Context->OMSetRenderTargets(1, &g_RTV, nullptr);
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	ImGui::Render();
+	g_Context->OMSetRenderTargets(1, &g_RTV, nullptr);
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    return oPresent(swapChain, sync, flags);
+	return oPresent(swapChain, sync, flags);
 }
 
 void Hooks::Setup()
 {
-
 	static bool initialized = false;
-	if (initialized) return;
+	if (initialized)
+		return;
 	initialized = true;
+
+	std::cout << "[INFO] Initializing hooks...\n";
 
 	if (MH_Initialize() != MH_OK)
 	{
@@ -154,6 +164,7 @@ void Hooks::Setup()
 		return;
 	}
 
+	
 	WNDCLASSEXW wc{};
 	wc.cbSize = sizeof(wc);
 	wc.lpfnWndProc = DefWindowProcW;
@@ -200,66 +211,90 @@ void Hooks::Setup()
 		void** vtable = *reinterpret_cast<void***>(sc);
 		void* present = vtable[8];
 
-		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
+		MH_STATUS status = MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
+		std::cout << "[INFO] Present hook status: " << status << "\n";
 
 		uintptr_t createMoveAddr = 0;
 
-		// Pattern 1 - Shorter version
+		// mem signature of create move
 		createMoveAddr = Memory::PatternScan("client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57");
+
+
 		if (createMoveAddr)
 		{
 			std::cout << "[SUCCESS] Found CreateMove at: 0x" << std::hex << createMoveAddr << std::dec << "\n";
 
-			MH_CreateHook(
-				reinterpret_cast<void*>(createMoveAddr),
-				&hkCreateMove,
-				reinterpret_cast<void**>(&oCreateMove)
-			);
+			status = MH_CreateHook(
+			reinterpret_cast<void*>(createMoveAddr),
+			&hkCreateMove,
+			reinterpret_cast<void**>(&oCreateMove));
 
-			auto st2 = MH_CreateHook((LPVOID)createMoveAddr, &hkCreateMove, reinterpret_cast<void**>(&oCreateMove));
-			std::cout << "CreateMove hook: " << st2 << " oCreateMove=" << (void*)oCreateMove << "\n";
+			std::cout << "[INFO] CreateMove hook status: " << status << " (oCreateMove=" << (void*)oCreateMove << ")\n";
 
-			if (st2 != MH_OK && st2 != MH_ERROR_ALREADY_CREATED)
+			if (status != MH_OK && status != MH_ERROR_ALREADY_CREATED)
 			{
-				std::cout << "[ERROR] CreateHook(CreateMove) failed\n";
+				std::cout << "[ERROR] CreateHook(CreateMove) failed with status: " << status << "\n";
 			}
-
-
-			std::cout << "[SUCCESS] Finished \n";
-
-
-
 		}
-		MH_EnableHook(MH_ALL_HOOKS);
+		else
+		{
+			std::cout << "[ERROR] Could not find CreateMove function\n";
+		}
 
+		// enable all hooks
+		status = MH_EnableHook(MH_ALL_HOOKS);
+		std::cout << "[INFO] MH_EnableHook(ALL) status: " << status << "\n";
 
 		sc->Release();
 		dev->Release();
 		ctx->Release();
 	}
+	else
+	{
+		std::cout << "[ERROR] Failed to create D3D11 device\n";
+	}
 
 	DestroyWindow(hwnd);
 	UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+	std::cout << "[INFO] Hook setup complete\n";
 }
+
+//DEBUG ------------------
+void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
+{
+	std::cout << "[DEBUG] hkCreateMove CALLED!\n";
+
+	oCreateMove(thisptr, slot, active);
+
+	// Now implement the getUserCmd logic from the documentation
+	// For now, just verify the hook is being called
+}
+
+
+//DEBUG ------------------
 
 void Hooks::Destroy()
 {
-    MH_DisableHook(MH_ALL_HOOKS);
-    MH_Uninitialize();
+	MH_DisableHook(MH_ALL_HOOKS);
+	MH_Uninitialize();
 
-    if (g_Window && oWndProc)
-        SetWindowLongPtr(g_Window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+	if (g_Window && oWndProc)
+		SetWindowLongPtr(g_Window, GWLP_WNDPROC, (LONG_PTR)oWndProc);
 
-    if (!g_Init)
-        return;
+	if (!g_Init)
+		return;
 
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 
-    if (g_RTV)     g_RTV->Release();
-    if (g_Context) g_Context->Release();
-    if (g_Device)  g_Device->Release();
+	if (g_RTV)
+		g_RTV->Release();
+	if (g_Context)
+		g_Context->Release();
+	if (g_Device)
+		g_Device->Release();
 
-    g_Init = false;
+	g_Init = false;
 }
