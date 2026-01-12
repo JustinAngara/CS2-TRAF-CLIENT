@@ -210,8 +210,8 @@ void Hooks::Setup()
 			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
 			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
 			void** input = *reinterpret_cast<void***>(inputPtr);
-
 			// In Setup(), replace the vtable hooking loop with:
+			/*
 			if (input && *input)
 			{
 				void** inputVtable = *reinterpret_cast<void***>(input);
@@ -222,6 +222,7 @@ void Hooks::Setup()
 					std::cout << "[SUCCESS] Hooked CreateMove at vtable[5]\n";
 				}
 			}
+			*/
 		}
 
 		MH_EnableHook(MH_ALL_HOOKS);
@@ -234,6 +235,91 @@ void Hooks::Setup()
 	UnregisterClassW(wc.lpszClassName, wc.hInstance);
 	std::cout << "[INFO] Hook setup complete\n";
 }
+
+/*
+void Hooks::Setup()
+{
+	static bool initialized = false;
+	if (initialized)
+		return;
+	initialized = true;
+
+	std::cout << "[INFO] Initializing hooks...\n";
+
+	if (MH_Initialize() != MH_OK)
+	{
+		std::cout << "[ERROR] MH_Initialize failed\n";
+		return;
+	}
+
+	WNDCLASSEXW wc{};
+	wc.cbSize = sizeof(wc);
+	wc.lpfnWndProc = DefWindowProcW;
+	wc.hInstance = GetModuleHandleW(nullptr);
+	wc.lpszClassName = L"DummyDX";
+
+	RegisterClassExW(&wc);
+	HWND hwnd = CreateWindowW(wc.lpszClassName, L"", WS_OVERLAPPEDWINDOW,
+	0, 0, 100, 100, nullptr, nullptr, wc.hInstance, nullptr);
+
+	DXGI_SWAP_CHAIN_DESC sd{};
+	sd.BufferCount = 1;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow = hwnd;
+	sd.SampleDesc.Count = 1;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+	IDXGISwapChain* sc = nullptr;
+	ID3D11Device* dev = nullptr;
+	ID3D11DeviceContext* ctx = nullptr;
+	D3D_FEATURE_LEVEL fl;
+
+	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+		nullptr, 0, D3D11_SDK_VERSION, &sd, &sc, &dev, &fl, &ctx)))
+	{
+		void** vtable = *reinterpret_cast<void***>(sc);
+		void* present = vtable[8];
+		// MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
+
+		// Hook CreateMove via vtable
+		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ? ? ? ? 48 8B 01 FF 90 ? ? ? ? 84");
+		if (inputSystemAddr)
+		{
+			////////// TODO DEBUG HERE ////////////////////
+			/*
+			std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
+
+			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
+			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
+			void** input = *reinterpret_cast<void***>(inputPtr);
+
+			// In Setup(), replace the vtable hooking loop with:
+			if (input && *input)
+			{
+				void** inputVtable = *reinterpret_cast<void***>(input);
+
+				// Hook ONLY index 5 (the actual CreateMove)
+				if (MH_CreateHook(inputVtable[5], &hkCreateMove, reinterpret_cast<void**>(&oCreateMove)) == MH_OK)
+				{
+					std::cout << "[SUCCESS] Hooked CreateMove at vtable[5]\n";
+				}
+			}
+			
+		}
+
+		MH_EnableHook(MH_ALL_HOOKS);
+		sc->Release();
+		dev->Release();
+		ctx->Release();
+	}
+
+	DestroyWindow(hwnd);
+	UnregisterClassW(wc.lpszClassName, wc.hInstance);
+	std::cout << "[INFO] Hook setup complete\n";
+}
+*/
 
 //DEBUG  START ------------------
 
@@ -252,10 +338,44 @@ C_CSPlayerController* GetLocalController()
 }
 
 
+
+
+/*
+double __fastcall Hooks::hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd)
+{
+	double result = oCreateMove(thisptr, a2, pCmd);
+
+	if (!pCmd || !Globals::bhop_enabled)
+		return result;
+
+	std::cout << "[DEBUG] pCmd: " << pCmd << "\n";
+
+	if (!pCmd->csgoUserCmd.pBaseCmd)
+	{
+		std::cout << "[DEBUG] pBaseCmd null\n";
+		return result;
+	}
+
+	std::cout << "[DEBUG] pBaseCmd: " << pCmd->csgoUserCmd.pBaseCmd << "\n";
+
+	if (!pCmd->csgoUserCmd.pBaseCmd->pInButtonState)
+	{
+		std::cout << "[DEBUG] pInButtonState null\n";
+		return result;
+	}
+
+	std::cout << "[DEBUG] Valid! Calling Bhop\n";
+	Bhop::Run(pCmd);
+
+	return result;
+}
+*/
+
+// this will be the outdate hkcreatemove but isn't crashing so pick your poison
 void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
 {
 	oCreateMove(thisptr, slot, active);
-
+	/*
 	CCSGOInput* input = (CCSGOInput*)thisptr;
 
 	// Access buttons directly from CCSGOInput structure
@@ -279,6 +399,7 @@ void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
 	{
 		input->m_buttons &= ~IN_JUMP;
 	}
+	*/
 }
 
 //DEBUG END ------------------
