@@ -26,7 +26,6 @@ static std::vector<int> PatternToBytes(const char* pattern)
             bytes.push_back(strtoul(c, const_cast<char**>(&c), 16));
         }
     }
-
     return bytes;
 }
 

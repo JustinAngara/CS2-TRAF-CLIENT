@@ -7,7 +7,4 @@ void Combat::Render()
 	static LegitAimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
 	aimbot.run();
 	
-
-
-	//std::cout << "now in combat;\n";
 }

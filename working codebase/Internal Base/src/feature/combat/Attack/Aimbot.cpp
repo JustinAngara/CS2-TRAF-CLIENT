@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 
-void Aimbot::run()
+void Aimbot::run() 
 {
 
 	if (!Globals::aimbot_enabled) return;
@@ -27,38 +27,29 @@ void Aimbot::run()
 
 void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
+	// base cases
     if (!local || !target) return;
-
-
-	BoneID targetBone = findNearestBoneId(local, target);
-	// tchange bone pos
-	Vector targetPos = Utils::GetBonePos(target, targetBone);
-    if (targetPos.IsZero()) return;
-
-	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
-    Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
-
     uintptr_t client = Memory::GetModuleBase("client.dll");
     if (!client) return;
 
-	// from client we want to get the current angle
-    Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	
+    Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles); // from client we want to get the current angle
 	if (!currentAngles) return;
 
-    if (Globals::aimbot_smooth)
-    {
-        Vector delta = aimAngles - *currentAngles;
-		Utils::NormalizeAngles(delta);
+	BoneID targetBone = findNearestBoneId(local, target); // always return at least the head bone
+	Vector targetPos = Utils::GetBonePos(target, targetBone); 	// figure out the angle
+    if (targetPos.IsZero()) return;
 
-		// this is going to be how we traverse through certian FOVs
-        *currentAngles += delta * (1.f-Globals::aimbot_smoothness);
-    }
-    else 
-    {
-			
-        *currentAngles = aimAngles;
-    }
+
+	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset(); 
+    Vector aimAngles = Utils::CalcAngle(localPos, targetPos); // adjust for directional aim
+
+	
+    Vector delta = aimAngles - *currentAngles;
+	Utils::NormalizeAngles(delta);
+	Vector finalDelta = delta * (1.f - Globals::aimbot_smoothness);
+
+
+	*currentAngles = Globals::aimbot_smooth ? *currentAngles + finalDelta : aimAngles;
 
 }
 

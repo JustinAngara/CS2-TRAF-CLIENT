@@ -121,6 +121,8 @@ void Menu::createSubESP()
 	MenuStyles::CustomCheckbox("Skeleton", &Globals::esp_skeleton);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Skeleton color", Globals::esp_skeleton_color);
+
+	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
 
 	ImGui::Spacing();
