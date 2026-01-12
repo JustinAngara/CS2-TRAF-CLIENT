@@ -7,50 +7,96 @@
 
 #include <Windows.h>
 
-void Aimbot::run() 
+DWORD Aimbot::lastAimTime = 0;
+DWORD Aimbot::lastShootTime = 0;
+bool Aimbot::isAiming = false;
+
+void Aimbot::run()
 {
+	if (!Globals::aimbot_enabled)
+		return;
 
-	if (!Globals::aimbot_enabled) return;
+	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
+	if (!local || !local->IsAlive())
+		return;
 
-    C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
-    if (!local || !local->IsAlive()) return;
-
-    if (!(GetAsyncKeyState(Globals::aimbot_key) & 0x8000)) return;
-
+	if (!(GetAsyncKeyState(Globals::aimbot_key) & 0x8000))
+		return;
 
 	// select best player via a FoV premise/x,y based
-    C_CSPlayerPawn* bestTarget = getBestTarget(local);
-    if (!bestTarget) return;
+	C_CSPlayerPawn* bestTarget = getBestTarget(local);
+	if (!bestTarget)
+		return;
 
-    aimAtTarget(local, bestTarget);
+	aimAtTarget(local, bestTarget);
 }
 
 void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
-	// base cases
-    if (!local || !target) return;
-    uintptr_t client = Memory::GetModuleBase("client.dll");
-    if (!client) return;
+	static DWORD lastAimTime = 0;
+	static DWORD lastShootTime = 0;
+	static bool isAiming = false;
 
-    Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles); // from client we want to get the current angle
-	if (!currentAngles) return;
+	if (!local || !target)
+		return;
 
-	BoneID targetBone = findNearestBoneId(local, target); // always return at least the head bone
-	Vector targetPos = Utils::GetBonePos(target, targetBone); 	// figure out the angle
-    if (targetPos.IsZero()) return;
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	if (!client)
+		return;
 
+	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	if (!currentAngles)
+		return;
 
-	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset(); 
-    Vector aimAngles = Utils::CalcAngle(localPos, targetPos); // adjust for directional aim
+	BoneID targetBone = findNearestBoneId(local, target);
+	Vector targetPos = Utils::GetBonePos(target, targetBone);
+	if (targetPos.IsZero())
+		return;
 
-	
-    Vector delta = aimAngles - *currentAngles;
+	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
+
+	Vector delta = aimAngles - *currentAngles;
 	Utils::NormalizeAngles(delta);
-	Vector finalDelta = delta * (1.f - Globals::aimbot_smoothness);
 
+	// apply smoothing and update aim FIRST
+	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
+	*currentAngles = Globals::aimbot_smooth ? *currentAngles + smoothedDelta : aimAngles;
 
-	*currentAngles = Globals::aimbot_smooth ? *currentAngles + finalDelta : aimAngles;
+	// calculate the REMAINING delta magnitude (how close we are to target)
+	float deltaX = fabsf(delta.x);
+	float deltaY = fabsf(delta.y);
+	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);
 
+	// auto-shoot logic
+	if (!Globals::aimbot_auto_shoot)
+		return;
+
+	DWORD currentTime = GetTickCount();
+	bool isOnTarget = totalDelta <= Globals::aimbot_shoot_threshold;
+
+	if (isOnTarget)
+	{
+		if (!isAiming)
+		{
+			isAiming = true;
+			lastAimTime = currentTime;
+		}
+
+		DWORD timeOnTarget = currentTime - lastAimTime;
+		DWORD timeSinceShot = currentTime - lastShootTime;
+
+		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
+		{
+			keybd_event('L', 0, 0, 0); // Key down
+			keybd_event('L', 0, KEYEVENTF_KEYUP, 0); // Key up
+			lastShootTime = currentTime;
+		}
+	}
+	else
+	{
+		isAiming = false;
+	}
 }
 
 BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)

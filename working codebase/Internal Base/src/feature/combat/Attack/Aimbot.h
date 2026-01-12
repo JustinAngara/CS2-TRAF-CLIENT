@@ -5,12 +5,15 @@
 class Aimbot
 {
 public:
-	virtual void run();
+	static void run();
+	static DWORD lastAimTime;
+	static DWORD lastShootTime;
+	static bool isAiming;
 
-protected:
-	// best case scenario we will make more helpers to make final
-	virtual void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-	virtual C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
-	virtual BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target); 
-	
+private:
+	static void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
+	static C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
+	static BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
+
+
 };
