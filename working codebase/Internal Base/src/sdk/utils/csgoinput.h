@@ -1,7 +1,22 @@
 #include "../../sdk/common.h"
+#include "../memory/PatternScan.h"
 #include "../utils/Memory.h"
 #include "usermode.h"
 
+#define MULTIPLAYER_BACKUP 150
+
+class CUserCmdArray
+{
+public:
+	inline uint32_t& m_nSequenceNumber()
+	{
+		return *(uint32_t*)((uintptr_t)this + 0x59A8);
+	}
+};
+
+///////////////////////////
+/// @brief ADD NEW OFFSETS
+///////////////////////////
 class CCSGOInput
 {
 public:
@@ -37,8 +52,74 @@ public:
 	float m_flUnknownTimer; //0x904C
 	MEM_PAD(28);
 
+    CUserCmd** getFirstCUserCmdArray()
+	{
+		static uintptr_t pattern = Memory::PatternScan("client.dll", "48 8B 0D ? ? ? ? E8 ? ? ? ? 48 8B CF 4C 8B F8");
+		if (!pattern)
+			return nullptr;
+
+		// Resolve relative address
+		int32_t offset = *(int32_t*)(pattern + 3);
+		uintptr_t addr = pattern + 7 + offset;
+		return *(CUserCmd***)addr;
+	}
+
+	void getCUserCmdTick(void* controller, int32_t* outputTick)
+	{
+		using Fn = void(__fastcall*)(void*, int32_t*);
+		static Fn fn = (Fn)Memory::PatternScan("client.dll", "48 83 EC ? 4C 8B 0D ? ? ? ? 4C 8B DA");
+		if (fn)
+			fn(controller, outputTick);
+	}
+
+	CUserCmdArray* getCUserCmdArray(CUserCmd** array, int tick)
+	{
+		using Fn = CUserCmdArray*(__fastcall*)(CUserCmd**, int);
+		static Fn fn = (Fn)Memory::PatternScan("client.dll", "48 89 4C 24 ? 41 56 41 57");
+		if (fn)
+			return fn(array, tick);
+		return nullptr;
+	}
+
+	CUserCmd* getCUserCmdBySequenceNumber(void* controller, uint32_t sequenceNumber)
+	{
+		using Fn = CUserCmd*(__fastcall*)(void*, uint32_t);
+		static Fn fn = (Fn)Memory::PatternScan("client.dll", "40 53 48 83 EC ? 8B DA E8 ? ? ? ? 4C 8B C0");
+		if (fn)
+			return fn(controller, sequenceNumber);
+		return nullptr;
+	}
+
+	uint32_t getSequenceNumber(void* localPlayer)
+	{
+		int32_t outputTick = 0;
+		getCUserCmdTick(localPlayer, &outputTick);
+
+		int32_t tick = outputTick - 1;
+		if (outputTick == -1)
+			tick = -1;
+
+		auto* userCmdArray = getCUserCmdArray(getFirstCUserCmdArray(), tick);
+		if (userCmdArray)
+			return userCmdArray->m_nSequenceNumber();
+
+		return 0;
+	}
+
+	CUserCmd* getUserCmd(void* localPlayer)
+	{
+		const auto sequenceNumber = getSequenceNumber(localPlayer);
+		if (sequenceNumber)
+			return getCUserCmdBySequenceNumber(localPlayer, sequenceNumber);
+		return nullptr;
+	}
+
 	CUserCmd* GetUserCmd()
 	{
 		return &arrCommands[nSequenceNumber % MULTIPLAYER_BACKUP];
 	}
+
+
+
+	
 };

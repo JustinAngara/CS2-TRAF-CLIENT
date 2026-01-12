@@ -10,8 +10,11 @@ namespace Bhop
 
 	void Run(CUserCmd* cmd)
 	{
-		
 		if (!Globals::bhop_enabled || !cmd)
+			return;
+
+		// Validate CUserCmd structure
+		if (!cmd->csgoUserCmd.pBaseCmd || !cmd->csgoUserCmd.pBaseCmd->pInButtonState)
 			return;
 
 		auto& em = EntityManager::Get();
@@ -23,7 +26,6 @@ namespace Bhop
 			return;
 		}
 
-		// Check if space key is pressed
 		bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
 		bool onGround = local->IsOnGround();
 
@@ -33,20 +35,19 @@ namespace Bhop
 			return;
 		}
 
-		// Get player flags to check ground state
-		
+		// CS2: Use the protobuf button state
+		auto* buttonState = cmd->csgoUserCmd.pBaseCmd->pInButtonState;
 
-		// Auto-bhop logic: only jump when on ground
 		if (onGround && keyPressed)
 		{
-			// Set jump button in the command
-			cmd->nButtons.nValue |= IN_JUMP;
+			// Set jump button
+			buttonState->nValue |= IN_JUMP;
 			wasOnGround = true;
 		}
 		else if (!onGround && wasOnGround)
 		{
-			// Remove jump button while in air to prepare for next jump
-			cmd->nButtons.nValue &= ~IN_JUMP;
+			// Remove jump button while in air
+			buttonState->nValue &= ~IN_JUMP;
 		}
 
 		// Update ground state

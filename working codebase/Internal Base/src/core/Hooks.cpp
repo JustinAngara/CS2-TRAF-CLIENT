@@ -15,6 +15,9 @@
 #include "../feature/combat/Combat.h"
 #include "../feature/misc/bhop/Bhop.h"
 
+#include "../../src/sdk/utils/csgoinput.h"
+#include "../../src/sdk/utils/usermode.h" 
+
 #pragma comment(lib, "d3d11.lib")
 
 static ID3D11Device* g_Device = nullptr;
@@ -149,6 +152,9 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	return oPresent(swapChain, sync, flags);
 }
 
+
+
+
 void Hooks::Setup()
 {
 	static bool initialized = false;
@@ -164,7 +170,6 @@ void Hooks::Setup()
 		return;
 	}
 
-	
 	WNDCLASSEXW wc{};
 	wc.cbSize = sizeof(wc);
 	wc.lpfnWndProc = DefWindowProcW;
@@ -172,13 +177,8 @@ void Hooks::Setup()
 	wc.lpszClassName = L"DummyDX";
 
 	RegisterClassExW(&wc);
-	HWND hwnd = CreateWindowW(
-	wc.lpszClassName,
-	L"",
-	WS_OVERLAPPEDWINDOW,
-	0, 0, 100, 100,
-	nullptr, nullptr,
-	wc.hInstance, nullptr);
+	HWND hwnd = CreateWindowW(wc.lpszClassName, L"", WS_OVERLAPPEDWINDOW,
+	0, 0, 100, 100, nullptr, nullptr, wc.hInstance, nullptr);
 
 	DXGI_SWAP_CHAIN_DESC sd{};
 	sd.BufferCount = 1;
@@ -194,88 +194,98 @@ void Hooks::Setup()
 	ID3D11DeviceContext* ctx = nullptr;
 	D3D_FEATURE_LEVEL fl;
 
-	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(
-		nullptr,
-		D3D_DRIVER_TYPE_HARDWARE,
-		nullptr,
-		0,
-		nullptr,
-		0,
-		D3D11_SDK_VERSION,
-		&sd,
-		&sc,
-		&dev,
-		&fl,
-		&ctx)))
+	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+		nullptr, 0, D3D11_SDK_VERSION, &sd, &sc, &dev, &fl, &ctx)))
 	{
 		void** vtable = *reinterpret_cast<void***>(sc);
 		void* present = vtable[8];
+		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
 
-		MH_STATUS status = MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
-		std::cout << "[INFO] Present hook status: " << status << "\n";
-
-		uintptr_t createMoveAddr = 0;
-
-		// mem signature of create move
-		createMoveAddr = Memory::PatternScan("client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57");
-
-
-		if (createMoveAddr)
+		// Hook CreateMove via vtable
+		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ? ? ? ? 48 8B 01 FF 90 ? ? ? ? 84");
+		if (inputSystemAddr)
 		{
-			std::cout << "[SUCCESS] Found CreateMove at: 0x" << std::hex << createMoveAddr << std::dec << "\n";
+			std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
 
-			status = MH_CreateHook(
-			reinterpret_cast<void*>(createMoveAddr),
-			&hkCreateMove,
-			reinterpret_cast<void**>(&oCreateMove));
+			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
+			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
+			void** input = *reinterpret_cast<void***>(inputPtr);
 
-			std::cout << "[INFO] CreateMove hook status: " << status << " (oCreateMove=" << (void*)oCreateMove << ")\n";
-
-			if (status != MH_OK && status != MH_ERROR_ALREADY_CREATED)
+			// In Setup(), replace the vtable hooking loop with:
+			if (input && *input)
 			{
-				std::cout << "[ERROR] CreateHook(CreateMove) failed with status: " << status << "\n";
+				void** inputVtable = *reinterpret_cast<void***>(input);
+
+				// Hook ONLY index 5 (the actual CreateMove)
+				if (MH_CreateHook(inputVtable[5], &hkCreateMove, reinterpret_cast<void**>(&oCreateMove)) == MH_OK)
+				{
+					std::cout << "[SUCCESS] Hooked CreateMove at vtable[5]\n";
+				}
 			}
 		}
-		else
-		{
-			std::cout << "[ERROR] Could not find CreateMove function\n";
-		}
 
-		// enable all hooks
-		status = MH_EnableHook(MH_ALL_HOOKS);
-		std::cout << "[INFO] MH_EnableHook(ALL) status: " << status << "\n";
-
+		MH_EnableHook(MH_ALL_HOOKS);
 		sc->Release();
 		dev->Release();
 		ctx->Release();
 	}
-	else
-	{
-		std::cout << "[ERROR] Failed to create D3D11 device\n";
-	}
 
 	DestroyWindow(hwnd);
 	UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
 	std::cout << "[INFO] Hook setup complete\n";
 }
 
-//DEBUG ------------------
-void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
+//DEBUG  START ------------------
+
+
+
+C_CSPlayerController* GetLocalController()
 {
-	std::cout << "[DEBUG] hkCreateMove CALLED!\n";
+	static uintptr_t clientBase = 0;
+	if (!clientBase)
+		clientBase = Memory::GetModuleBase("client.dll");
 
-	oCreateMove(thisptr, slot, active);
+	// Try offset method first (update this offset for your CS2 version)
+	uintptr_t localController = *(uintptr_t*)(clientBase + 0x1A26B68);
 
-	// Now implement the getUserCmd logic from the documentation
-	// For now, just verify the hook is being called
+	return reinterpret_cast<C_CSPlayerController*>(localController);
 }
 
 
-//DEBUG ------------------
+void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
+{
+	oCreateMove(thisptr, slot, active);
+
+	CCSGOInput* input = (CCSGOInput*)thisptr;
+
+	// Access buttons directly from CCSGOInput structure
+	std::cout << "[DEBUG] Buttons before: " << input->m_buttons << "\n";
+
+	auto& em = EntityManager::Get();
+	C_CSPlayerPawn* local = em.GetLocalPawn();
+
+	if (!local || !local->IsAlive())
+		return;
+
+	bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+	bool onGround = local->IsOnGround();
+
+	if (keyPressed && onGround && Globals::bhop_enabled)
+	{
+		input->m_buttons |= IN_JUMP;
+		std::cout << "[DEBUG] Added jump! Buttons: " << input->m_buttons << "\n";
+	}
+	else if (!onGround)
+	{
+		input->m_buttons &= ~IN_JUMP;
+	}
+}
+
+//DEBUG END ------------------
 
 void Hooks::Destroy()
 {
+
 	MH_DisableHook(MH_ALL_HOOKS);
 	MH_Uninitialize();
 

@@ -2,7 +2,8 @@
 #include <cstdint>
 #include "../memory/Offsets.h"
 #include "../utils/Vector.h"
-
+#include "../utils/Memory.h"        
+#include "../memory/PatternScan.h"  
 #define SCHEMA(type, name, offset) \
     type name() const { \
         return *reinterpret_cast<const type*>(reinterpret_cast<uintptr_t>(this) + offset); \
@@ -52,4 +53,21 @@ public:
     SCHEMA(uint32_t, m_hPlayerPawn, Offsets::m_hPlayerPawn);
 	SCHEMA(const char*, m_szTeamname, Offsets::m_szTeamname);
     SCHEMA(bool, m_bPawnIsAlive, Offsets::m_bPawnIsAlive);
+
+
+	static C_CSPlayerController* GetLocalPlayer()
+	{
+		static uintptr_t clientBase = 0;
+		if (!clientBase)
+			clientBase = Memory::GetModuleBase("client.dll");
+
+		if (!clientBase) return nullptr;
+
+		uintptr_t localController = *(uintptr_t*)(clientBase + Offsets::dwLocalPlayerController);
+
+		if (!localController) return nullptr;
+
+		return reinterpret_cast<C_CSPlayerController*>(localController);
+	}
+
 };

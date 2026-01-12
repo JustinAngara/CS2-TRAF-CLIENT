@@ -6,6 +6,7 @@ namespace Offsets
     // -> offsets.h on a2x dumper
     constexpr uintptr_t dwEntityList = 0x1D13CE8;
     constexpr uintptr_t dwLocalPlayerPawn = 0x1BEEF28;
+	constexpr uintptr_t dwLocalPlayerController = 0x1E1DC18;
     constexpr uintptr_t dwViewMatrix = 0x1E323D0;
 	constexpr uintptr_t dwViewAngles = 0x1E3C800;
 	constexpr uintptr_t dwGlobalVars = 0x1BE41C0; 

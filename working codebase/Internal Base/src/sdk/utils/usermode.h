@@ -10,7 +10,6 @@
 #include <string>
 #include <windows.h>
 
-
 struct Vector4D_t
 {
 	constexpr Vector4D_t(const float x = 0.0f, const float y = 0.0f, const float z = 0.0f, const float w = 0.0f) :
@@ -18,8 +17,6 @@ struct Vector4D_t
 
 	float x = 0.0f, y = 0.0f, z = 0.0f, w = 0.0f;
 };
-
-
 
 // @source: server.dll
 enum ECommandButtons : std::uint64_t
