@@ -13,20 +13,16 @@ bool Aimbot::isAiming = false;
 
 void Aimbot::run()
 {
-	if (!Globals::aimbot_enabled)
-		return;
+	if (!Globals::aimbot_enabled) return;
 
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
-	if (!local || !local->IsAlive())
-		return;
+	if (!local || !local->IsAlive()) return;
 
-	if (!(GetAsyncKeyState(Globals::aimbot_key) & 0x8000))
-		return;
+	if (!(GetAsyncKeyState(Globals::aimbot_key) & 0x8000)) return;
 
 	// select best player via a FoV premise/x,y based
 	C_CSPlayerPawn* bestTarget = getBestTarget(local);
-	if (!bestTarget)
-		return;
+	if (!bestTarget) return;
 
 	aimAtTarget(local, bestTarget);
 }

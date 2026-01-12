@@ -66,6 +66,7 @@
     <ClInclude Include="ext\minhook\MinHook.h" />
     <ClInclude Include="ext\minhook\trampoline.h" />
     <ClInclude Include="src\core\Hooks.h" />
+    <ClInclude Include="src\core\Interfaces.h" />
     <ClInclude Include="src\feature\combat\Combat.h" />
     <ClInclude Include="src\feature\combat\Attack\Aimbot.h" />
     <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h" />
@@ -75,15 +76,24 @@
     <ClInclude Include="src\feature\visuals\Visuals.h" />
     <ClInclude Include="src\menu\Menu.h" />
     <ClInclude Include="src\menu\MenuStyles.h" />
+    <ClInclude Include="src\sdk\common.h" />
     <ClInclude Include="src\sdk\entity\Classes.h" />
     <ClInclude Include="src\sdk\entity\EntityManager.h" />
+    <ClInclude Include="src\sdk\interfaces\Iglobalvars.h" />
+    <ClInclude Include="src\sdk\interfaces\Imemalloc.h" />
     <ClInclude Include="src\sdk\memory\Offsets.h" />
     <ClInclude Include="src\sdk\memory\Patterns.h" />
     <ClInclude Include="src\sdk\memory\PatternScan.h" />
+    <ClInclude Include="src\sdk\utils\crt.h" />
+    <ClInclude Include="src\sdk\utils\csgoinput.h" />
     <ClInclude Include="src\sdk\utils\Globals.h" />
+    <ClInclude Include="src\sdk\utils\Memory.h" />
     <ClInclude Include="src\sdk\utils\MenuColors.h" />
+    <ClInclude Include="src\sdk\utils\Qangle.h" />
+    <ClInclude Include="src\sdk\utils\usermode.h" />
     <ClInclude Include="src\sdk\utils\Utils.h" />
     <ClInclude Include="src\sdk\utils\Vector.h" />
+    <ClInclude Include="src\sdk\xorstr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

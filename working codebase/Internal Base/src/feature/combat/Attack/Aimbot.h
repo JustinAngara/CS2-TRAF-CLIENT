@@ -5,15 +5,15 @@
 class Aimbot
 {
 public:
-	static void run();
+	void run();
+
+private:
+	virtual void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
+	C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
+	BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
+	// instance variables
 	static DWORD lastAimTime;
 	static DWORD lastShootTime;
 	static bool isAiming;
-
-private:
-	static void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-	static C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
-	static BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-
 
 };
