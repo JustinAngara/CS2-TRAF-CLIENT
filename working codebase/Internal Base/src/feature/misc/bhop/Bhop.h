@@ -1,6 +1,9 @@
+
 #pragma once
+#include "../../../sdk/utils/usermode.h"
+
 namespace Bhop{
-	void Run();
+	void Run(CUserCmd* cmd);
 	void performJump();
 
 }

@@ -1,10 +1,13 @@
 #include "Misc.h"
 #include "bhop/Bhop.h"
+#include "../../sdk/utils/usermode.h"
+
 void Misc::Render()
 {
 	Misc::Run();
 }
 
 void Misc::Run() {
-	Bhop::Run(); // this is where bhop is
+	CUserCmd* pCmd{};
+	Bhop::Run(pCmd); // this is where bhop is
 }

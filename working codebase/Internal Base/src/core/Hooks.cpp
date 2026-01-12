@@ -1,10 +1,10 @@
 #include "Hooks.h"
 
+#include <iostream>
 #include "../../ext/imgui/imgui.h"
 #include "../../ext/imgui/imgui_impl_win32.h"
 #include "../../ext/imgui/imgui_impl_dx11.h"
 #include "../../ext/minhook/MinHook.h"
-
 #include "../../src/menu/Menu.h"
 #include "../../src/feature/visuals/Visuals.h"
 #include "../../src/sdk/entity/EntityManager.h"
@@ -13,6 +13,7 @@
 #include "../../src/sdk/memory/PatternScan.h"
 #include "../feature/misc/Misc.h"
 #include "../feature/combat/Combat.h"
+#include "../feature/misc/bhop/Bhop.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -25,6 +26,46 @@ static bool                     g_Init = false;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
     HWND, UINT, WPARAM, LPARAM
 );
+
+void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, float flInputSampleTime, bool bActive)
+{
+	oCreateMove(thisptr, slot, flInputSampleTime, bActive);
+
+	static bool once = false;
+	if (!once)
+	{
+		std::cout << "[DEBUG] CreateMove called\n";
+		once = true;
+	}
+
+	// Get CUserCmd from CInput class - offset is around 0x5540 but may change
+	CUserCmd* pCmd = *reinterpret_cast<CUserCmd**>((uintptr_t)thisptr + 0x5540);
+
+	if (!pCmd)
+	{
+		static bool once2 = false;
+		if (!once2)
+		{
+			std::cout << "[DEBUG] pCmd is NULL (offset might be wrong)\n";
+			once2 = true;
+		}
+		return;
+	}
+
+	if (!pCmd->csgoUserCmd.pBaseCmd)
+	{
+		static bool once3 = false;
+		if (!once3)
+		{
+			std::cout << "[DEBUG] pBaseCmd is NULL\n";
+			once3 = true;
+		}
+		return;
+	}
+
+	std::cout << "[DEBUG] Calling Bhop::Run\n";
+	Bhop::Run(pCmd);
+}
 
 LRESULT __stdcall Hooks::hkWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -101,66 +142,86 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 
 void Hooks::Setup()
 {
-    if (MH_Initialize() != MH_OK)
-        return;
+	if (MH_Initialize() != MH_OK)
+	{
+		std::cout << "[ERROR] MH_Initialize failed\n";
+		return;
+	}
 
-    WNDCLASSEXW wc{};
-    wc.cbSize = sizeof(wc);
-    wc.lpfnWndProc = DefWindowProcW;
-    wc.hInstance = GetModuleHandleW(nullptr);
-    wc.lpszClassName = L"DummyDX";
+	WNDCLASSEXW wc{};
+	wc.cbSize = sizeof(wc);
+	wc.lpfnWndProc = DefWindowProcW;
+	wc.hInstance = GetModuleHandleW(nullptr);
+	wc.lpszClassName = L"DummyDX";
 
-    RegisterClassExW(&wc);
-    HWND hwnd = CreateWindowW(
-        wc.lpszClassName,
-        L"",
-        WS_OVERLAPPEDWINDOW,
-        0, 0, 100, 100,
-        nullptr, nullptr,
-        wc.hInstance, nullptr
-    );
+	RegisterClassExW(&wc);
+	HWND hwnd = CreateWindowW(
+	wc.lpszClassName,
+	L"",
+	WS_OVERLAPPEDWINDOW,
+	0, 0, 100, 100,
+	nullptr, nullptr,
+	wc.hInstance, nullptr);
 
-    DXGI_SWAP_CHAIN_DESC sd{};
-    sd.BufferCount = 1;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = hwnd;
-    sd.SampleDesc.Count = 1;
-    sd.Windowed = TRUE;
-    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	DXGI_SWAP_CHAIN_DESC sd{};
+	sd.BufferCount = 1;
+	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.OutputWindow = hwnd;
+	sd.SampleDesc.Count = 1;
+	sd.Windowed = TRUE;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-    IDXGISwapChain* sc = nullptr;
-    ID3D11Device* dev = nullptr;
-    ID3D11DeviceContext* ctx = nullptr;
-    D3D_FEATURE_LEVEL fl;
+	IDXGISwapChain* sc = nullptr;
+	ID3D11Device* dev = nullptr;
+	ID3D11DeviceContext* ctx = nullptr;
+	D3D_FEATURE_LEVEL fl;
 
-    if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(
-        nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        nullptr,
-        0,
-        D3D11_SDK_VERSION,
-        &sd,
-        &sc,
-        &dev,
-        &fl,
-        &ctx)))
-    {
-        void** vtable = *reinterpret_cast<void***>(sc);
-        void* present = vtable[8];
+	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(
+		nullptr,
+		D3D_DRIVER_TYPE_HARDWARE,
+		nullptr,
+		0,
+		nullptr,
+		0,
+		D3D11_SDK_VERSION,
+		&sd,
+		&sc,
+		&dev,
+		&fl,
+		&ctx)))
+	{
+		void** vtable = *reinterpret_cast<void***>(sc);
+		void* present = vtable[8];
 
-        MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
-        MH_EnableHook(MH_ALL_HOOKS);
+		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
 
-        sc->Release();
-        dev->Release();
-        ctx->Release();
-    }
+		// okay fuck this ill ida this bitch later
+		uintptr_t createMoveAddr = Memory::PatternScan("client.dll",
+		"85 D2 0F 85 ? ? ? ? 48 8B C4 44 88 40 18");
 
-    DestroyWindow(hwnd);
-    UnregisterClassW(wc.lpszClassName, wc.hInstance);
+		if (createMoveAddr)
+		{
+			std::cout << "[SUCCESS] Found CreateMove at: 0x" << std::hex << createMoveAddr << std::dec << "\n";
+			MH_CreateHook(
+			reinterpret_cast<void*>(createMoveAddr),
+			&hkCreateMove,
+			reinterpret_cast<void**>(&oCreateMove));
+		}
+		else
+		{
+			std::cout << "[ERROR] CreateMove pattern failed!\n";
+		}
+
+		MH_EnableHook(MH_ALL_HOOKS);
+
+		sc->Release();
+		dev->Release();
+		ctx->Release();
+	}
+
+	DestroyWindow(hwnd);
+	UnregisterClassW(wc.lpszClassName, wc.hInstance);
 }
 
 void Hooks::Destroy()

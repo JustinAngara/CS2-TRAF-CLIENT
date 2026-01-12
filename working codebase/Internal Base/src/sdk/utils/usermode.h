@@ -7,7 +7,7 @@
 // used: memalloc
 #include "../../core/interfaces.h"
 #include "../interfaces/imemalloc.h"
-
+#include <string>
 #include <windows.h>
 
 
@@ -117,7 +117,7 @@ struct RepeatedPtrField_t
 	struct Rep_t
 	{
 		int nAllocatedSize;
-		T* tElements[(std::numeric_limits<int>::max() - 2 * sizeof(int)) / sizeof(void*)];
+		T* tElements[((std::numeric_limits<int>::max)() - 2 * sizeof(int)) / sizeof(void*)];
 	};
 
 	void* pArena;
