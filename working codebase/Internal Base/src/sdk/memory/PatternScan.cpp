@@ -56,6 +56,10 @@ uintptr_t Memory::PatternScan(const char* module, const char* signature)
                 break;
             }
         }
+		if (found)
+		{
+			return reinterpret_cast<uintptr_t>(base + i);
+		}
     }
 
     return 0;

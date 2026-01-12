@@ -29,6 +29,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, float flInputSampleTime, bool bActive)
 {
+	std::cout << "[DEBUG] Okay i am here\n";
 	oCreateMove(thisptr, slot, flInputSampleTime, bActive);
 
 	static bool once = false;
@@ -142,6 +143,11 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 
 void Hooks::Setup()
 {
+
+	static bool initialized = false;
+	if (initialized) return;
+	initialized = true;
+
 	if (MH_Initialize() != MH_OK)
 	{
 		std::cout << "[ERROR] MH_Initialize failed\n";
@@ -196,24 +202,36 @@ void Hooks::Setup()
 
 		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
 
-		// okay fuck this ill ida this bitch later
-		uintptr_t createMoveAddr = Memory::PatternScan("client.dll",
-		"85 D2 0F 85 ? ? ? ? 48 8B C4 44 88 40 18");
+		uintptr_t createMoveAddr = 0;
 
+		// Pattern 1 - Shorter version
+		createMoveAddr = Memory::PatternScan("client.dll", "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57");
 		if (createMoveAddr)
 		{
 			std::cout << "[SUCCESS] Found CreateMove at: 0x" << std::hex << createMoveAddr << std::dec << "\n";
-			MH_CreateHook(
-			reinterpret_cast<void*>(createMoveAddr),
-			&hkCreateMove,
-			reinterpret_cast<void**>(&oCreateMove));
-		}
-		else
-		{
-			std::cout << "[ERROR] CreateMove pattern failed!\n";
-		}
 
+			MH_CreateHook(
+				reinterpret_cast<void*>(createMoveAddr),
+				&hkCreateMove,
+				reinterpret_cast<void**>(&oCreateMove)
+			);
+
+			auto st2 = MH_CreateHook((LPVOID)createMoveAddr, &hkCreateMove, reinterpret_cast<void**>(&oCreateMove));
+			std::cout << "CreateMove hook: " << st2 << " oCreateMove=" << (void*)oCreateMove << "\n";
+
+			if (st2 != MH_OK && st2 != MH_ERROR_ALREADY_CREATED)
+			{
+				std::cout << "[ERROR] CreateHook(CreateMove) failed\n";
+			}
+
+
+			std::cout << "[SUCCESS] Finished \n";
+
+
+
+		}
 		MH_EnableHook(MH_ALL_HOOKS);
+
 
 		sc->Release();
 		dev->Release();

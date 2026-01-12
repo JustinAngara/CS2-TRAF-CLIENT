@@ -1,69 +1,58 @@
 ﻿#include <windows.h>
 #include "../../../sdk/entity/EntityManager.h"
-#include "../../../sdk/memory/PatternScan.h"
-#include "../../../sdk/memory/Offsets.h"
+#include "../../../sdk/utils/usermode.h"
 #include "../../../sdk/utils/Globals.h"
-
-#include <chrono>
 #include "Bhop.h"
 
 namespace Bhop
 {
+	static bool wasOnGround = false;
 
-	static bool jumpActive = false;
-	static std::chrono::steady_clock::time_point lastActionTime = std::chrono::steady_clock::now();
-	static const int jumpDelayMs = 3;
-
-	const int FORCE_JUMP_ACTIVE = 65537;
-	const int FORCE_JUMP_INACTIVE = 256;
-
-	void Run(CUserCmd* pCmd)
+	void Run(CUserCmd* cmd)
 	{
-		if (!Globals::bhop_enabled)
+		
+		if (!Globals::bhop_enabled || !cmd)
 			return;
 
 		auto& em = EntityManager::Get();
 		C_CSPlayerPawn* local = em.GetLocalPawn();
+
 		if (!local || !local->IsAlive())
 		{
-			if (jumpActive)
-				jumpActive = false;
+			wasOnGround = false;
 			return;
 		}
 
+		// Check if space key is pressed
 		bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+		bool onGround = local->IsOnGround();
+
 		if (!keyPressed)
 		{
-			if (jumpActive)
-				jumpActive = false;
+			wasOnGround = false;
 			return;
 		}
 
-		uintptr_t client = Memory::GetModuleBase("client.dll");
-		if (!client)
-			return;
+		// Get player flags to check ground state
+		
 
-		uintptr_t jumpAddress = client + Offsets::jump;
-		uint32_t* jumpButton = reinterpret_cast<uint32_t*>(jumpAddress);
-
-		auto currentTime = std::chrono::steady_clock::now();
-		auto timeSinceLastAction = std::chrono::duration_cast<std::chrono::milliseconds>(
-		currentTime - lastActionTime);
-
-		if (timeSinceLastAction.count() >= jumpDelayMs)
+		// Auto-bhop logic: only jump when on ground
+		if (onGround && keyPressed)
 		{
-			if (!jumpActive)
-			{
-				*jumpButton = FORCE_JUMP_ACTIVE;
-				jumpActive = true;
-				lastActionTime = currentTime;
-			}
-			else
-			{
-				*jumpButton = FORCE_JUMP_INACTIVE;
-				jumpActive = false;
-				lastActionTime = currentTime;
-			}
+			// Set jump button in the command
+			cmd->nButtons.nValue |= IN_JUMP;
+			wasOnGround = true;
 		}
+		else if (!onGround && wasOnGround)
+		{
+			// Remove jump button while in air to prepare for next jump
+			cmd->nButtons.nValue &= ~IN_JUMP;
+		}
+
+		// Update ground state
+		if (onGround)
+			wasOnGround = true;
+		else if (!keyPressed)
+			wasOnGround = false;
 	}
 }
