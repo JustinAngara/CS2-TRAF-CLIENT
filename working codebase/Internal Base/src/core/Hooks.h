@@ -25,7 +25,7 @@ public:
 	inline static WNDPROC oWndProc = nullptr;
 	inline static HRESULT(__stdcall* oPresent)(IDXGISwapChain*, UINT, UINT) = nullptr;
 
-
+	
 
 
 };

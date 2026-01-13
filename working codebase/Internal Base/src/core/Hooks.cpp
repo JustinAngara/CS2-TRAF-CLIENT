@@ -20,67 +20,17 @@
 
 #pragma comment(lib, "d3d11.lib")
 
+// global stuff
 static ID3D11Device* g_Device = nullptr;
 static ID3D11DeviceContext* g_Context = nullptr;
 static ID3D11RenderTargetView* g_RTV = nullptr;
 static HWND g_Window = nullptr;
 static bool g_Init = false;
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
-HWND, UINT, WPARAM, LPARAM);
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
-/*
-void* __fastcall Hooks::hkCreateMove(void* thisptr, void* edx, int slot, float flInputSampleTime, bool bActive)
-{
-	std::cout << "[DEBUG] hkCreateMove called! thisptr=" << thisptr << "\n";
 
-	// Call original first
-	void* result = oCreateMove(thisptr, edx, slot, flInputSampleTime, bActive);
-
-	// Try multiple possible offsets for CUserCmd
-	CUserCmd* pCmd = nullptr;
-
-	// Common offsets to try (these vary by CS2 version)
-	uintptr_t offsets[] = { 0x5540, 0x5548, 0x5550, 0x5538, 0x5530 };
-
-	for (auto offset : offsets)
-	{
-		pCmd = *reinterpret_cast<CUserCmd**>((uintptr_t)thisptr + offset);
-		if (pCmd && pCmd->csgoUserCmd.pBaseCmd)
-		{
-			std::cout << "[DEBUG] Found valid CUserCmd at offset: 0x" << std::hex << offset << std::dec << "\n";
-			break;
-		}
-	}
-
-	if (!pCmd)
-	{
-		static bool once = false;
-		if (!once)
-		{
-			std::cout << "[DEBUG] pCmd is NULL - all offsets failed\n";
-			once = true;
-		}
-		return result;
-	}
-
-	if (!pCmd->csgoUserCmd.pBaseCmd)
-	{
-		static bool once2 = false;
-		if (!once2)
-		{
-			std::cout << "[DEBUG] pBaseCmd is NULL\n";
-			once2 = true;
-		}
-		return result;
-	}
-
-	Bhop::Run(pCmd);
-
-	return result;
-}
-*/
-
+// present
 LRESULT __stdcall Hooks::hkWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (Menu::IsOpen)
@@ -153,13 +103,10 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 }
 
 
-
-
 void Hooks::Setup()
 {
 	static bool initialized = false;
-	if (initialized)
-		return;
+	if (initialized) return;
 	initialized = true;
 
 	std::cout << "[INFO] Initializing hooks...\n";
@@ -210,7 +157,7 @@ void Hooks::Setup()
 			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
 			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
 			void** input = *reinterpret_cast<void***>(inputPtr);
-			// In Setup(), replace the vtable hooking loop with:
+			// in Setup(), replace the vtable hooking loop with:
 			/*
 			if (input && *input)
 			{
@@ -236,7 +183,105 @@ void Hooks::Setup()
 	std::cout << "[INFO] Hook setup complete\n";
 }
 
+
+C_CSPlayerController* GetLocalController()
+{
+	static uintptr_t clientBase = 0;
+	if (!clientBase)
+		clientBase = Memory::GetModuleBase("client.dll");
+
+	// Try offset method first (update this offset for your CS2 version)
+	uintptr_t localController = *(uintptr_t*)(clientBase + 0x1A26B68);
+
+	return reinterpret_cast<C_CSPlayerController*>(localController);
+}
+
+void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
+{
+	oCreateMove(thisptr, slot, active);
+	/*
+	CCSGOInput* input = (CCSGOInput*)thisptr;
+
+	// Access buttons directly from CCSGOInput structure
+	std::cout << "[DEBUG] Buttons before: " << input->m_buttons << "\n";
+
+	auto& em = EntityManager::Get();
+	C_CSPlayerPawn* local = em.GetLocalPawn();
+
+	if (!local || !local->IsAlive())
+		return;
+
+	bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+	bool onGround = local->IsOnGround();
+
+	if (keyPressed && onGround && Globals::bhop_enabled)
+	{
+		input->m_buttons |= IN_JUMP;
+		std::cout << "[DEBUG] Added jump! Buttons: " << input->m_buttons << "\n";
+	}
+	else if (!onGround)
+	{
+		input->m_buttons &= ~IN_JUMP;
+	}
+	*/
+}
+
+//DEBUG  START ------------------
 /*
+void* __fastcall Hooks::hkCreateMove(void* thisptr, void* edx, int slot, float flInputSampleTime, bool bActive)
+{
+	std::cout << "[DEBUG] hkCreateMove called! thisptr=" << thisptr << "\n";
+
+	// Call original first
+	void* result = oCreateMove(thisptr, edx, slot, flInputSampleTime, bActive);
+
+	// Try multiple possible offsets for CUserCmd
+	CUserCmd* pCmd = nullptr;
+
+	// Common offsets to try (these vary by CS2 version)
+	uintptr_t offsets[] = { 0x5540, 0x5548, 0x5550, 0x5538, 0x5530 };
+
+	for (auto offset : offsets)
+	{
+		pCmd = *reinterpret_cast<CUserCmd**>((uintptr_t)thisptr + offset);
+		if (pCmd && pCmd->csgoUserCmd.pBaseCmd)
+		{
+			std::cout << "[DEBUG] Found valid CUserCmd at offset: 0x" << std::hex << offset << std::dec << "\n";
+			break;
+		}
+	}
+
+	if (!pCmd)
+	{
+		static bool once = false;
+		if (!once)
+		{
+			std::cout << "[DEBUG] pCmd is NULL - all offsets failed\n";
+			once = true;
+		}
+		return result;
+	}
+
+	if (!pCmd->csgoUserCmd.pBaseCmd)
+	{
+		static bool once2 = false;
+		if (!once2)
+		{
+			std::cout << "[DEBUG] pBaseCmd is NULL\n";
+			once2 = true;
+		}
+		return result;
+	}
+
+	Bhop::Run(pCmd);
+
+	return result;
+}
+*/
+
+/*
+*
+* THIS CONTAINS THE VTABLE DON'T DELETE 
 void Hooks::Setup()
 {
 	static bool initialized = false;
@@ -321,26 +366,10 @@ void Hooks::Setup()
 }
 */
 
-//DEBUG  START ------------------
-
-
-
-C_CSPlayerController* GetLocalController()
-{
-	static uintptr_t clientBase = 0;
-	if (!clientBase)
-		clientBase = Memory::GetModuleBase("client.dll");
-
-	// Try offset method first (update this offset for your CS2 version)
-	uintptr_t localController = *(uintptr_t*)(clientBase + 0x1A26B68);
-
-	return reinterpret_cast<C_CSPlayerController*>(localController);
-}
-
-
-
 
 /*
+*
+* THIS IS THE SUPPOSEDLY UPDATED hkCreateMove function, dont you lie to me unknown cheats
 double __fastcall Hooks::hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd)
 {
 	double result = oCreateMove(thisptr, a2, pCmd);
@@ -372,37 +401,10 @@ double __fastcall Hooks::hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* 
 */
 
 // this will be the outdate hkcreatemove but isn't crashing so pick your poison
-void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
-{
-	oCreateMove(thisptr, slot, active);
-	/*
-	CCSGOInput* input = (CCSGOInput*)thisptr;
-
-	// Access buttons directly from CCSGOInput structure
-	std::cout << "[DEBUG] Buttons before: " << input->m_buttons << "\n";
-
-	auto& em = EntityManager::Get();
-	C_CSPlayerPawn* local = em.GetLocalPawn();
-
-	if (!local || !local->IsAlive())
-		return;
-
-	bool keyPressed = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
-	bool onGround = local->IsOnGround();
-
-	if (keyPressed && onGround && Globals::bhop_enabled)
-	{
-		input->m_buttons |= IN_JUMP;
-		std::cout << "[DEBUG] Added jump! Buttons: " << input->m_buttons << "\n";
-	}
-	else if (!onGround)
-	{
-		input->m_buttons &= ~IN_JUMP;
-	}
-	*/
-}
 
 //DEBUG END ------------------
+
+
 
 void Hooks::Destroy()
 {

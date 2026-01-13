@@ -417,6 +417,38 @@ public:
 	std::int32_t nCmdFlags;
 	std::uint32_t nPawnEntityHandle;
 
+	
+
+	/////////////////////
+	//void* __vftable; //0x00
+	//uint32_t nHasBits; //0x08
+	//int64_t nCachedBits; //0x0C
+	//void* pArena; //0x14
+	//int32_t nCurrentSize; //0x1C
+	//int32_t nTotalSize; //0x20
+	//class CSubtickMoveStep* pRep; //0x24
+	//char pad_002C[8]; //0x2C
+	//class CInButtonStatePB* pInButtonState; //0x34
+	//class CMsgQAngle* pViewAngles; //0x3C
+	//int32_t nLegacyCommandNumber; //0x44
+	//int32_t nClientTick; //0x48
+	//float flForwardMove; //0x4C
+	//float flSideMove; //0x50
+	//float flUpMove; //0x54
+	//int32_t nImpulse; //0x58
+	//int32_t nWeaponSelect; //0x5C
+	//int32_t nRandomSeed; //0x60
+	//int32_t nMousedX; //0x64
+	//int32_t nMousedY; //0x68
+	//uint32_t nConsumedServerAngleChanges; //0x6C
+	//int32_t nCmdFlags; //0x70
+	//uint32_t nPawnEntityHandle; //0x74
+	//char pad_0078[4]; //0x78
+
+
+	/////////////////////
+
+
 	int CalculateCmdCRCSize()
 	{
 		return MEM::CallVFunc<int, 7U>(this);
