@@ -23,6 +23,7 @@ namespace Menu
 	static void createESP();
 	static void createAimbot();
 	static void createBhop();
+	static void createAutoFire();
 
 	
 

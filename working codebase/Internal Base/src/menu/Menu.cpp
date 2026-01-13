@@ -160,9 +160,14 @@ void Menu::createAimbot()
 	MenuStyles::CustomCheckbox("Enable Body Aim", &Globals::aimbot_force_baim);
 	MenuStyles::CustomSlider("Body Aim", &Globals::aimbot_baim_min, 0, 100);
 
-
-
+	
 }
+
+void Menu::createAutoFire()
+{
+	MenuStyles::CustomCheckbox("Enable Auto Fire", &Globals::autofire_enabled);
+}
+
 
 void Menu::createBhop()
 {
@@ -212,6 +217,7 @@ void Menu::Render()
 
 	MenuStyles::SectionHeader("AIMBOT", 85.0f);
 	createAimbot();
+	createAutoFire();
 
 	MenuStyles::SectionHeader("MISC", 85.0f);
 	ImGui::Spacing();
