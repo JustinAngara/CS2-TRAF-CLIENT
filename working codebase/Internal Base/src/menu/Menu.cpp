@@ -116,21 +116,26 @@ void Menu::createSubESP()
 	MenuStyles::CustomColor("Team color", Globals::esp_box_color);
 
 
-	ImGui::Spacing();
+	ImGui::Spacing();//////////////////////////////////////////
+
+	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
+	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
+
+
+	ImGui::Spacing();//////////////////////////////////////////
+
 
 	MenuStyles::CustomCheckbox("Skeleton", &Globals::esp_skeleton);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Skeleton color", Globals::esp_skeleton_color);
 
-	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
-	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
 
-	ImGui::Spacing();
+	ImGui::Spacing();//////////////////////////////////////////
 
 	MenuStyles::CustomCheckbox("Name", &Globals::esp_name);
 	MenuStyles::CustomCheckbox("Health bar", &Globals::esp_health);
 
-	ImGui::Spacing();
+	ImGui::Spacing();//////////////////////////////////////////
 
 	MenuStyles::CustomCheckbox("Team ESP", &Globals::esp_teamate);
 
