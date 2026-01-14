@@ -68,8 +68,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	static DWORD lastShootTime = 0;
 	static bool isAiming = false;
 
-	if (!local || !target)
-		return;
+	if (!local || !target) return;
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
 	if (!client) return;
@@ -82,6 +81,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
 
+
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 
@@ -90,7 +90,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 	// apply smoothing and update aim FIRST
 	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
-	*currentAngles = Globals::aimbot_smooth ? *currentAngles + smoothedDelta : aimAngles;
+	*currentAngles = Globals::aimbot_smooth ? *currentAngles + smoothedDelta : aimAngles; // here is where the magic happens
 
 	// calculate the REMAINING delta magnitude (how close we are to target)
 	float deltaX = fabsf(delta.x);

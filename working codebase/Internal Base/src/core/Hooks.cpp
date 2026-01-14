@@ -90,8 +90,8 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	if (Menu::IsOpen) Menu::Render();
 
 	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
-	Visuals::Render();
 	Combat::Render();
+	Visuals::Render();
 	Misc::Render();
 	ImGui::Render();
 

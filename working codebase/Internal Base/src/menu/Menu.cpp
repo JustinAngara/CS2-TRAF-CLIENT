@@ -116,7 +116,7 @@ void Menu::createSubESP()
 	MenuStyles::CustomColor("Team color", Globals::esp_box_color);
 
 
-	ImGui::Spacing();//////////////////////////////////////////
+	// ImGui::Spacing();//////////////////////////////////////////
 
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
@@ -166,6 +166,7 @@ void Menu::createAimbot()
 void Menu::createAutoFire()
 {
 	MenuStyles::CustomCheckbox("Enable Auto Fire", &Globals::autofire_enabled);
+	MenuStyles::CustomSlider("Enable Auto Fire", &Globals::autofire_fov, 0.1f, 3.5f);
 }
 
 

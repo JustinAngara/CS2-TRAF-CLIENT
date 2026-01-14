@@ -49,5 +49,6 @@ namespace Globals
 	inline int	 aimbot_baim_min		= 30;
 
 	// AUTO FIRE
-	inline bool autofire_enabled = false;
+	inline bool	 autofire_enabled = false;
+	inline float autofire_fov	  = 0.3f;
 }

@@ -25,19 +25,29 @@ void AutoFire::run()
 	// check for nearest player
 	C_CSPlayerPawn* target = Combat::getBestTarget(local);
 	BoneID targetBone = Combat::findNearestBoneId(local, target, false);
-	
-
 	if (!target || !target->IsAlive()) return;
+
+	
 
 	// see if delta matches to close to 0 (meaning my crosshair is on an enemy)
 	Vector delta = Combat::getDeltaAngle(local, target, client, targetBone);
 	Utils::NormalizeAngles(delta);
 
 	// shoot type shit
-	if (delta.Length() < 0.3)
+	if (delta.Length() < Globals::autofire_fov)
 	{
-		std::cout << "i am in fire\n";
-		Combat::clickFire();
+
+		Vector targetPos = Utils::GetBonePos(target, targetBone);
+		if (targetPos.IsZero()) return;
+		Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+
+		// auto fire exist within aimbot
+		Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+		
+		Combat::lockAtPoint(currentAngles, localPos, targetPos);
+		
+		// fire
+		Combat::clickFire(); 
 	}
 
 }

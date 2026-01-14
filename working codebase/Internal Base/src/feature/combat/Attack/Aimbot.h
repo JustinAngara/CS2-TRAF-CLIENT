@@ -10,6 +10,4 @@ public:
 private:
 	virtual void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
 
-
-
 };

@@ -8,13 +8,14 @@
 // this will be hatched to game tick
 void Combat::Render()
 {
-
-	// classes/objects calls
 	static Aimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
-	aimbot.run();
 
 	// namespace functions calls
 	AutoFire::run();
+
+	// classes/objects calls
+	aimbot.run();
+
 
 }
 
@@ -111,6 +112,8 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 
 	return bestBone;
 }
+
+/////////////////////////////////////  angle stuff
 Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
@@ -122,21 +125,50 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uint
 	return delta;
 }
 
+void Combat::lockAtPoint(Vector* currentAngles, Vector localPos, Vector targetPos)
+{
+	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
+
+	*currentAngles = aimAngles;
+}
+
 
 ////////////////////////////// MOUSE TO FIRE STUFF 
-void Combat::clickFire()
+void Combat::clickFire(FireInput input)
 {
-	holdFire();
-	releaseFire();
+	holdFire(input);
+	releaseFire(input);
 }
-void Combat::holdFire()
+
+void Combat::holdFire(FireInput input)
 {
-	if (!(GetAsyncKeyState('L') & 0x8000)) keybd_event('L', 0, 0, 0);
+	if (input == FireInput::KeyboardL)
+	{
+		if (!(GetAsyncKeyState('L') & 0x8000))
+			keybd_event('L', 0, 0, 0);
+	}
+	else
+	{
+		if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
+			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+	}
 }
-void Combat::releaseFire()
+
+void Combat::releaseFire(FireInput input)
 {
-	if (GetAsyncKeyState('L') & 0x8000) keybd_event('L', 0, KEYEVENTF_KEYUP, 0);
+	if (input == FireInput::KeyboardL)
+	{
+		if (GetAsyncKeyState('L') & 0x8000)
+			keybd_event('L', 0, KEYEVENTF_KEYUP, 0);
+	}
+	else
+	{
+		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+	}
 }
+
+
 bool Combat::isMB1Held()
 {
 	return (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
