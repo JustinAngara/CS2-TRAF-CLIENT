@@ -85,17 +85,17 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	if (GetAsyncKeyState(VK_INSERT) & 1)
-		Menu::IsOpen = !Menu::IsOpen;
+	if (GetAsyncKeyState(VK_INSERT) & 1) Menu::IsOpen = !Menu::IsOpen;
 
-	if (Menu::IsOpen)
-		Menu::Render();
+	if (Menu::IsOpen) Menu::Render();
 
+	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
 	Visuals::Render();
 	Combat::Render();
 	Misc::Render();
-
 	ImGui::Render();
+
+
 	g_Context->OMSetRenderTargets(1, &g_RTV, nullptr);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

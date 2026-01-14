@@ -9,15 +9,8 @@ public:
 
 private:
 	virtual void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-	C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
 	BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-	void clickFire();
-	void holdFire();
-	void releaseFire();
-	// instance variables
-	static DWORD lastAimTime;
-	static DWORD lastShootTime;
-	static bool isAiming;
+
 
 
 };

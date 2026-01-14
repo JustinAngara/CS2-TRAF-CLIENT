@@ -4,12 +4,10 @@
 #include "../../../sdk/memory/PatternScan.h"
 #include "../../../sdk/memory/Offsets.h"
 #include "../../../sdk/utils/Globals.h"
+#include "../../../feature/combat/Combat.h"
 
 #include <Windows.h>
 
-DWORD Aimbot::lastAimTime = 0;
-DWORD Aimbot::lastShootTime = 0;
-bool Aimbot::isAiming = false;
 
 void Aimbot::run()
 {
@@ -18,11 +16,11 @@ void Aimbot::run()
 	{
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		{
-			holdFire();
+			Combat::holdFire();
 		}
 		else
 		{
-			releaseFire();
+			Combat::releaseFire();
 		}
 		return;
 	}
@@ -33,11 +31,11 @@ void Aimbot::run()
 		// if player is dead but MB1 is pressed, pass through to 'L'
 		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 		{
-			holdFire();
+			Combat::holdFire();
 		}
 		else
 		{
-			releaseFire();
+			Combat::releaseFire();
 		}
 		return;
 	}
@@ -47,23 +45,24 @@ void Aimbot::run()
 	// If MB1 is not pressed, release fire and return
 	if (!mb1Pressed)
 	{
-		releaseFire();
+		Combat::releaseFire();
 		return;
 	}
 
 	
-	C_CSPlayerPawn* bestTarget = getBestTarget(local);
+	C_CSPlayerPawn* bestTarget = Combat::getBestTarget(local);
 
 	if (!bestTarget)
 	{
 		// no target found 
-		holdFire();
+		Combat::holdFire();
 		return;
 	}
 
 	aimAtTarget(local, bestTarget);
 }
 
+// aimbot exclusive thing
 void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
 	static DWORD lastAimTime = 0;
@@ -74,17 +73,14 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 		return;
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client)
-		return;
+	if (!client) return;
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!currentAngles)
-		return;
+	if (!currentAngles) return;
 
 	BoneID targetBone = findNearestBoneId(local, target);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
-	if (targetPos.IsZero())
-		return;
+	if (targetPos.IsZero()) return;
 
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
@@ -105,7 +101,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	if (!Globals::aimbot_auto_shoot)
 	{
 		// auto-shoot disabled - just hold fire while aiming
-		holdFire();
+		Combat::holdFire();
 		return;
 	}
 
@@ -125,7 +121,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
 		{
-			clickFire();
+			Combat::clickFire();
 			lastShootTime = currentTime;
 		}
 	}
@@ -135,6 +131,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	}
 }
 
+// this ist stil targeting
 BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
 	if (!local || !target)
@@ -189,61 +186,6 @@ BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	return bestBone;
 }
 
-C_CSPlayerPawn* Aimbot::getBestTarget(C_CSPlayerPawn* local)
-{
-	// grab all the entities
-	const auto& entities = EntityManager::Get().GetEntities();
-	C_CSPlayerPawn* bestTarget = nullptr;
-	float bestDistance = Globals::aimbot_fov;
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client)
-		return nullptr;
 
-	// get current angles
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!currentAngles)
-		return nullptr;
 
-	for (const auto& ent : entities)
-	{
-		// base case
-		bool isTeammate = !ent.isEnemy;
-		if (isTeammate && !Globals::aimbot_friendly_fire)
-			continue;
-
-		// find the pos
-		Vector headPos = Utils::GetBonePos(ent.pawn, BoneID::Head);
-		if (headPos.IsZero())
-			continue;
-
-		Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
-
-		Vector aimAngles = Utils::CalcAngle(localPos, headPos);
-		float fov = Utils::GetFoV(*currentAngles, aimAngles);
-
-		if (fov < bestDistance)
-		{
-			bestDistance = fov;
-			bestTarget = ent.pawn;
-		}
-	}
-
-	return bestTarget;
-}
-
-void Aimbot::clickFire()
-{
-	holdFire();
-	releaseFire();
-}
-
-void Aimbot::holdFire()
-{
-	if (!(GetAsyncKeyState('L') & 0x8000)) keybd_event('L', 0, 0, 0);
-}
-
-void Aimbot::releaseFire()
-{
-	if (GetAsyncKeyState('L') & 0x8000) keybd_event('L', 0, KEYEVENTF_KEYUP, 0);
-}
