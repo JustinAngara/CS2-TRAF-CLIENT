@@ -4,6 +4,8 @@
 #include "../combat/AutoFire/AutoFire.h"
 #include "../../sdk/utils/Globals.h"
 #include <iostream>
+
+// this will be hatched to game tick
 void Combat::Render()
 {
 
@@ -16,7 +18,9 @@ void Combat::Render()
 
 }
 
-////////////// helpers
+
+////////////////////////////// HELPERS /////////////////////////////////
+////////////////////////////// TARGET 
 C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 {
 	// grab all the entities
@@ -60,12 +64,6 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 	return bestTarget;
 	
 }
-
-
-
-
-// this ist stil targeting
-// proposal is to create a start and end
 BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {
 	if (!local || !target) return BoneID::Head;
@@ -113,7 +111,6 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 
 	return bestBone;
 }
-
 Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
@@ -125,7 +122,8 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uint
 	return delta;
 }
 
-////////////////////////////// MOUSE STUFF 
+
+////////////////////////////// MOUSE TO FIRE STUFF 
 void Combat::clickFire()
 {
 	holdFire();
@@ -135,12 +133,10 @@ void Combat::holdFire()
 {
 	if (!(GetAsyncKeyState('L') & 0x8000)) keybd_event('L', 0, 0, 0);
 }
-
 void Combat::releaseFire()
 {
 	if (GetAsyncKeyState('L') & 0x8000) keybd_event('L', 0, KEYEVENTF_KEYUP, 0);
 }
-
 bool Combat::isMB1Held()
 {
 	return (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;

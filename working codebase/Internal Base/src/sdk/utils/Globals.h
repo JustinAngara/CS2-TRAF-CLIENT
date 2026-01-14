@@ -15,7 +15,7 @@ namespace Globals
 	inline bool esp_box		= true;
 	inline bool esp_teamate = true;
 
-	//colors
+	// colors
 	inline float esp_box_color[4]	= { 0.f, 0.f, 1.f, 1.f };
 	inline float esp_box_color_2[4] = { 1.f, 0.f, 0.f, 1.f };
 	inline float esp_box_thickness	= 1.5f;
@@ -37,8 +37,8 @@ namespace Globals
 
 	// AIMBOT
 	inline float aimbot_shoot_threshold = 2.f; // fov threshold in degrees before shooting
-	inline DWORD aimbot_shoot_delay		= 35; // delay before shooting after getting on target
-	inline DWORD aimbot_fire_rate		= 35; // min time between shots in ms
+	inline DWORD aimbot_shoot_delay		= 35;  // delay before shooting after getting on target
+	inline DWORD aimbot_fire_rate		= 35;  // min time between shots in ms
 	inline bool	 aimbot_enabled			= true;
 	inline bool	 aimbot_friendly_fire	= false;
 	inline int	 aimbot_key				= VK_LBUTTON;
