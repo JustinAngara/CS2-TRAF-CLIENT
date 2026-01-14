@@ -25,12 +25,12 @@ namespace Combat{
 
 	// angle stuff
 	Vector getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone);
-	void   lockAtPoint(Vector* currentAngles, Vector localPos, Vector targetPos);
+	void   lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
 	
-	// instance variables to handle gracefully
-	static DWORD lastAimTime;
-	static DWORD lastShootTime;
-	static bool isAiming;
+	// instance variables to handle gracefully we maybe dont need
+	//static DWORD lastAimTime;
+	//static DWORD lastShootTime;
+	//static bool isAiming;
 	
 
 

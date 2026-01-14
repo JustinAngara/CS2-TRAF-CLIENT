@@ -125,9 +125,20 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uint
 	return delta;
 }
 
-void Combat::lockAtPoint(Vector* currentAngles, Vector localPos, Vector targetPos)
+
+
+
+void Combat::lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	if (!client) return;
+
+	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector targetPos = Utils::GetBonePos(target, targetBone);
+	if (targetPos.IsZero()) return;
+	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
+	
 
 	*currentAngles = aimAngles;
 }

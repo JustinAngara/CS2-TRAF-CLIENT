@@ -83,13 +83,13 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	BoneID targetBone = Combat::findNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
-
-
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
-
 	Vector delta = aimAngles - *currentAngles;
 	Utils::NormalizeAngles(delta);
+
+
+
 
 	// apply smoothing and update aim FIRST
 	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
