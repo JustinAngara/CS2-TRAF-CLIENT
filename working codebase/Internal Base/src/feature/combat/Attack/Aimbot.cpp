@@ -78,7 +78,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	if (!currentAngles) return;
 
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
-	BoneID targetBone = findNearestBoneId(local, target, validBaim);
+	BoneID targetBone = Combat::findNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
 
@@ -123,56 +123,6 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	{
 		isAiming = false;
 	}
-}
-
-// this ist stil targeting
-BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
-{
-	if (!local || !target) return BoneID::Head;
-
-	constexpr BoneID iterateBones[] = {
-		BoneID::Head,
-		BoneID::Neck,
-		BoneID::Spine,
-		BoneID::Stomach,
-		BoneID::LeftShoulder,
-		BoneID::RightShoulder,
-	};
-
-
-	int start = validBaim ? 2 : 0; // 0 is head, 1 is neck, 2 is spine ...
-
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return iterateBones[start];
-
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!currentAngles) return iterateBones[start];
-
-	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
-
-	BoneID bestBone = iterateBones[start];
-	float bestFov = FLT_MAX;
-
-	for (int i = start; i < sizeof(iterateBones) / sizeof(BoneID); i++)
-	{
-		Vector bonePos = Utils::GetBonePos(target, iterateBones[i]);
-		if (bonePos.IsZero()) continue;
-
-		Vector aimAngles = Utils::CalcAngle(localPos, bonePos);
-		float fov = Utils::GetFoV(*currentAngles, aimAngles);
-
-		// penalize lower bone structs
-		float penalty = i * 0.15f;
-		float adjustedFov = fov + penalty;
-
-		if (adjustedFov < bestFov)
-		{
-			bestFov = adjustedFov;
-			bestBone = iterateBones[i];
-		}
-	}
-
-	return bestBone;
 }
 
 

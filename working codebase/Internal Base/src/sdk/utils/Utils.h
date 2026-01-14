@@ -99,16 +99,16 @@ enum class BoneID : int
 	LeftFoot = 24,
 	RightHip = 25,
 	RightKnee = 26,
-	RightFoot = 27
+	RightFoot = 27,
+	Count
 };
-
-
 
 struct BoneConnection
 {
 	BoneID bone1;
 	BoneID bone2;
 };
+
 
 namespace Bones
 {
@@ -134,6 +134,24 @@ namespace Bones
 		{ BoneID::RightKnee, BoneID::RightFoot }
 	};
 }
+
+/* INCASE IF YOU WANT TO ITERATE THROUGH ALL BONES
+template <class E>
+constexpr auto to_underlying(E e) noexcept
+{
+	return static_cast<std::underlying_type_t<E>>(e);
+}
+
+for (int i = 0; i < to_underlying(BoneID::Count); i++)
+{
+	auto b = static_cast<BoneID>(i);
+	std::cout << (int)b << '\n';
+}
+
+*/
+
+
+
 
 namespace Utils
 {
