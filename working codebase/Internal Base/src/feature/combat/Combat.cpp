@@ -7,17 +7,16 @@
 void Combat::Render()
 {
 
-	// classes/objects
+	// classes/objects calls
 	static Aimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
 	aimbot.run();
 
-	// namespace functions
+	// namespace functions calls
 	AutoFire::run();
 
 }
 
 ////////////// helpers
-
 C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 {
 	// grab all the entities
@@ -62,6 +61,8 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 	
 }
 
+
+// everything should be handled through ehre
 void Combat::clickFire()
 {
 	holdFire();
@@ -76,4 +77,9 @@ void Combat::holdFire()
 void Combat::releaseFire()
 {
 	if (GetAsyncKeyState('L') & 0x8000) keybd_event('L', 0, KEYEVENTF_KEYUP, 0);
+}
+
+bool Combat::isMB1Held()
+{
+	return (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 }

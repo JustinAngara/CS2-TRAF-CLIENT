@@ -8,14 +8,16 @@ namespace Combat{
 
 	// helpers 
 	C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
-
-	// instance variables
-	static DWORD lastAimTime;
-	static DWORD lastShootTime;
-	static bool isAiming;
-
 	void clickFire();
 	void holdFire();
 	void releaseFire();
+	bool isMB1Held();
+
+	// instance variables to handle gracefully
+	static DWORD lastAimTime;
+	static DWORD lastShootTime;
+	static bool isAiming;
+	
+
 
 }

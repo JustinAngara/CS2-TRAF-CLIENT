@@ -9,6 +9,10 @@ void AutoFire::run()
 {
 	if (!Globals::autofire_enabled) return;
 
+	// new base case, if MB1 is held we shouldn't want to interact with any MB1/'L' clicks
+
+
+
 	uintptr_t client = Memory::GetModuleBase("client.dll");
 	if (!client) return;
 

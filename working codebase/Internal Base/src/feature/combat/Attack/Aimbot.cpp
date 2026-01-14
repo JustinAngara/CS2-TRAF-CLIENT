@@ -14,7 +14,7 @@ void Aimbot::run()
 	// this allows standard functionality
 	if (!Globals::aimbot_enabled)
 	{
-		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+		if (Combat::isMB1Held())
 		{
 			Combat::holdFire();
 		}
@@ -29,7 +29,7 @@ void Aimbot::run()
 	if (!local || !local->IsAlive())
 	{
 		// if player is dead but MB1 is pressed, pass through to 'L'
-		if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+		if (Combat::isMB1Held())
 		{
 			Combat::holdFire();
 		}
@@ -40,10 +40,9 @@ void Aimbot::run()
 		return;
 	}
 
-	bool mb1Pressed = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 
 	// If MB1 is not pressed, release fire and return
-	if (!mb1Pressed)
+	if (!Combat::isMB1Held())
 	{
 		Combat::releaseFire();
 		return;
@@ -97,13 +96,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	float deltaY = fabsf(delta.y);
 	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);
 
-	// auto-shoot logic
-	if (!Globals::aimbot_auto_shoot)
-	{
-		// auto-shoot disabled - just hold fire while aiming
-		Combat::holdFire();
-		return;
-	}
+
 
 	DWORD currentTime = GetTickCount();
 	bool isOnTarget = totalDelta <= Globals::aimbot_shoot_threshold;

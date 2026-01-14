@@ -38,7 +38,6 @@ namespace Globals
 
 	// AIMBOT
 	inline float aimbot_shoot_threshold = 2.f; // fov threshold in degrees before shooting
-	inline bool aimbot_auto_shoot = true; // enable auto-shoot
 	inline DWORD aimbot_shoot_delay = 35; // delay before shooting after getting on target
 	inline DWORD aimbot_fire_rate = 35; // min time between shots in ms
 	inline bool aimbot_enabled = true;
