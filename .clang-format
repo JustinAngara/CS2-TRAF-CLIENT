@@ -13,9 +13,9 @@ Standard: c++20
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign # @test: use false # @note: when set to 'DontAlign', dependent on 'ContinuationIndentWidth'
 AlignArrayOfStructures: None
-AlignConsecutiveAssignments: None
+AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: None
-AlignConsecutiveDeclarations: None
+AlignConsecutiveDeclarations: Consecutive
 AlignConsecutiveMacros: None
 AlignEscapedNewlines: Left
 AlignOperands: DontAlign # @test: use false # @note: when set to 'DontAlign', dependent on 'ContinuationIndentWidth'; when set to 'AlignAfterOperator', dependent on 'BreakBeforeBinaryOperators'
