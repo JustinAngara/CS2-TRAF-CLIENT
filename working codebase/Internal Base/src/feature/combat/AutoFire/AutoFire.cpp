@@ -36,10 +36,13 @@ void AutoFire::run()
 	// shoot type shit
 	if (delta.Length() < Globals::autofire_fov)
 	{
-
+		// TODO add a tuple and fix this shit (int status, Vector, Vector) andd encapsulate
 		Vector targetPos = Utils::GetBonePos(target, targetBone);
 		if (targetPos.IsZero()) return;
 		Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+
+		// TODO fix this shit
+		// std::tuple<int, Vector, Vector> tuple{ 1, targetPos, localPos };
 
 		// auto fire exist within aimbot
 		Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);

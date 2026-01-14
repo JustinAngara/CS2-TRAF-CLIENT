@@ -62,6 +62,9 @@ void Aimbot::run()
 }
 
 // aimbot exclusive thing
+/*
+TODO: There is a lot of encapsulations created by COmbat fix this shit
+*/
 void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
 	static DWORD lastAimTime = 0;
