@@ -102,6 +102,8 @@ enum class BoneID : int
 	RightFoot = 27
 };
 
+
+
 struct BoneConnection
 {
 	BoneID bone1;

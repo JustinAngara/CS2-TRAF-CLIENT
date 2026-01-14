@@ -22,12 +22,19 @@ void AutoFire::run()
 
 	// check for nearest player
 	C_CSPlayerPawn* target = Combat::getBestTarget(local);
+	BoneID targetBone = findNearestBoneId(local, target);
+	Vector targetPos = Utils::GetBonePos(target, targetBone);
+
 	if (!target || !target->IsAlive()) return;
 
 	// see if delta matches to close to 0 (meaning my crosshair is on an enemy)
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
 
+	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 
+	Vector delta = aimAngles - *currentAngles;
+	Utils::NormalizeAngles(delta);
 	// shoot type shit
 
 }

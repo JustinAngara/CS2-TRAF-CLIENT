@@ -9,7 +9,7 @@ public:
 
 private:
 	virtual void aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
-	BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target);
+	BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim);
 
 
 

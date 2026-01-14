@@ -77,7 +77,8 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
 	if (!currentAngles) return;
 
-	BoneID targetBone = findNearestBoneId(local, target);
+	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
+	BoneID targetBone = findNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
 
@@ -125,10 +126,9 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 }
 
 // this ist stil targeting
-BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
+BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {
-	if (!local || !target)
-		return BoneID::Head;
+	if (!local || !target) return BoneID::Head;
 
 	constexpr BoneID iterateBones[] = {
 		BoneID::Head,
@@ -139,17 +139,14 @@ BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 		BoneID::RightShoulder,
 	};
 
-	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
 
 	int start = validBaim ? 2 : 0; // 0 is head, 1 is neck, 2 is spine ...
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client)
-		return iterateBones[start];
+	if (!client) return iterateBones[start];
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!currentAngles)
-		return iterateBones[start];
+	if (!currentAngles) return iterateBones[start];
 
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 
@@ -159,8 +156,7 @@ BoneID Aimbot::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	for (int i = start; i < sizeof(iterateBones) / sizeof(BoneID); i++)
 	{
 		Vector bonePos = Utils::GetBonePos(target, iterateBones[i]);
-		if (bonePos.IsZero())
-			continue;
+		if (bonePos.IsZero()) continue;
 
 		Vector aimAngles = Utils::CalcAngle(localPos, bonePos);
 		float fov = Utils::GetFoV(*currentAngles, aimAngles);

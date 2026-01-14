@@ -12,6 +12,7 @@ namespace Combat{
 	void holdFire();
 	void releaseFire();
 	bool isMB1Held();
+	findNearestBoneId();
 
 	// instance variables to handle gracefully
 	static DWORD lastAimTime;
