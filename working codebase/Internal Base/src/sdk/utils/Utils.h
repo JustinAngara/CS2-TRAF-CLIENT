@@ -155,6 +155,7 @@ for (int i = 0; i < to_underlying(BoneID::Count); i++)
 
 namespace Utils
 {
+
 	// validates if a memory address pointer is within a safe readable range
 	inline bool IsValidPtr(uintptr_t addr)
 	{
@@ -278,6 +279,7 @@ namespace Utils
 			return false;
 		}
 	}
+
 }
 
 /*

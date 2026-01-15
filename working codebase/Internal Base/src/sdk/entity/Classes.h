@@ -43,6 +43,14 @@ public:
     SCHEMA(int, m_fFlags, Offsets::m_fFlags);
     bool IsOnGround() const { return (m_fFlags() & 1) != 0; }
 
+	// for the entity spotted state
+	struct EntitySpottedState_t
+	{
+		uint64_t m_bSpottedByMask[2];
+	};
+	SCHEMA(EntitySpottedState_t, m_entitySpottedState, Offsets::m_entitySpottedState);
+
+	bool IsSpottedByLocal(int localIndex) const { return m_entitySpottedState().m_bSpottedByMask[0] & (1ULL << (localIndex - 1)); }
 
 
 };

@@ -39,7 +39,7 @@ void AutoFire::run()
 	if (delta.Length() < Globals::autofire_fov)
 	{
 		// now check if we want to do this
-		Combat::lockAtTarget(local, target, targetBone);
+		Combat::lockAtTarget(client, local, target, targetBone);
 		
 		// fire but we want ti to maybe be recursive if we want to make it like good type shit
 		Combat::clickFire(); 

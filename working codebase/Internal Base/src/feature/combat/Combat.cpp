@@ -3,6 +3,7 @@
 #include "../combat/Attack/Aimbot.h"
 #include "../combat/AutoFire/AutoFire.h"
 #include "../../sdk/utils/Globals.h"
+#include "../../sdk/utils/Utils.h"
 #include <iostream>
 
 // this will be hatched to game tick
@@ -21,7 +22,7 @@ void Combat::Render()
 
 
 ////////////////////////////// HELPERS /////////////////////////////////
-////////////////////////////// TARGET 
+////////////////////////////// TARGET PLAYER STUFF
 C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 {
 	// grab all the entities
@@ -65,6 +66,7 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 	return bestTarget;
 	
 }
+
 BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {
 	if (!local || !target) return BoneID::Head;
@@ -113,7 +115,32 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	return bestBone;
 }
 
-/////////////////////////////////////  angle stuff
+
+bool IsVisible(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
+{
+	if (!local || !target) return false;
+
+	const auto& entities = EntityManager::Get().GetEntities();
+
+	int localIndex = -1;
+	for (const auto& ent : entities)
+	{
+		if (ent.pawn == local)
+		{
+			localIndex = ent.index;
+			break;
+		}
+	}
+
+	if (localIndex == -1) return false;
+
+	auto state = target->m_entitySpottedState();
+	return state.m_bSpottedByMask[0] & (1ULL << (localIndex - 1));
+}
+
+
+
+////////////////////////////// ANGLE STUFF
 Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
@@ -126,12 +153,8 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uint
 }
 
 
-
-
-void Combat::lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+void Combat::lockAtTarget(uintptr_t client, C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
@@ -142,6 +165,7 @@ void Combat::lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID 
 
 	*currentAngles = aimAngles;
 }
+
 
 
 ////////////////////////////// MOUSE TO FIRE STUFF 
