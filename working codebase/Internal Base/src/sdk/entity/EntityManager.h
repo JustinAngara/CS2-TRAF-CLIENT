@@ -18,7 +18,7 @@ private:
     std::shared_mutex mutex;
     uintptr_t entityListAddress = 0;
     C_CSPlayerPawn* localPawn = nullptr;
-
+	int	localPlayerIndex	= -1;
     EntityManager();
 
 public:
@@ -30,4 +30,7 @@ public:
 	C_CSPlayerController* GetLocalPlayer();
     const std::vector<Entity_t>& GetEntities();
     C_CSPlayerPawn* GetPawnFromHandle(uint32_t handle);
+
+	int GetLocalPlayerIndex() { return localPlayerIndex; }
+
 };

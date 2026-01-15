@@ -35,42 +35,51 @@ void EntityManager::Update()
 
     std::vector<Entity_t> temp;
     temp.reserve(64);
+	for (int i = 1; i < 64; ++i)
+	{
+		uintptr_t listEntry =
+		*reinterpret_cast<uintptr_t*>(listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
+		if (!listEntry) continue;
 
-    for (int i = 1; i < 64; ++i)
-    {
-        uintptr_t listEntry =
-			*reinterpret_cast<uintptr_t*>(listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
-        if (!listEntry) continue;
+		uintptr_t controllerPtr =
+		*reinterpret_cast<uintptr_t*>(listEntry + 112 * (i & 0x1FF));
+		if (!controllerPtr) continue;
 
-        uintptr_t controllerPtr =
-            *reinterpret_cast<uintptr_t*>(listEntry + 112 * (i & 0x1FF));
-        if (!controllerPtr) continue;
+		auto	 controller = reinterpret_cast<C_CSPlayerController*>(controllerPtr);
+		uint32_t pawnHandle = controller->m_hPlayerPawn();
 
-        auto controller = reinterpret_cast<C_CSPlayerController*>(controllerPtr);
-        uint32_t pawnHandle = controller->m_hPlayerPawn();
+		if (!pawnHandle || pawnHandle == static_cast<uint32_t>(-1)) continue;
 
-        if (!pawnHandle || pawnHandle == static_cast<uint32_t>(-1)) continue;
+		uintptr_t pawnListEntry =
+		*reinterpret_cast<uintptr_t*>(listPtr + 8 * ((pawnHandle & 0x7FFF) >> 9) + 16);
+		if (!pawnListEntry) continue;
 
-        uintptr_t pawnListEntry =
-            *reinterpret_cast<uintptr_t*>(listPtr + 8 * ((pawnHandle & 0x7FFF) >> 9) + 16);
-        if (!pawnListEntry) continue;
+		uintptr_t pawnPtr =
+		*reinterpret_cast<uintptr_t*>(pawnListEntry + 112 * (pawnHandle & 0x1FF));
+		if (!pawnPtr) continue;
 
-        uintptr_t pawnPtr =
-            *reinterpret_cast<uintptr_t*>(pawnListEntry + 112 * (pawnHandle & 0x1FF));
-        if (!pawnPtr) continue;
+		auto pawn = reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);
 
-        auto pawn = reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);
+		if (!pawn || !pawn->IsAlive()) continue;
 
-        if (!pawn || pawn == currentLocalPawn || !pawn->IsAlive()) continue;
+		if (pawn == currentLocalPawn)
+		{
+			localPlayerIndex = i; 
+			// std::cout << localPlayerIndex << '\n';
+			continue;
+		}
 
-        Entity_t ent{};
-        ent.controller = controller;
-        ent.pawn = pawn;
-        ent.index = i;
-        ent.isEnemy = currentLocalPawn && pawn->m_iTeamNum() != currentLocalPawn->m_iTeamNum();
+		Entity_t ent{};
+		ent.controller = controller;
+		ent.pawn	   = pawn;
+		ent.index	   = i;
+		ent.isEnemy	   = currentLocalPawn && pawn->m_iTeamNum() != currentLocalPawn->m_iTeamNum();
 
-        temp.push_back(ent);
-    }
+		//bool spotted = ent.pawn->IsSpottedByLocal(localPlayerIndex);
+		//if (spotted) std::cout << "SPOTTED: " << ent.index;
+
+		temp.push_back(ent);
+	}
 
 
 

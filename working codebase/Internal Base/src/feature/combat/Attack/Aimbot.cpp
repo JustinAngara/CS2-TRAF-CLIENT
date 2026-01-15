@@ -58,6 +58,7 @@ void Aimbot::run()
 		return;
 	}
 
+
 	aimAtTarget(local, bestTarget);
 }
 
@@ -115,7 +116,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 		DWORD timeOnTarget = currentTime - lastAimTime;
 		DWORD timeSinceShot = currentTime - lastShootTime;
-
+	
 		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
 		{
 			Combat::clickFire();

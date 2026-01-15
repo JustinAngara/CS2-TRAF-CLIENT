@@ -41,6 +41,8 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 
 	for (const auto& ent : entities)
 	{
+		
+
 		// base case
 		bool isTeammate = !ent.isEnemy;
 		if (isTeammate && !Globals::aimbot_friendly_fire)
@@ -115,30 +117,19 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	return bestBone;
 }
 
-
-bool IsVisible(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
+bool Combat::IsVisible(C_CSPlayerPawn* target, int localIndex)
 {
-	if (!local || !target) return false;
 
-	const auto& entities = EntityManager::Get().GetEntities();
+	if (!target || localIndex <= 0) return false;
 
-	int localIndex = -1;
-	for (const auto& ent : entities)
-	{
-		if (ent.pawn == local)
-		{
-			localIndex = ent.index;
-			break;
-		}
-	}
+	uintptr_t spottedStatePtr = *(uintptr_t*)((uintptr_t)target + Offsets::m_entitySpottedState);
+	if (!spottedStatePtr) return false;
 
-	if (localIndex == -1) return false;
+	uint32_t mask = *(uint32_t*)(spottedStatePtr + 0xC); // m_bSpottedByMask at +0xC
 
-	auto state = target->m_entitySpottedState();
-	return state.m_bSpottedByMask[0] & (1ULL << (localIndex - 1));
+	return mask & (1 << (localIndex - 1));
+	
 }
-
-
 
 ////////////////////////////// ANGLE STUFF
 Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone)

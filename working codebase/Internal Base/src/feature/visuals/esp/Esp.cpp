@@ -5,7 +5,7 @@
 #include "../../../../ext/imgui/imgui.h"
 #include <algorithm>
 #include <iostream>
-
+#include "../../../feature/combat/Combat.h"
 
 void ESP::render()
 {
@@ -53,7 +53,6 @@ void ESP::render()
 
         if (pawn->m_iTeamNum() == localPawn->m_iTeamNum() && !Globals::esp_teamate) continue;
 		
-
 
         Vector feet = pawn->m_vOldOrigin();
         Vector head = Utils::GetBonePos(pawn, BoneID::Head);

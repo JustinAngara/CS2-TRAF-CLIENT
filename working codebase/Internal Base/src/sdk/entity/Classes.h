@@ -50,8 +50,10 @@ public:
 	};
 	SCHEMA(EntitySpottedState_t, m_entitySpottedState, Offsets::m_entitySpottedState);
 
-	bool IsSpottedByLocal(int localIndex) const { return m_entitySpottedState().m_bSpottedByMask[0] & (1ULL << (localIndex - 1)); }
-
+	bool IsSpotted() const
+	{
+		return *(bool*)((uintptr_t)this + Offsets::m_entitySpottedState + 0x8);
+	}
 
 };
 
