@@ -10,6 +10,7 @@ namespace Offsets
 	constexpr uintptr_t dwViewMatrix			= 0x1E323D0;
 	constexpr uintptr_t dwViewAngles			= 0x1E3C800;
 	constexpr uintptr_t dwGlobalVars			= 0x1BE41C0;
+	constexpr std::ptrdiff_t dwSensitivity		= 0x1E2ED08;
 
 	// -> client.dll.hpp on a2x dumper -> C_BaseEntity
 	constexpr uintptr_t m_iHealth		 = 0x34C;
@@ -39,7 +40,9 @@ namespace Offsets
 	constexpr std::ptrdiff_t m_iObserverMode	 = 0x40;
 	constexpr std::ptrdiff_t m_entitySpottedState = 0x1F98; 
 
+	constexpr std::ptrdiff_t m_aimPunchAngleVel = 0x16F0;
 	// -> Buttons
 	constexpr std::ptrdiff_t jump = 0x1BE88B0;
+	constexpr std::ptrdiff_t m_aimPunchCache = 0x1708;
 
 }

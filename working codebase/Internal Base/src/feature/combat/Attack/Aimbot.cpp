@@ -8,7 +8,6 @@
 
 #include <Windows.h>
 
-
 void Aimbot::run()
 {
 	// this allows standard functionality
@@ -40,6 +39,11 @@ void Aimbot::run()
 		return;
 	}
 
+	// Apply standalone recoil control (when NOT aimbotting)
+	if (Globals::norecoil_enabled)
+	{
+		Combat::NoRecoil(local);
+	}
 
 	// If MB1 is not pressed, release fire and return
 	if (!Combat::isMB1Held())
@@ -48,29 +52,24 @@ void Aimbot::run()
 		return;
 	}
 
-	
 	C_CSPlayerPawn* bestTarget = Combat::getBestTarget(local);
 
 	if (!bestTarget)
 	{
-		// no target found 
+		// no target found
 		Combat::holdFire();
 		return;
 	}
 
-
 	aimAtTarget(local, bestTarget);
 }
 
-// aimbot exclusive thing
-/*
-TODO: There is a lot of encapsulations created by COmbat fix this shit
-*/
 void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 {
 	static DWORD lastAimTime = 0;
 	static DWORD lastShootTime = 0;
 	static bool isAiming = false;
+	static Vector oldPunch{};
 
 	if (!local || !target) return;
 
@@ -84,24 +83,42 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	BoneID targetBone = Combat::findNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
-	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+	Vector localPos	= local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 	Vector delta = aimAngles - *currentAngles;
 	Utils::NormalizeAngles(delta);
 
+	// get recoil compensation
+	Vector recoilDelta{};
+	if (Globals::norecoil_enabled)
+	{
+		int shotsFired = local->m_iShotsFired();
+		if (shotsFired >= 1)
+		{
+			Vector currentPunch = local->m_aimPunchAngle();
+			recoilDelta = (currentPunch * 2.0f) - (oldPunch * 2.0f);
+			oldPunch = currentPunch;
+		}
+		else
+		{
+			oldPunch = Vector(0, 0, 0);
+		}
+	}
 
-
-
-	// apply smoothing and update aim FIRST
+	// apply smoothing and update aim FIRST, accounting for recoil
 	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
-	*currentAngles = Globals::aimbot_smooth ? *currentAngles + smoothedDelta : aimAngles; // here is where the magic happens
+	Vector finalDelta = Globals::aimbot_smooth ? smoothedDelta : delta;
+
+	// Subtract recoil from the aim adjustment
+	finalDelta.x -= recoilDelta.x;
+	finalDelta.y -= recoilDelta.y;
+
+	*currentAngles = *currentAngles + finalDelta;
 
 	// calculate the REMAINING delta magnitude (how close we are to target)
 	float deltaX = fabsf(delta.x);
 	float deltaY = fabsf(delta.y);
 	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);
-
-
 
 	DWORD currentTime = GetTickCount();
 	bool isOnTarget = totalDelta <= Globals::aimbot_shoot_threshold;
@@ -116,7 +133,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 		DWORD timeOnTarget = currentTime - lastAimTime;
 		DWORD timeSinceShot = currentTime - lastShootTime;
-	
+
 		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
 		{
 			Combat::clickFire();
@@ -128,7 +145,3 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 		isAiming = false;
 	}
 }
-
-
-
-

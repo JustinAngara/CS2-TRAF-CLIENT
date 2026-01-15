@@ -34,21 +34,33 @@ public:
 class C_CSPlayerPawn : public C_BaseEntity
 {
 public:
+
+	struct EntitySpottedState_t
+	{
+		uint64_t m_bSpottedByMask[2];
+	};
+
+	struct C_UTL_VECTOR
+	{
+		uintptr_t data;
+		int		  count;
+		int		  size;
+	};
+
     SCHEMA(Vector, m_vecViewOffset, Offsets::m_vecViewOffset);
     SCHEMA(int, m_iShotsFired, Offsets::m_iShotsFired);
     SCHEMA(Vector, m_aimPunchAngle, Offsets::m_aimPunchAngle);
+	SCHEMA(Vector, m_aimPunchAngleVel, Offsets::m_aimPunchAngleVel);
     SCHEMA(uintptr_t, m_pObserverServices, Offsets::m_pObserverServices);
+	SCHEMA(C_UTL_VECTOR, m_aimPunchCache, Offsets::m_aimPunchCache);
 
     // this is for the fFlag for bhop
     SCHEMA(int, m_fFlags, Offsets::m_fFlags);
     bool IsOnGround() const { return (m_fFlags() & 1) != 0; }
 
 	// for the entity spotted state
-	struct EntitySpottedState_t
-	{
-		uint64_t m_bSpottedByMask[2];
-	};
 	SCHEMA(EntitySpottedState_t, m_entitySpottedState, Offsets::m_entitySpottedState);
+
 
 	bool IsSpotted() const
 	{

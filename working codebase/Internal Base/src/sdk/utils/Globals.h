@@ -51,4 +51,7 @@ namespace Globals
 	// AUTO FIRE
 	inline bool	 autofire_enabled = false;
 	inline float autofire_fov	  = 0.3f;
+
+	// NO RECOIL
+	inline bool norecoil_enabled = true;
 }
