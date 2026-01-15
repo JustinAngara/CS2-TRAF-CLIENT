@@ -149,7 +149,7 @@ void Hooks::Setup()
 		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
 
 		// Hook CreateMove via vtable
-		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ? ? ? ? 48 8B 01 FF 90 ? ? ? ? 84");
+		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ?? ?? 48 8B 01 FF 90 ?? ?? 84");
 		if (inputSystemAddr)
 		{
 			std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";

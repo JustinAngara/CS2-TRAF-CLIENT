@@ -1,9 +1,11 @@
 #include "Combat.h"
 #include "../combat/legitbot/LegitAimbot.h"
+#include "../combat/Recoil/Recoil.h"
 #include "../combat/Attack/Aimbot.h"
 #include "../combat/AutoFire/AutoFire.h"
 #include "../../sdk/utils/Globals.h"
 #include "../../sdk/utils/Utils.h"
+
 #include <iostream>
 
 // this will be hatched to game tick
@@ -11,8 +13,8 @@ void Combat::Render()
 {
 	static Aimbot aimbot{}; // this will be initalized once, also has variants of rage and legit
 
-	C_CSPlayerPawn* localPlayer = EntityManager::Get().GetLocalPawn();
-	NoRecoil(localPlayer);
+	auto* localPlayer = EntityManager::Get().GetLocalPawn();
+	Recoil::Run(localPlayer);
 
 	// namespace functions calls
 	AutoFire::run();
@@ -43,7 +45,6 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 
 	for (const auto& ent : entities)
 	{
-		
 
 		// base case
 		bool isTeammate = !ent.isEnemy;
@@ -200,43 +201,4 @@ void Combat::releaseFire(FireInput input)
 bool Combat::isMB1Held()
 {
 	return (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-}
-
-
-void Combat::NoRecoil(C_CSPlayerPawn* local)
-{
-	if (!local) return;
-
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
-
-	Vector* viewAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!viewAngles) return;
-
-	static Vector oldPunch{};
-
-	int shotsFired = local->m_iShotsFired();
-
-	if (shotsFired < 1)
-	{
-		oldPunch = Vector(0, 0, 0);
-		return;
-	}
-
-	Vector currentPunch = local->m_aimPunchAngle();
-	Vector punchDelta	= (currentPunch * 2.0f) - (oldPunch * 2.0f);
-
-	viewAngles->x -= punchDelta.x;
-	viewAngles->y -= punchDelta.y;
-
-	// Normalize
-	if (viewAngles->x > 89.0f) viewAngles->x = 89.0f;
-	if (viewAngles->x < -89.0f) viewAngles->x = -89.0f;
-
-	while (viewAngles->y > 180.0f)
-		viewAngles->y -= 360.0f;
-	while (viewAngles->y < -180.0f)
-		viewAngles->y += 360.0f;
-
-	oldPunch = currentPunch;
 }

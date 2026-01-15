@@ -5,7 +5,7 @@
 #include "../../../sdk/memory/Offsets.h"
 #include "../../../sdk/utils/Globals.h"
 #include "../../../feature/combat/Combat.h"
-
+#include "../../../feature/combat/Recoil/Recoil.h"
 #include <Windows.h>
 
 void Aimbot::run()
@@ -42,7 +42,7 @@ void Aimbot::run()
 	// Apply standalone recoil control (when NOT aimbotting)
 	if (Globals::norecoil_enabled)
 	{
-		Combat::NoRecoil(local);
+		Recoil::Run(local);
 	}
 
 	// If MB1 is not pressed, release fire and return
@@ -82,40 +82,34 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
 	BoneID targetBone = Combat::findNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
+
 	if (targetPos.IsZero()) return;
 	Vector localPos	= local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 	Vector delta = aimAngles - *currentAngles;
+
 	Utils::NormalizeAngles(delta);
 
 	// get recoil compensation
 	Vector recoilDelta{};
 	if (Globals::norecoil_enabled)
 	{
-		int shotsFired = local->m_iShotsFired();
-		if (shotsFired >= 1)
-		{
-			Vector currentPunch = local->m_aimPunchAngle();
-			recoilDelta = (currentPunch * 2.0f) - (oldPunch * 2.0f);
-			oldPunch = currentPunch;
-		}
-		else
-		{
-			oldPunch = Vector(0, 0, 0);
-		}
+		// local, oldPunch ptr and set to -> currentPunch 
+		Recoil::VectorAngleRun(local, oldPunch, recoilDelta);
+		
 	}
 
 	// apply smoothing and update aim FIRST, accounting for recoil
 	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
 	Vector finalDelta = Globals::aimbot_smooth ? smoothedDelta : delta;
 
-	// Subtract recoil from the aim adjustment
+	// Subtract recoil from the aim adjustment (from the recoil)
 	finalDelta.x -= recoilDelta.x;
 	finalDelta.y -= recoilDelta.y;
 
 	*currentAngles = *currentAngles + finalDelta;
 
-	// calculate the REMAINING delta magnitude (how close we are to target)
+	// calculate the REMAINING delta magnitude (how close we are to target) TODO CHANGE
 	float deltaX = fabsf(delta.x);
 	float deltaY = fabsf(delta.y);
 	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);

@@ -39,6 +39,7 @@
     <ClCompile Include="src\feature\combat\Combat.cpp" />
     <ClCompile Include="src\feature\combat\Attack\Aimbot.cpp" />
     <ClCompile Include="src\feature\combat\legitbot\LegitAimbot.cpp" />
+    <ClCompile Include="src\feature\combat\Recoil\Recoil.cpp" />
     <ClCompile Include="src\feature\misc\bhop\Bhop.cpp" />
     <ClCompile Include="src\feature\misc\bhop\Bhop.h" />
     <ClCompile Include="src\feature\misc\Misc.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="src\feature\combat\Combat.h" />
     <ClInclude Include="src\feature\combat\Attack\Aimbot.h" />
     <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h" />
+    <ClInclude Include="src\feature\combat\Recoil\Recoil.h" />
     <ClInclude Include="src\feature\misc\Misc.h" />
     <ClInclude Include="src\feature\visuals\esp\Esp.h" />
     <ClInclude Include="src\feature\visuals\enemycounter\EnemyCounter.h" />

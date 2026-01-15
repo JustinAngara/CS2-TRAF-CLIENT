@@ -1,6 +1,5 @@
 #pragma once
-#include <cstdint>
-
+#include <cstddef>
 namespace Offsets
 {
 	// -> offsets.h on a2x dumper
