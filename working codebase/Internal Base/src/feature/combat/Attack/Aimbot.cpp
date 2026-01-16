@@ -39,13 +39,13 @@ void Aimbot::run()
 		return;
 	}
 
-	// Apply standalone recoil control (when NOT aimbotting)
+	// apply standalone recoil control (when NOT aimbotting)
 	if (Globals::norecoil_enabled)
 	{
 		Recoil::Run(local);
 	}
 
-	// If MB1 is not pressed, release fire and return
+	// if MB1 is not pressed, release fire and return
 	if (!Combat::isMB1Held())
 	{
 		Combat::releaseFire();
@@ -114,7 +114,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	float deltaY = fabsf(delta.y);
 	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);
 
-	DWORD currentTime = GetTickCount();
+	auto currentTime = GetTickCount();
 	bool isOnTarget = totalDelta <= Globals::aimbot_shoot_threshold;
 
 	if (isOnTarget)
@@ -125,8 +125,8 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 			lastAimTime = currentTime;
 		}
 
-		DWORD timeOnTarget = currentTime - lastAimTime;
-		DWORD timeSinceShot = currentTime - lastShootTime;
+		auto timeOnTarget = currentTime - lastAimTime;
+		auto timeSinceShot = currentTime - lastShootTime;
 
 		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
 		{

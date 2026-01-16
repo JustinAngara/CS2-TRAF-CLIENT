@@ -28,13 +28,24 @@ void EnemyCounter::Render()
         aliveEnemies++;
     }
 
-    char buf[32];
-    sprintf_s(buf, "ENEMIES: %d", aliveEnemies);
 
-    ImDrawList* dl = ImGui::GetBackgroundDrawList();
+	// adding title and enemy count
+	ImDrawList* dl = ImGui::GetBackgroundDrawList();
+	char buf[32];
+	sprintf_s(buf, "Traf Hacks");
+	dl->AddText(
+		{ 20.f, 25.f }, // posizione
+		IM_COL32(255, 255, 255, 220),
+		buf
+	);
+
+    char enemies[32];
+	sprintf_s(enemies, "ENEMIES: %d", aliveEnemies);
     dl->AddText(
         { 20.f, 20.f }, // posizione
         IM_COL32(255, 255, 255, 220),
-        buf
+	enemies
     );
+
 }
+
