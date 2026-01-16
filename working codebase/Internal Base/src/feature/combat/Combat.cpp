@@ -120,7 +120,7 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	return bestBone;
 }
 
-bool Combat::IsVisible(C_CSPlayerPawn* target, int localIndex)
+bool Combat::isVisible(C_CSPlayerPawn* target, int localIndex)
 {
 
 	if (!target || localIndex <= 0) return false;
