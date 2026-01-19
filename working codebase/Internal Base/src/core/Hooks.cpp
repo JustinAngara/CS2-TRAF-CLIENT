@@ -90,10 +90,14 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	if (Menu::IsOpen) Menu::Render();
 
 	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
+	// from here i want to create a entity hook that iterates through every entity and performs updates to features
+	// encapsulate a general hack manager to pass in vars/update state
+
 	Combat::Render();
 	Visuals::Render();
 	Misc::Render();
 	ImGui::Render();
+
 
 
 	g_Context->OMSetRenderTargets(1, &g_RTV, nullptr);
