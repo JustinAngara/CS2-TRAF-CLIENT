@@ -1,6 +1,12 @@
 #pragma once
 
-namespace HackManager
+class HackManager
 {
-	void Loop();
-}
+public:
+	// main entry point
+	static void Loop();
+
+	// getter methods 
+private:
+	
+};

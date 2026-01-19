@@ -6,8 +6,12 @@
 
 void HackManager::Loop()
 {
+	
 	Combat::Render();
 	Visuals::Render();
 	Misc::Render();
 
 }
+
+
+
