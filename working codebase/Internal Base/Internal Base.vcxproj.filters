@@ -105,6 +105,9 @@
     <ClCompile Include="src\feature\combat\Recoil\Recoil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\HackManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">
@@ -243,6 +246,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\feature\combat\Recoil\Recoil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\HackManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

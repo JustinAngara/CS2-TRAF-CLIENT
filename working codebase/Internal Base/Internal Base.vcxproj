@@ -34,6 +34,7 @@
     <ClCompile Include="ext\minhook\trampoline.c" />
     <ClCompile Include="src\core\Hooks.cpp" />
     <ClCompile Include="src\core\Main.cpp" />
+    <ClCompile Include="src\core\HackManager.cpp" />
     <ClCompile Include="src\feature\combat\AutoFire\AutoFire.cpp" />
     <ClCompile Include="src\feature\combat\AutoFire\AutoFire.h" />
     <ClCompile Include="src\feature\combat\Combat.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="ext\minhook\hde\table64.h" />
     <ClInclude Include="ext\minhook\MinHook.h" />
     <ClInclude Include="ext\minhook\trampoline.h" />
+    <ClInclude Include="src\core\HackManager.h" />
     <ClInclude Include="src\core\Hooks.h" />
     <ClInclude Include="src\core\Interfaces.h" />
     <ClInclude Include="src\feature\combat\Combat.h" />

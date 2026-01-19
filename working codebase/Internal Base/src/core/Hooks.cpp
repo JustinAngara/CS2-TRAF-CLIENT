@@ -6,16 +6,11 @@
 #include "../../ext/imgui/imgui_impl_dx11.h"
 #include "../../ext/minhook/MinHook.h"
 #include "../../src/menu/Menu.h"
-#include "../../src/feature/visuals/Visuals.h"
 #include "../../src/sdk/entity/EntityManager.h"
 #include "../../src/sdk/utils/Globals.h"
 #include "../../src/sdk/memory/Offsets.h"
 #include "../../src/sdk/memory/PatternScan.h"
-#include "../feature/misc/Misc.h"
-#include "../feature/combat/Combat.h"
-#include "../feature/misc/bhop/Bhop.h"
-
-#include "../../src/sdk/utils/csgoinput.h"
+#include "HackManager.h"
 #include "../../src/sdk/utils/usermode.h" 
 
 #pragma comment(lib, "d3d11.lib")
@@ -77,9 +72,10 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
 	memcpy(
-	&Globals::ViewMatrix,
-	(void*)(client + Offsets::dwViewMatrix),
-	sizeof(Globals::ViewMatrix));
+		&Globals::ViewMatrix,
+		(void*)(client + Offsets::dwViewMatrix),
+		sizeof(Globals::ViewMatrix)
+	);
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -93,9 +89,7 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features
 	// encapsulate a general hack manager to pass in vars/update state
 
-	Combat::Render();
-	Visuals::Render();
-	Misc::Render();
+	HackManager::Loop();
 	ImGui::Render();
 
 
