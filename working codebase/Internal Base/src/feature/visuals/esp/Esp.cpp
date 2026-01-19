@@ -6,26 +6,18 @@
 #include "../../../../ext/imgui/imgui.h"
 #include <algorithm>
 
+// static members
+ImDrawList* ESP::dl		 = nullptr;
+float		ESP::sw		 = 0.0f;
+float		ESP::sh		 = 0.0f;
+ImU32		ESP::boxCol1 = 0;
+ImU32		ESP::boxCol2 = 0;
+ImU32		ESP::skelCol = 0;
+ImU32		ESP::nameCol = 0;
 
-void ESP::render()
+void ESP::setup()
 {
-	// Your render loop implementation
-}
-
-void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
-{
-	if (!Globals::esp_enabled) return;
-
-	// Static variables - initialized once, persist between calls
-	static ImDrawList* dl	   = nullptr;
-	static float	   sw	   = 0.0f;
-	static float	   sh	   = 0.0f;
-	static ImU32	   boxCol1 = 0;
-	static ImU32	   boxCol2 = 0;
-	static ImU32	   skelCol = 0;
-	static ImU32	   nameCol = 0;
-
-	// Update these every frame
+	// update these every frame
 	dl = ImGui::GetBackgroundDrawList();
 	sw = ImGui::GetIO().DisplaySize.x;
 	sh = ImGui::GetIO().DisplaySize.y;
@@ -45,10 +37,17 @@ void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
 	nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_name_color[0], Globals::esp_name_color[1],
 	Globals::esp_name_color[2], Globals::esp_name_color[3]));
+}
 
+void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
+{
+	if (!Globals::esp_enabled) return;
+
+
+	
 	if (!pawn || !pawn->IsAlive()) return;
 
-	// Get controller from the pawn instead of EntityManager
+	
 	C_CSPlayerController* controller = EntityManager::Get().GetLocalPlayer(); 
 
 	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? boxCol1 : boxCol2;

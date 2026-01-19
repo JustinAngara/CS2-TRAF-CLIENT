@@ -4,6 +4,6 @@
 
 void Visuals::Render()
 {
-    ESP::render();
+    ESP::setup();
 	EnemyCounter::Render();
 }
