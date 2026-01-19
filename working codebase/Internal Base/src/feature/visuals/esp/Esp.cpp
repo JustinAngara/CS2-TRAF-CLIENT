@@ -5,66 +5,53 @@
 #include "../../../sdk/utils/Globals.h"
 #include "../../../../ext/imgui/imgui.h"
 #include <algorithm>
-#include <iostream>
-#include "../../../feature/combat/Combat.h"
 
-void ESP::setup()
-{
-	if (!Globals::esp_enabled) return;
-
-	static ImDrawList* dl = ImGui::GetBackgroundDrawList();
-	static const float sw = ImGui::GetIO().DisplaySize.x;
-	static const float sh = ImGui::GetIO().DisplaySize.y;
-
-	static const ImU32 boxCol1 = ImGui::ColorConvertFloat4ToU32(ImVec4(
-	Globals::esp_box_color[0], Globals::esp_box_color[1],
-	Globals::esp_box_color[2], Globals::esp_box_color[3]));
-
-	static const ImU32 boxCol2 = ImGui::ColorConvertFloat4ToU32(ImVec4(
-	Globals::esp_box_color_2[0], Globals::esp_box_color_2[1],
-	Globals::esp_box_color_2[2], Globals::esp_box_color_2[3]));
-
-	static const ImU32 skelCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
-	Globals::esp_skeleton_color[0], Globals::esp_skeleton_color[1],
-	Globals::esp_skeleton_color[2], Globals::esp_skeleton_color[3]));
-
-	static const ImU32 nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
-	Globals::esp_name_color[0], Globals::esp_name_color[1],
-	Globals::esp_name_color[2], Globals::esp_name_color[3])); // if is running, make name col red
-}
 
 void ESP::render()
 {
-	//if (!Globals::esp_enabled) return;
-
-	//ImDrawList* dl = ImGui::GetBackgroundDrawList();
-	//const float sw = ImGui::GetIO().DisplaySize.x;
-	//const float sh = ImGui::GetIO().DisplaySize.y;
-
-	const auto&		entities  = EntityManager::Get().GetEntities();
-	C_CSPlayerPawn* localPawn = EntityManager::Get().GetLocalPawn();
-	if (!localPawn) return;
-
-	// we call entities and iterate through them many times
-	for (const auto& ent : entities)
-	{
-		C_CSPlayerPawn* pawn = ent.pawn;
-	}
+	// Your render loop implementation
 }
 
-void ESP::renderEntity(const C_CSPlayerPawn& pawn)
+void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
 {
-	setup();
-	// we are interacting with this individual entity
+	if (!Globals::esp_enabled) return;
 
-	if (!pawn.IsAlive()) return;
+	// Static variables - initialized once, persist between calls
+	static ImDrawList* dl	   = nullptr;
+	static float	   sw	   = 0.0f;
+	static float	   sh	   = 0.0f;
+	static ImU32	   boxCol1 = 0;
+	static ImU32	   boxCol2 = 0;
+	static ImU32	   skelCol = 0;
+	static ImU32	   nameCol = 0;
 
-	//std::cout << "this is a pawn: " << pawn->m_iTeamNum(); // 3 ct
-	//std::cout << "this is a my pawn: " << localPawn->m_iTeamNum(); // 2 t
+	// Update these every frame
+	dl = ImGui::GetBackgroundDrawList();
+	sw = ImGui::GetIO().DisplaySize.x;
+	sh = ImGui::GetIO().DisplaySize.y;
 
-	/// blue is the same, green is opposite
-	/*
-	const ImU32 boxCol = pawn->m_iTeamNum() == localPawn->m_iTeamNum() ? boxCol1 : boxCol2;
+	boxCol1 = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	Globals::esp_box_color[0], Globals::esp_box_color[1],
+	Globals::esp_box_color[2], Globals::esp_box_color[3]));
+
+	boxCol2 = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	Globals::esp_box_color_2[0], Globals::esp_box_color_2[1],
+	Globals::esp_box_color_2[2], Globals::esp_box_color_2[3]));
+
+	skelCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	Globals::esp_skeleton_color[0], Globals::esp_skeleton_color[1],
+	Globals::esp_skeleton_color[2], Globals::esp_skeleton_color[3]));
+
+	nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	Globals::esp_name_color[0], Globals::esp_name_color[1],
+	Globals::esp_name_color[2], Globals::esp_name_color[3]));
+
+	if (!pawn || !pawn->IsAlive()) return;
+
+	// Get controller from the pawn instead of EntityManager
+	C_CSPlayerController* controller = EntityManager::Get().GetLocalPlayer(); 
+
+	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? boxCol1 : boxCol2;
 
 	if (pawn->m_iTeamNum() == localPawn->m_iTeamNum() && !Globals::esp_teamate) return;
 
@@ -101,10 +88,10 @@ void ESP::renderEntity(const C_CSPlayerPawn& pawn)
 		dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
-	if (Globals::esp_name && ent.controller)
+	if (Globals::esp_name && controller)
 	{
 		char	  nameBuf[128]{};
-		uintptr_t namePtr = reinterpret_cast<uintptr_t>(ent.controller->m_szTeamname());
+		uintptr_t namePtr = reinterpret_cast<uintptr_t>(controller->m_szTeamname());
 		if (Utils::SafeReadString(namePtr, nameBuf))
 		{
 			ImVec2 ts = ImGui::CalcTextSize(nameBuf);
@@ -131,5 +118,5 @@ void ESP::renderEntity(const C_CSPlayerPawn& pawn)
 			}
 		}
 	}
-	*/
 }
+

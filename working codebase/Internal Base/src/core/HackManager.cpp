@@ -6,7 +6,13 @@
 
 void HackManager::Loop()
 {
-	
+	const auto& entities = EntityManager::Get().GetEntities();
+	for (const auto& ent : entities)
+	{
+		// directly mention esp from here and pass in render
+	}
+
+
 	Combat::Render();
 	Visuals::Render();
 	Misc::Render();

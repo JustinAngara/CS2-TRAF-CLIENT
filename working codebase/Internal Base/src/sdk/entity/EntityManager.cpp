@@ -126,3 +126,18 @@ const std::vector<Entity_t>& EntityManager::GetEntities()
     std::shared_lock lock(mutex);
     return entities;
 }
+
+C_CSPlayerController* EntityManager::GetLocalPlayer()
+{
+	std::shared_lock lock(mutex);
+
+	for (const auto& entity : entities)
+	{
+		if (entity.pawn == localPawn && entity.controller)
+		{
+			return entity.controller;
+		}
+	}
+
+	return nullptr;
+}

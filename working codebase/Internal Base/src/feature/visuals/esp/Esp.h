@@ -6,7 +6,7 @@ class ESP
 public:
 	static void render();
 	static void setup();
-	static void renderEntity(const C_CSPlayerPawn& pawn);
+	static void renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn);
 
 private:
 };
