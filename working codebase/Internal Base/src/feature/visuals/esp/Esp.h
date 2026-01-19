@@ -6,7 +6,7 @@ class ESP
 {
 public:
 	static void setup();
-	static void renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn);
+	static void renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn);
 
 private:
     static ImDrawList* dl;

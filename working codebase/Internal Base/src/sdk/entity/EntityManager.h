@@ -31,6 +31,6 @@ public:
     const std::vector<Entity_t>& GetEntities();
     C_CSPlayerPawn* GetPawnFromHandle(uint32_t handle);
 
-	int GetLocalPlayerIndex() { return localPlayerIndex; }
+	int GetLocalPlayerIndex() const { return localPlayerIndex; }
 
 };

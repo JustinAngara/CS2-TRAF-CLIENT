@@ -26,7 +26,7 @@ namespace Offsets
 	constexpr uintptr_t m_fFlags		= 0x3F8;
 
 	// -> C_CSPlayerController
-	constexpr uintptr_t m_szTeamname   = 0x850; // idk the offset
+	constexpr uintptr_t m_szTeamname   = 0x6E8; // idk the offset
 	constexpr uintptr_t m_hPlayerPawn  = 0x8FC;
 	constexpr uintptr_t m_bPawnIsAlive = 0x7EC;
 
@@ -41,7 +41,7 @@ namespace Offsets
 
 	constexpr std::ptrdiff_t m_aimPunchAngleVel = 0x16F0;
 	// -> Buttons
-	constexpr std::ptrdiff_t jump = 0x1BE88B0;
+	constexpr std::ptrdiff_t jump			 = 0x1BE88B0;
 	constexpr std::ptrdiff_t m_aimPunchCache = 0x1708;
 
 }

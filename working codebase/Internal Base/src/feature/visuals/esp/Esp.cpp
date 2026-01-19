@@ -4,6 +4,7 @@
 #include "../../../sdk/utils/Utils.h"
 #include "../../../sdk/utils/Globals.h"
 #include "../../../../ext/imgui/imgui.h"
+#include <iostream>
 #include <algorithm>
 
 // static members
@@ -21,7 +22,7 @@ void ESP::setup()
 	dl = ImGui::GetBackgroundDrawList();
 	sw = ImGui::GetIO().DisplaySize.x;
 	sh = ImGui::GetIO().DisplaySize.y;
-
+	
 	boxCol1 = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_box_color[0], Globals::esp_box_color[1],
 	Globals::esp_box_color[2], Globals::esp_box_color[3]));
@@ -37,18 +38,15 @@ void ESP::setup()
 	nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_name_color[0], Globals::esp_name_color[1],
 	Globals::esp_name_color[2], Globals::esp_name_color[3]));
+
+
 }
 
-void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
+void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 {
+	C_CSPlayerPawn* pawn = ent.pawn;
 	if (!Globals::esp_enabled) return;
-
-
-	
-	if (!pawn || !pawn->IsAlive()) return;
-
-	
-	C_CSPlayerController* controller = EntityManager::Get().GetLocalPlayer(); 
+	if (!localPawn || !pawn->IsAlive()) return;
 
 	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? boxCol1 : boxCol2;
 
@@ -79,18 +77,18 @@ void ESP::renderEntity(C_CSPlayerPawn* pawn, C_CSPlayerPawn* localPawn)
 
 	if (Globals::esp_health)
 	{
-		int	  hp	 = pawn->m_iHealth();
+		int	  hp = pawn->m_iHealth();
 		float hpFrac = std::clamp(hp / 100.f, 0.f, 1.f);
-		float hpH	 = h * hpFrac;
+		float hpH = h * hpFrac;
 
 		dl->AddRectFilled({ x - 6, y - 1 }, { x - 2, y + h + 1 }, IM_COL32(0, 0, 0, 150));
 		dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
-	if (Globals::esp_name && controller)
+	if (Globals::esp_name && ent.controller)
 	{
-		char	  nameBuf[128]{};
-		uintptr_t namePtr = reinterpret_cast<uintptr_t>(controller->m_szTeamname());
+		char nameBuf[128]{};
+		uintptr_t namePtr = reinterpret_cast<uintptr_t>(ent.controller->m_szTeamname());
 		if (Utils::SafeReadString(namePtr, nameBuf))
 		{
 			ImVec2 ts = ImGui::CalcTextSize(nameBuf);
