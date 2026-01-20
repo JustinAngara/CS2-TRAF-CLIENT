@@ -8,13 +8,13 @@
 #include <algorithm>
 
 // static members
-ImDrawList* ESP::dl		 = nullptr;
-float		ESP::sw		 = 0.0f;
-float		ESP::sh		 = 0.0f;
-ImU32		ESP::boxCol1 = 0;
-ImU32		ESP::boxCol2 = 0;
-ImU32		ESP::skelCol = 0;
-ImU32		ESP::nameCol = 0;
+ImDrawList* ESP::m_dl	 = nullptr;
+float		ESP::m_sw	 = 0.0f;
+float		ESP::m_sh	 = 0.0f;
+ImU32		ESP::m_boxCol1 = 0;
+ImU32		ESP::m_boxCol2 = 0;
+ImU32		ESP::m_skelCol = 0;
+ImU32		ESP::m_nameCol = 0;
 
 void ESP::setup()
 {
