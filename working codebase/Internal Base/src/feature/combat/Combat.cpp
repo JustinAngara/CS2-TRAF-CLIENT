@@ -8,7 +8,10 @@
 #include "../../sdk/entity/EntityManager.h"
 #include "../../sdk/entity/Classes.h"
 
-#include <iostream>
+
+//annoying static member variables
+C_CSPlayerPawn* Combat::g_bestTarget = nullptr;
+
 
 // this will be hatched to game tick
 void Combat::Render()
@@ -72,7 +75,7 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 		{
 			bestDistance = fov;
 			bestTarget = ent.pawn;
-			g_bestTarget = bestTarget;
+			// g_bestTarget = bestTarget;
 			//return bestTarget; internally this is the exact same so why not do this?
 			// we need a better algorithm that will accept this and prevent another annoying edge case
 			// this will need to pick the difference between the enemies and figure out a answer quick
@@ -86,13 +89,13 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 {
 	if (!g_bestTarget) g_bestTarget = ent.pawn; // basically we dont want a nullptr if possible
 
-	// we reached the end of the iterator
-	if (i >= size - 1) return;
+	//// we reached the end of the iterator
+	//if (i >= size - 1) return;
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
+	//uintptr_t client = Memory::GetModuleBase("client.dll");
+	//if (!client) return;
 
-	return; // arbritrary 
+	//return; // arbritrary 
 }
 
 
