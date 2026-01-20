@@ -1,5 +1,11 @@
 #include "LegitAimbot.h"
 
+// TODO: blah blah blah
+// not exactly sure what we want to do with this
+// if a checkmark is on maybe we can turn off that aim first then shoot and remove it
+// maybe clamp certain features
+// remove the aimbot class and utilize namespace?
+
 
 //#include "Aimbot.h"
 //#include "../../../sdk/entity/EntityManager.h"

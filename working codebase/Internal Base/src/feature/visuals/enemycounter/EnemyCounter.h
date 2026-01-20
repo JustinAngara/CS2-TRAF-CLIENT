@@ -3,3 +3,4 @@
 namespace EnemyCounter {
 	void Render();
 }
+

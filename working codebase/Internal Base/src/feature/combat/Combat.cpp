@@ -27,6 +27,12 @@ void Combat::Render()
 
 ////////////////////////////// HELPERS /////////////////////////////////
 ////////////////////////////// TARGET PLAYER STUFF
+
+// potential fix
+// to utilize get best target optimized
+// pass in size of the entities array and the index it is on,
+// double check if the entity is the best target (call setup)
+// and then update best target as entity, but utilize the HackManager.cpp iterator
 C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 {
 	// grab all the entities
@@ -45,7 +51,6 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 
 	for (const auto& ent : entities)
 	{
-
 		// base case
 		bool isTeammate = !ent.isEnemy;
 		if (isTeammate && !Globals::aimbot_friendly_fire)
@@ -65,12 +70,18 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 		{
 			bestDistance = fov;
 			bestTarget = ent.pawn;
+			Combat::bestTarget = ent.pawn;
+			//return bestTarget; internally this is the exact same so why not do this?
+			// we need a better algorithm that will accept this and prevent another annoying edge case
+			// this will need to pick the difference between the enemies and figure out a answer quick
 		}
 	}
 
 	return bestTarget;
 	
 }
+
+
 
 BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {

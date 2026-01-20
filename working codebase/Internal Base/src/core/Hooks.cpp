@@ -182,18 +182,6 @@ void Hooks::Setup()
 }
 
 
-C_CSPlayerController* GetLocalController()
-{
-	static uintptr_t clientBase = 0;
-	if (!clientBase)
-		clientBase = Memory::GetModuleBase("client.dll");
-
-	// Try offset method first (update this offset for your CS2 version)
-	uintptr_t localController = *(uintptr_t*)(clientBase + 0x1A26B68);
-
-	return reinterpret_cast<C_CSPlayerController*>(localController);
-}
-
 void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
 {
 	oCreateMove(thisptr, slot, active);

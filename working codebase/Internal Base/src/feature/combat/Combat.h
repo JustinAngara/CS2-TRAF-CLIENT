@@ -31,6 +31,9 @@ namespace Combat{
 	//static DWORD lastAimTime;
 	//static DWORD lastShootTime;
 	//static bool isAiming;
+
+
+	C_CSPlayerPawn* bestTarget;
 	
 
 
