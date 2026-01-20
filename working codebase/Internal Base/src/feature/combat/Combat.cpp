@@ -5,6 +5,8 @@
 #include "../combat/AutoFire/AutoFire.h"
 #include "../../sdk/utils/Globals.h"
 #include "../../sdk/utils/Utils.h"
+#include "../../sdk/entity/EntityManager.h"
+#include "../../sdk/entity/Classes.h"
 
 #include <iostream>
 
@@ -70,7 +72,7 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 		{
 			bestDistance = fov;
 			bestTarget = ent.pawn;
-			m_bestTarget = bestTarget;
+			g_bestTarget = bestTarget;
 			//return bestTarget; internally this is the exact same so why not do this?
 			// we need a better algorithm that will accept this and prevent another annoying edge case
 			// this will need to pick the difference between the enemies and figure out a answer quick
@@ -80,12 +82,17 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 	return bestTarget;
 }
 
-C_CSPlayerPawn* Combat::DetermineBestPlayer(C_CSPlayerPawn* pawn, int i, int size)
+void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 {
-	// simple base case checker (btw shouldn't be null ptr, nmake it return the private instance variable best member)
-	if (i >= size - 1) return m_bestTarget;
+	if (!g_bestTarget) g_bestTarget = ent.pawn; // basically we dont want a nullptr if possible
 
-	
+	// we reached the end of the iterator
+	if (i >= size - 1) return;
+
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	if (!client) return;
+
+	return; // arbritrary 
 }
 
 

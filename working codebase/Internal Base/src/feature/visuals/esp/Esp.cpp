@@ -19,23 +19,23 @@ ImU32		ESP::m_nameCol = 0;
 void ESP::setup()
 {
 	// update these every frame
-	dl = ImGui::GetBackgroundDrawList();
-	sw = ImGui::GetIO().DisplaySize.x;
-	sh = ImGui::GetIO().DisplaySize.y;
+	m_dl = ImGui::GetBackgroundDrawList();
+	m_sw = ImGui::GetIO().DisplaySize.x;
+	m_sh = ImGui::GetIO().DisplaySize.y;
 	
-	boxCol1 = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	m_boxCol1 = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_box_color[0], Globals::esp_box_color[1],
 	Globals::esp_box_color[2], Globals::esp_box_color[3]));
 
-	boxCol2 = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	m_boxCol2 = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_box_color_2[0], Globals::esp_box_color_2[1],
 	Globals::esp_box_color_2[2], Globals::esp_box_color_2[3]));
 
-	skelCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	m_skelCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_skeleton_color[0], Globals::esp_skeleton_color[1],
 	Globals::esp_skeleton_color[2], Globals::esp_skeleton_color[3]));
 
-	nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
+	m_nameCol = ImGui::ColorConvertFloat4ToU32(ImVec4(
 	Globals::esp_name_color[0], Globals::esp_name_color[1],
 	Globals::esp_name_color[2], Globals::esp_name_color[3]));
 
@@ -48,7 +48,7 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 	if (!Globals::esp_enabled) return;
 	if (!localPawn || !pawn->IsAlive()) return;
 
-	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? boxCol1 : boxCol2;
+	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? m_boxCol1 : m_boxCol2;
 
 	if (pawn->m_iTeamNum() == localPawn->m_iTeamNum() && !Globals::esp_teamate) return;
 
@@ -59,8 +59,8 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 	head.z += 8.2f;
 
 	Vector sFeet, sHead;
-	if (!Utils::WorldToScreen(feet, sFeet, (float*)Globals::ViewMatrix, sw, sh) ||
-	!Utils::WorldToScreen(head, sHead, (float*)Globals::ViewMatrix, sw, sh)) return;
+	if (!Utils::WorldToScreen(feet, sFeet, (float*)Globals::ViewMatrix, m_sw, m_sh) ||
+	!Utils::WorldToScreen(head, sHead, (float*)Globals::ViewMatrix, m_sw, m_sh)) return;
 
 	float h = sFeet.y - sHead.y;
 	if (h < 5.f) return;
@@ -71,8 +71,8 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 
 	if (Globals::esp_box)
 	{
-		dl->AddRect({ x, y }, { x + w, y + h }, boxCol, 0.f, 0, Globals::esp_box_thickness);
-		dl->AddRect({ x - 1, y - 1 }, { x + w + 1, y + h + 1 }, IM_COL32(0, 0, 0, 220));
+		m_dl->AddRect({ x, y }, { x + w, y + h }, boxCol, 0.f, 0, Globals::esp_box_thickness);
+		m_dl->AddRect({ x - 1, y - 1 }, { x + w + 1, y + h + 1 }, IM_COL32(0, 0, 0, 220));
 	}
 
 	if (Globals::esp_health)
@@ -81,8 +81,8 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 		float hpFrac = std::clamp(hp / 100.f, 0.f, 1.f);
 		float hpH = h * hpFrac;
 
-		dl->AddRectFilled({ x - 6, y - 1 }, { x - 2, y + h + 1 }, IM_COL32(0, 0, 0, 150));
-		dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
+		m_dl->AddRectFilled({ x - 6, y - 1 }, { x - 2, y + h + 1 }, IM_COL32(0, 0, 0, 150));
+		m_dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
 	if (Globals::esp_name && ent.controller)
@@ -92,7 +92,7 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 		if (Utils::SafeReadString(namePtr, nameBuf))
 		{
 			ImVec2 ts = ImGui::CalcTextSize(nameBuf);
-			dl->AddText({ x + (w - ts.x) * 0.5f, y - ts.y - 2 }, nameCol, nameBuf);
+			m_dl->AddText({ x + (w - ts.x) * 0.5f, y - ts.y - 2 }, m_nameCol, nameBuf);
 		}
 	}
 
@@ -108,10 +108,10 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 			if (b1.IsZero() || b2.IsZero()) continue;
 
 			Vector sb1, sb2;
-			if (Utils::WorldToScreen(b1, sb1, (float*)Globals::ViewMatrix, sw, sh) &&
-			Utils::WorldToScreen(b2, sb2, (float*)Globals::ViewMatrix, sw, sh))
+			if (Utils::WorldToScreen(b1, sb1, (float*)Globals::ViewMatrix, m_sw, m_sh) &&
+			Utils::WorldToScreen(b2, sb2, (float*)Globals::ViewMatrix, m_sw, m_sh))
 			{
-				dl->AddLine({ sb1.x, sb1.y }, { sb2.x, sb2.y }, skelCol, thick);
+				m_dl->AddLine({ sb1.x, sb1.y }, { sb2.x, sb2.y }, m_skelCol, thick);
 			}
 		}
 	}
