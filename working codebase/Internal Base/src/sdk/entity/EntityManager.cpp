@@ -108,9 +108,8 @@ C_CSPlayerPawn* EntityManager::GetPawnFromHandle(uint32_t handle)
 
     uintptr_t pawnPtr = *reinterpret_cast<uintptr_t*>(
         entry + 112 * (handle & 0x1FF)
-        );
-    if (!pawnPtr)
-        return nullptr;
+    );
+    if (!pawnPtr) return nullptr;
 
     return reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);
 }

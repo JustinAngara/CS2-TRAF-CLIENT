@@ -6,7 +6,7 @@
 #include <algorithm>
 
 // next refactor this, too much
-void EnemyCounter::Render()
+void GameTitle::Render()
 {
     //auto& em = EntityManager::Get();
     //C_CSPlayerPawn* local = em.GetLocalPawn();

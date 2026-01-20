@@ -7,6 +7,8 @@ public:
 	static void Loop();
 
 	// getter methods 
+	static void RunFeatures();
+
 private:
 	
 };

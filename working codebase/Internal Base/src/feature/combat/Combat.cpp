@@ -70,7 +70,6 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 		{
 			bestDistance = fov;
 			bestTarget = ent.pawn;
-			Combat::bestTarget = ent.pawn;
 			//return bestTarget; internally this is the exact same so why not do this?
 			// we need a better algorithm that will accept this and prevent another annoying edge case
 			// this will need to pick the difference between the enemies and figure out a answer quick
@@ -78,6 +77,12 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 	}
 
 	return bestTarget;
+}
+
+C_CSPlayerPawn* Combat::DetermineBestPlayer(C_CSPlayerPawn* pawn, int i, int size)
+{
+	// simple base case checker
+	if (i >= size - 1) return nullptr;
 	
 }
 

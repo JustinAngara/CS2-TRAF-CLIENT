@@ -5,5 +5,5 @@
 void Visuals::Render()
 {
     ESP::setup();
-	EnemyCounter::Render();
+	GameTitle::Render(); 
 }

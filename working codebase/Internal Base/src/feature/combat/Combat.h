@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../sdk/entity/EntityManager.h"
+//#include "../../sdk/entity/EntityManager.h"
+#include "../../sdk/entity/Classes.h"
 #include <Windows.h>
 #include "../../sdk/utils/Utils.h"
 
@@ -20,7 +21,8 @@ namespace Combat{
 	bool isMB1Held();
 
 	// player stuff
-	C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
+	extern C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local);
+	C_CSPlayerPawn* DetermineBestPlayer(C_CSPlayerPawn* pawn, int i, int size);
 	BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim);
 	bool isVisible(C_CSPlayerPawn* target, int localIndex = 1);
 	// angle stuff
@@ -33,7 +35,7 @@ namespace Combat{
 	//static bool isAiming;
 
 
-	C_CSPlayerPawn* bestTarget;
+	//C_CSPlayerPawn* bestTargetFFF;
 	
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
-namespace EnemyCounter {
+namespace GameTitle
+{
 	void Render();
 }
 

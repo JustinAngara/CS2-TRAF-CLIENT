@@ -11,7 +11,12 @@
 #include "../../src/sdk/memory/Offsets.h"
 #include "../../src/sdk/memory/PatternScan.h"
 #include "HackManager.h"
-#include "../../src/sdk/utils/usermode.h" 
+#include "../../src/sdk/utils/usermode.h"
+#include "../../src/feature/visuals/Visuals.h"
+#include "../feature/misc/Misc.h"
+#include "../feature/combat/Combat.h"
+#include "../feature/misc/bhop/Bhop.h"
+#include "../feature/visuals/esp/Esp.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -88,6 +93,11 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features
 	// encapsulate a general hack manager to pass in vars/update state
+
+	// setup area
+	{
+		HackManager::RunFeatures(); // this will fill in any static variables needed
+	}
 
 	HackManager::Loop();
 	ImGui::Render();

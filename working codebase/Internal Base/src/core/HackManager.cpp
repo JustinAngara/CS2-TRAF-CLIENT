@@ -9,13 +9,6 @@ void HackManager::Loop()
 {
 
 
-
-	// become setup
-	Combat::Render();
-	Visuals::Render();
-	Misc::Render();
-
-
 	// iterator
 	const auto& entities = EntityManager::Get().GetEntities();
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
@@ -23,9 +16,19 @@ void HackManager::Loop()
 	{
 		// directly mention esp from here and pass in render
 		ESP::renderEntity(ent, local);
-	}
+	} // now that we have all state ready we can do some fuck ass shit
+
+	// assume taht these are rendered from core.cpp (alreadyt is)
+
 
 }
 
+void HackManager::RunFeatures()
+{
+	Combat::Render();
+	Visuals::Render();
+	Misc::Render();
+
+}
 
 
