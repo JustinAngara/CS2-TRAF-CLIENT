@@ -163,6 +163,11 @@ void Menu::createAimbot()
 	
 }
 
+void Menu::createFovCrosshair()
+{
+	MenuStyles::CustomCheckbox("Enable FoV Crosshair", &Globals::fov_crosshair_enabled);
+}
+
 void Menu::createAutoFire()
 {
 	MenuStyles::CustomCheckbox("Enable Auto Fire", &Globals::autofire_enabled);
@@ -206,6 +211,11 @@ void Menu::Render()
 	createESP();
 	ImGui::Spacing();
 	createSubESP();
+
+	ImGui::Spacing();
+	ImGui::Spacing();
+
+	createFovCrosshair();
 
 	ImGui::Spacing();
 	ImGui::Spacing();

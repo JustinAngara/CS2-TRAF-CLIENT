@@ -6,6 +6,8 @@
 
 void FOV::Render()
 {
+	if (!Globals::fov_crosshair_enabled) return;
+
 	ImVec2 screenSize = ImGui::GetIO().DisplaySize;
 	ImVec2 center	  = ImVec2(screenSize.x * 0.5f, screenSize.y * 0.5f);
 

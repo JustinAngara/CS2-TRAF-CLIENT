@@ -15,21 +15,21 @@ namespace Globals
 	inline bool esp_box		= true;
 	inline bool esp_teamate = true;
 
-	// colors
+	// COLORS
 	inline float esp_box_color[4]	= { 0.f, 0.f, 1.f, 1.f };
 	inline float esp_box_color_2[4] = { 1.f, 0.f, 0.f, 1.f };
 	inline float esp_box_thickness	= 1.5f;
 
-	// skeleeton
+	// SKELETON
 	inline bool	 esp_skeleton			= true;
 	inline float esp_skeleton_color[4]	= { 1.f, 1.f, 1.f, 0.9f };
 	inline float esp_skeleton_thickness = 1.8f;
 
-	// name
+	// NAME
 	inline bool	 esp_name		   = true;
 	inline float esp_name_color[4] = { 1.f, 1.f, 1.f, 1.f };
 
-	//health
+	// HEALTH
 	inline bool esp_health = true;
 
 	// BHOP
@@ -54,4 +54,7 @@ namespace Globals
 
 	// NO RECOIL
 	inline bool norecoil_enabled = true;
+
+	// FOV CROSSHAIR
+	inline bool fov_crosshair_enabled = true;
 }
