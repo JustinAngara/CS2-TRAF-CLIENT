@@ -11,6 +11,7 @@
 
 //annoying static member variables
 C_CSPlayerPawn* Combat::g_bestTarget = nullptr;
+float			Combat::m_bestDistance = Globals::aimbot_fov;
 
 
 // this will be hatched to game tick
@@ -38,64 +39,90 @@ void Combat::Render()
 // pass in size of the entities array and the index it is on,
 // double check if the entity is the best target (call setup)
 // and then update best target as entity, but utilize the HackManager.cpp iterator
+// maybe down the road we actually use a safer way to use iterator class but idfk know it rn
 C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 {
-	// grab all the entities
-	const auto& entities = EntityManager::Get().GetEntities();
-	C_CSPlayerPawn* bestTarget = nullptr;
-	float bestDistance = Globals::aimbot_fov;
+	//// grab all the entities
+	//const auto& entities = EntityManager::Get().GetEntities();
+	//C_CSPlayerPawn* bestTarget = nullptr;
+	//float bestDistance = Globals::aimbot_fov;
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client)
-		return nullptr;
+	//uintptr_t client = Memory::GetModuleBase("client.dll");
+	//if (!client)
+	//	return nullptr;
 
-	// get current angles
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
-	if (!currentAngles)
-		return nullptr;
+	//// get current angles
+	//Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	//if (!currentAngles)
+	//	return nullptr;
 
-	for (const auto& ent : entities)
-	{
-		// base case
-		bool isTeammate = !ent.isEnemy;
-		if (isTeammate && !Globals::aimbot_friendly_fire)
-			continue;
+	//for (const auto& ent : entities)
+	//{
+	//	// base case
+	//	bool isTeammate = !ent.isEnemy;
+	//	if (isTeammate && !Globals::aimbot_friendly_fire)
+	//		continue;
 
-		// find the pos
-		Vector headPos = Utils::GetBonePos(ent.pawn, BoneID::Head);
-		if (headPos.IsZero())
-			continue;
+	//	// find the pos
+	//	Vector headPos = Utils::GetBonePos(ent.pawn, BoneID::Head);
+	//	if (headPos.IsZero())
+	//		continue;
 
-		Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+	//	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 
-		Vector aimAngles = Utils::CalcAngle(localPos, headPos);
-		float fov = Utils::GetFoV(*currentAngles, aimAngles);
+	//	Vector aimAngles = Utils::CalcAngle(localPos, headPos);
+	//	float fov = Utils::GetFoV(*currentAngles, aimAngles);
 
-		if (fov < bestDistance)
-		{
-			bestDistance = fov;
-			bestTarget = ent.pawn;
-			// g_bestTarget = bestTarget;
-			//return bestTarget; internally this is the exact same so why not do this?
-			// we need a better algorithm that will accept this and prevent another annoying edge case
-			// this will need to pick the difference between the enemies and figure out a answer quick
-		}
-	}
+	//	if (fov < bestDistance)
+	//	{
+	//		bestDistance = fov;
+	//		bestTarget = ent.pawn;
+	//		// g_bestTarget = bestTarget;
+	//		//return bestTarget; internally this is the exact same so why not do this?
+	//		// we need a better algorithm that will accept this and prevent another annoying edge case
+	//		// this will need to pick the difference between the enemies and figure out a answer quick
+	//	}
+	//}
 
-	return bestTarget;
+	return g_bestTarget;
 }
 
 void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 {
 	if (!g_bestTarget) g_bestTarget = ent.pawn; // basically we dont want a nullptr if possible
 
-	//// we reached the end of the iterator
-	//if (i >= size - 1) return;
+	// we reached the end of the iterator
+	if (i >= size - 1) return;
 
-	//uintptr_t client = Memory::GetModuleBase("client.dll");
-	//if (!client) return;
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	if (!client) return;
 
-	//return; // arbritrary 
+	// get current angles
+	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	if (!currentAngles) return;
+
+
+	// base case
+	bool isTeammate = !ent.isEnemy;
+	if (isTeammate && !Globals::aimbot_friendly_fire) return;
+
+	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
+
+	// find the pos
+	Vector headPos = Utils::GetBonePos(ent.pawn, BoneID::Head);
+	if (headPos.IsZero()) return;
+
+	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
+
+	Vector aimAngles = Utils::CalcAngle(localPos, headPos);
+	float  fov		 = Utils::GetFoV(*currentAngles, aimAngles);
+
+	if (fov < m_bestDistance)
+	{
+		m_bestDistance = fov;
+		g_bestTarget = ent.pawn;
+	}
+
 }
 
 
