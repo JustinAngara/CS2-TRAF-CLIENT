@@ -71,6 +71,12 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 		ImGui_ImplDX11_Init(g_Device, g_Context);
 
 		g_Init = true;
+
+		// setup area
+		{
+			HackManager::RunFeatures(); // this will fill in any static variables needed
+		}
+
 	}
 
 	EntityManager::Get().Update();
@@ -93,11 +99,6 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features
 	// encapsulate a general hack manager to pass in vars/update state
-
-	// setup area
-	{
-		HackManager::RunFeatures(); // this will fill in any static variables needed
-	}
 
 	HackManager::Loop();
 	ImGui::Render();

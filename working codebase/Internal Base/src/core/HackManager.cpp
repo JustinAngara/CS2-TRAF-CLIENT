@@ -8,7 +8,6 @@
 void HackManager::Loop()
 {
 
-
 	// iterator
 	const auto& entities = EntityManager::Get().GetEntities();
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
@@ -27,7 +26,7 @@ void HackManager::Loop()
 
 	// assume taht these are rendered from core.cpp (alreadyt is)
 
-
+	HackManager::RunFeatures();
 }
 
 void HackManager::RunFeatures()
