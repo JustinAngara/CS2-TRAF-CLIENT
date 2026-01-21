@@ -23,14 +23,14 @@ public:
 	static bool isMB1Held();
 
 	// player stuff
-	static C_CSPlayerPawn* getBestTarget(C_CSPlayerPawn* local); // SOON TO BE DEPRECATED, FOLLOW HackManager.cpp
-	static void DetermineBestPlayer(Entity_t& ent, int i, int size); // This needs to be added soon
-	static BoneID findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim);
-	static bool isVisible(C_CSPlayerPawn* target, int localIndex = 1);
+	static C_CSPlayerPawn* GetBestTarget(C_CSPlayerPawn* local); // Turned into getter method, don't plan on removing
+	static void DetermineBestPlayer(Entity_t& ent, int i, int size); // this will be latched onto original game entities hook
+	static BoneID FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim);
+	static bool IsVisible(C_CSPlayerPawn* target, int localIndex = 1);
 
 	// angle stuff
-	static Vector getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
-	static void lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
+	static Vector GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
+	static void LockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
 
 
 

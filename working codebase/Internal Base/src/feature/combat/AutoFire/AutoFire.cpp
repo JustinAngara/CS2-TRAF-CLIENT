@@ -25,21 +25,21 @@ void AutoFire::run()
 
 
 	// check for nearest player
-	C_CSPlayerPawn* target = Combat::getBestTarget(local);
-	BoneID targetBone = Combat::findNearestBoneId(local, target, false);
+	C_CSPlayerPawn* target = Combat::GetBestTarget(local);
+	BoneID targetBone = Combat::FindNearestBoneId(local, target, false);
 	if (!target || !target->IsAlive()) return;
 
 	
 
 	// see if delta matches to close to 0 (meaning my crosshair is on an enemy)
-	Vector delta = Combat::getDeltaAngle(local, target, targetBone);
+	Vector delta = Combat::GetDeltaAngle(local, target, targetBone);
 	Utils::NormalizeAngles(delta);
 
 	// shoot type shit
 	if (delta.Length() < Globals::autofire_fov)
 	{
 		// now check if we want to do this
-		Combat::lockAtTarget(local, target, targetBone);
+		Combat::LockAtTarget(local, target, targetBone);
 		
 		// fire but we want ti to maybe be recursive if we want to make it like good type shit
 		Combat::clickFire(); 

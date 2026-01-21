@@ -34,7 +34,7 @@ void Combat::Render()
 ////////////////////////////// HELPERS /////////////////////////////////
 ////////////////////////////// TARGET PLAYER STUFF
 
-C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
+C_CSPlayerPawn* Combat::GetBestTarget(C_CSPlayerPawn* local)
 {
 	return g_bestTarget;
 }
@@ -75,7 +75,7 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 
 
 
-BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
+BoneID Combat::FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {
 	if (!local || !target) return BoneID::Head;
 
@@ -122,7 +122,7 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	return bestBone;
 }
 
-bool Combat::isVisible(C_CSPlayerPawn* target, int localIndex)
+bool Combat::IsVisible(C_CSPlayerPawn* target, int localIndex)
 {
 
 	if (!target || localIndex <= 0) return false;
@@ -137,7 +137,7 @@ bool Combat::isVisible(C_CSPlayerPawn* target, int localIndex)
 }
 
 ////////////////////////////// ANGLE STUFF
-Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+Vector Combat::GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
@@ -149,7 +149,7 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, Bone
 }
 
 
-void Combat::lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+void Combat::LockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);

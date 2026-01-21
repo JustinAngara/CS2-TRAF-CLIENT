@@ -53,7 +53,7 @@ void Aimbot::run()
 		return;
 	}
 
-	C_CSPlayerPawn* bestTarget = Combat::getBestTarget(local);
+	C_CSPlayerPawn* bestTarget = Combat::GetBestTarget(local);
 
 	if (!bestTarget)
 	{
@@ -81,7 +81,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	if (!currentAngles) return;
 
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
-	BoneID targetBone = Combat::findNearestBoneId(local, target, validBaim);
+	BoneID targetBone = Combat::FindNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 
 	if (targetPos.IsZero()) return;
