@@ -72,10 +72,6 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 
 		g_Init = true;
 
-		// setup area
-		{
-			HackManager::RunFeatures(); // this will fill in any static variables needed
-		}
 
 	}
 
@@ -100,6 +96,12 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features
 	// encapsulate a general hack manager to pass in vars/update state
 
+	// setup area
+	{
+		ESP::setup();
+		HackManager::RunFeatures(); // this will fill in any static variables needed before ent loops
+			
+	}
 	HackManager::Loop();
 	ImGui::Render();
 

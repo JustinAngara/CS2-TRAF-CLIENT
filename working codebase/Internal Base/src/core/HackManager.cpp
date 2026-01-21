@@ -12,16 +12,16 @@ void HackManager::Loop()
 	const auto& entities = EntityManager::Get().GetEntities();
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 
-	int i = 0, size = entities.size();
+	int iterator = 0, size = entities.size();
 
 	for (auto ent : entities)
 	{
 		// directly mention esp from here and pass in render
 		ESP::renderEntity(ent, local);
-		Combat::DetermineBestPlayer(ent, i, size);
+		Combat::DetermineBestPlayer(ent, iterator, size);
 
 
-		i++;
+		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit
 
 	// assume taht these are rendered from core.cpp (alreadyt is)
@@ -34,6 +34,7 @@ void HackManager::RunFeatures()
 	Combat::Render();
 	Visuals::Render();
 	Misc::Render();
+
 
 }
 
