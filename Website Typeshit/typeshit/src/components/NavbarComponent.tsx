@@ -3,12 +3,13 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import type {CSSProperties} from "react";
 
 const NavbarComponent = () => {
     const navigate = useNavigate();
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
             <Container>
                 <Navbar.Brand as={NavLink} to ="/">Home</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -21,6 +22,5 @@ const NavbarComponent = () => {
         </Navbar>
     );
 }
-
 
 export default NavbarComponent;
