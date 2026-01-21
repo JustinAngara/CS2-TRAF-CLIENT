@@ -11,7 +11,7 @@
 
 //annoying static member variables
 C_CSPlayerPawn* Combat::g_bestTarget = nullptr;
-float			Combat::m_bestDistance = Globals::aimbot_fov;
+float			Combat::m_bestDistance = 89.f;
 
 
 // this will be hatched to game tick
@@ -89,40 +89,37 @@ C_CSPlayerPawn* Combat::getBestTarget(C_CSPlayerPawn* local)
 
 void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 {
-	if (!g_bestTarget) g_bestTarget = ent.pawn; // basically we dont want a nullptr if possible
-
-	// we reached the end of the iterator
-	if (i >= size - 1) return;
+	if (i == 0)
+	{
+		m_bestDistance = Globals::aimbot_fov; 
+		g_bestTarget   = nullptr;
+	}
 
 	uintptr_t client = Memory::GetModuleBase("client.dll");
 	if (!client) return;
 
-	// get current angles
 	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
 	if (!currentAngles) return;
 
-
-	// base case
-	bool isTeammate = !ent.isEnemy;
-	if (isTeammate && !Globals::aimbot_friendly_fire) return;
-
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 
-	// find the pos
+	//base cases
+	if (!local) return; 
+	if (!ent.pawn) return;
+	if (!ent.isEnemy && !Globals::aimbot_friendly_fire) return;
+
 	Vector headPos = Utils::GetBonePos(ent.pawn, BoneID::Head);
 	if (headPos.IsZero()) return;
 
-	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
-
+	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, headPos);
 	float  fov		 = Utils::GetFoV(*currentAngles, aimAngles);
 
 	if (fov < m_bestDistance)
 	{
 		m_bestDistance = fov;
-		g_bestTarget = ent.pawn;
+		g_bestTarget   = ent.pawn;
 	}
-
 }
 
 
