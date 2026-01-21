@@ -4,6 +4,9 @@
 #include "../feature/combat/Combat.h"
 #include "../feature/misc/bhop/Bhop.h"
 #include "../feature/visuals/esp/Esp.h"
+#include <cstdint>
+
+uintptr_t HackManager::g_client{ };
 
 void HackManager::Loop()
 {
@@ -11,6 +14,7 @@ void HackManager::Loop()
 	// iterator
 	const auto& entities = EntityManager::Get().GetEntities();
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
+	g_client = Memory::GetModuleBase("client.dll");
 
 	int iterator = 0, size = entities.size();
 

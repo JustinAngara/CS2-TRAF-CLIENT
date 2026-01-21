@@ -7,6 +7,7 @@
 #include "../../../feature/combat/Combat.h"
 #include "../../../feature/combat/Recoil/Recoil.h"
 #include <Windows.h>
+#include "../../../core/HackManager.h"
 
 void Aimbot::run()
 {
@@ -73,10 +74,10 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 	if (!local || !target) return;
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
 
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	if (!HackManager::g_client) return;
+
+	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!currentAngles) return;
 
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;

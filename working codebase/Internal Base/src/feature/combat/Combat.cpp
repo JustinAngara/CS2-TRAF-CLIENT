@@ -7,7 +7,7 @@
 #include "../../sdk/utils/Utils.h"
 #include "../../sdk/entity/EntityManager.h"
 #include "../../sdk/entity/Classes.h"
-
+#include "../../core/HackManager.h"
 
 //annoying static member variables
 C_CSPlayerPawn* Combat::g_bestTarget = nullptr;
@@ -47,10 +47,9 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 		g_bestTarget   = nullptr;
 	}
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
+	if (!HackManager::g_client) return;
 
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!currentAngles) return;
 
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
@@ -91,10 +90,9 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 
 	int start = validBaim ? 2 : 0; // 0 is head, 1 is neck, 2 is spine ...
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return iterateBones[start];
+	if (!HackManager::g_client) return iterateBones[start];
 
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!currentAngles) return iterateBones[start];
 
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
@@ -139,10 +137,10 @@ bool Combat::isVisible(C_CSPlayerPawn* target, int localIndex)
 }
 
 ////////////////////////////// ANGLE STUFF
-Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone)
+Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 	Vector delta = aimAngles - *currentAngles;
@@ -151,10 +149,10 @@ Vector Combat::getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uint
 }
 
 
-void Combat::lockAtTarget(uintptr_t client, C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+void Combat::lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 
-	Vector* currentAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	if (targetPos.IsZero()) return;
 	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();

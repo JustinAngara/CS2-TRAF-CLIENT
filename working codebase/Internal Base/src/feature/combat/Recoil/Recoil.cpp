@@ -1,12 +1,14 @@
 #include "Recoil.h"
+#include "../../../sdk/utils/Utils.h"
+#include "../../../core/HackManager.h"
 void Recoil::Run(C_CSPlayerPawn* local)
 {
 	if (!local) return;
 
-	uintptr_t client = Memory::GetModuleBase("client.dll");
-	if (!client) return;
+	
+	if (!HackManager::g_client) return;
 
-	Vector* viewAngles = reinterpret_cast<Vector*>(client + Offsets::dwViewAngles);
+	Vector* viewAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!viewAngles) return;
 
 	static Vector oldPunch{};
@@ -24,15 +26,8 @@ void Recoil::Run(C_CSPlayerPawn* local)
 
 	viewAngles->x -= punchDelta.x;
 	viewAngles->y -= punchDelta.y;
-
-	//////// Normalize
-	if (viewAngles->x > 89.0f) viewAngles->x = 89.0f;
-	if (viewAngles->x < -89.0f) viewAngles->x = -89.0f;
-
-	while (viewAngles->y > 180.0f)
-		viewAngles->y -= 360.0f;
-	while (viewAngles->y < -180.0f)
-		viewAngles->y += 360.0f;
+	
+	Utils::NormalizeAngles(*viewAngles);
 
 	oldPunch = currentPunch;
 }

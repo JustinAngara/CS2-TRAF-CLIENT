@@ -1,8 +1,18 @@
-﻿# Traf: CS2 Hack
+﻿﻿# Traf: CS2 Hack
 # CS2 Updated Version: January
 
 ![Alt text](images/1.png)
 ![Alt text](images/2.png)
+
+
+## Features
+- Aimbot (aim -> fire architectur rather than shoot -> aim)
+- Autofire (if crosshair is aiming at head shoot)
+- No Recoil
+- Bhop
+- ESP (name, health, skeleton, bars, colors)
+- FoV Custom Croshair
+- Cool title at the top
 
 ## Table of Contents
 - [About](#about)

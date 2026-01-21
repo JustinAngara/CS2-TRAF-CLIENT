@@ -29,8 +29,8 @@ public:
 	static bool isVisible(C_CSPlayerPawn* target, int localIndex = 1);
 
 	// angle stuff
-	static Vector getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, uintptr_t client, BoneID targetBone);
-	static void lockAtTarget(uintptr_t client, C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
+	static Vector getDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
+	static void lockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);
 
 
 
