@@ -100,7 +100,7 @@ BoneID Combat::findNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 
 	BoneID bestBone = iterateBones[start];
-	float bestFov = FLT_MAX;
+	float bestFov = Globals::aimbot_fov;
 
 	for (int i = start; i < sizeof(iterateBones) / sizeof(BoneID); i++)
 	{
