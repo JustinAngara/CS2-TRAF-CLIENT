@@ -4,21 +4,26 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Why from "./pages/Why";
 import Contact from "./pages/Contact";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <App />, // entry point layout: navbar + outlet
-        children: [
-            { index: true, element: <Why /> },        // / (default)
-            { path: "contact", element: <Contact /> } // /contact
-        ],
-    },
-]);
+const router = createBrowserRouter(
+	[
+		{
+			path: "/",
+			element: <App />,
+			children: [
+				{ index: true, element: <Why /> },
+				{ path: "contact", element: <Contact /> },
+			],
+		},
+	],
+	{
+		basename: import.meta.env.BASE_URL,
+	}
+);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
+	<React.StrictMode>
+		<RouterProvider router={router} />
+	</React.StrictMode>
 );
