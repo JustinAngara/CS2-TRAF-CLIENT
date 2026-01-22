@@ -16,9 +16,10 @@ const Why = () => {
 					This project reveals Counter-Strike 2 offsets, memory patterns, and more!
 				</div>
 
+
+
+
             </div>
-
-
         </div>
     );
 }
@@ -28,8 +29,6 @@ const styles: Record<"root" | "title" | "card", CSSProperties> = {
         fontSize: "1.5rem",
         padding: 12,
 		color: "lightsteelblue",
-		// centering
-
 
     },
     title: {
