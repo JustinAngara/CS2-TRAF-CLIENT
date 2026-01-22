@@ -4,6 +4,12 @@
 #include <dxgi.h>
 #include "../../src/sdk/utils/usermode.h"
 
+/*
+Everything done is through a tick-based style
+everything needs re-rendering/processing
+is called on a (1000/60)hz basis
+*/
+
 class Hooks
 {
 public:
