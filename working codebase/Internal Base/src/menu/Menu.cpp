@@ -204,6 +204,8 @@ void Menu::Render()
 	MenuStyles::RenderBackground(dl, wp, ws);
 	MenuStyles::RenderTopAccent(dl, wp, win_width);
 
+	////////////////// CONTENT START
+
 	ImGui::Spacing();
 	ImGui::Spacing();
 
@@ -233,6 +235,10 @@ void Menu::Render()
 	MenuStyles::SectionHeader("MISC", 85.0f);
 	ImGui::Spacing();
 	createBhop();
+
+
+	////////////////// CONTENT END
+
 
 	ImGui::End();
 	MenuStyles::PopWindowStyle();

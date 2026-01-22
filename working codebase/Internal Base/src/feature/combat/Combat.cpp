@@ -9,7 +9,7 @@
 #include "../../sdk/entity/Classes.h"
 #include "../../core/HackManager.h"
 
-//annoying static member variables
+// annoying static member variables
 C_CSPlayerPawn* Combat::g_bestTarget = nullptr;
 float			Combat::m_bestDistance = Globals::aimbot_fov; 
 

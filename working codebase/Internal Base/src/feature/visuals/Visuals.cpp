@@ -4,7 +4,6 @@
 #include "fov/Fov.h"
 void Visuals::Render()
 {
-    ESP::setup();
-	GameTitle::Render();
+    GameTitle::Render();
 	FOV::Render();
 }

@@ -34,12 +34,12 @@ namespace Offsets
 	constexpr uintptr_t m_modelState = 0x190;
 
 	// -> CObserverServices
-	constexpr std::ptrdiff_t m_pObserverServices = 0x1408;
-	constexpr std::ptrdiff_t m_hObserverTarget	 = 0x44;
-	constexpr std::ptrdiff_t m_iObserverMode	 = 0x40;
-	constexpr std::ptrdiff_t m_entitySpottedState = 0x1F98; 
+	constexpr std::ptrdiff_t m_pObserverServices  = 0x1408;
+	constexpr std::ptrdiff_t m_hObserverTarget	  = 0x44;
+	constexpr std::ptrdiff_t m_iObserverMode	  = 0x40;
+	constexpr std::ptrdiff_t m_entitySpottedState = 0x1F98;
+	constexpr std::ptrdiff_t m_aimPunchAngleVel	  = 0x16F0;
 
-	constexpr std::ptrdiff_t m_aimPunchAngleVel = 0x16F0;
 	// -> Buttons
 	constexpr std::ptrdiff_t jump			 = 0x1BE88B0;
 	constexpr std::ptrdiff_t m_aimPunchCache = 0x1708;

@@ -97,11 +97,13 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	// encapsulate a general hack manager to pass in vars/update state
 
 	// setup area
+	if (!g_Init)
 	{
 		ESP::setup();
 		HackManager::RunFeatures(); // this will fill in any static variables needed before ent loops
-			
 	}
+
+	// loop here
 	HackManager::Loop();
 	ImGui::Render();
 
