@@ -5,9 +5,9 @@
 #include "../../src/sdk/utils/usermode.h"
 
 /*
-Everything done is through a tick-based style
-everything needs re-rendering/processing
-is called on a (1000/60)hz basis
+	Everything done is through a tick-based style
+	everything needs re-rendering/processing
+	is called on a (1000/60)hz basis
 */
 
 class Hooks
@@ -19,11 +19,11 @@ public:
 	// hooks
 	static LRESULT __stdcall hkWndProc(HWND, UINT, WPARAM, LPARAM);
 	static HRESULT __stdcall hkPresent(IDXGISwapChain*, UINT, UINT);
-	static void __fastcall hkCreateMove(void* thisptr, int slot, bool active);
-	// static double __fastcall hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd);
+	static void __fastcall hkCreateMove(void* thisptr, int slot, bool active); // btw this doesn't work dont use
 
 	// debug
-	//using CreateMove_t = double(__fastcall*)(void*, unsigned int, CUserCmd*);
+	// using CreateMove_t = double(__fastcall*)(void*, unsigned int, CUserCmd*); // we want to use CUserCmd infra
+	// static double __fastcall hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd);
 
 	// originals
 	using CreateMove_t = void(__fastcall*)(void*, int, bool);

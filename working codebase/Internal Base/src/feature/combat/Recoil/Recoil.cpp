@@ -1,6 +1,7 @@
 #include "Recoil.h"
 #include "../../../sdk/utils/Utils.h"
 #include "../../../core/HackManager.h"
+
 void Recoil::Run(C_CSPlayerPawn* local)
 {
 	if (!local) return;

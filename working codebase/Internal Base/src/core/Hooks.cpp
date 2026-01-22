@@ -99,6 +99,7 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	// setup area
 	if (!g_Init)
 	{
+		std::cout << "this is going to be a test, future reference this is may/may not be getting called many times\n";
 		ESP::setup();
 		HackManager::RunFeatures(); // this will fill in any static variables needed before ent loops
 	}
@@ -196,7 +197,7 @@ void Hooks::Setup()
 	std::cout << "[INFO] Hook setup complete\n";
 }
 
-
+// btw this doesn't work
 void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
 {
 	oCreateMove(thisptr, slot, active);

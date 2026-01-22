@@ -13,6 +13,7 @@ const Why = () => {
             {/* body */}
             <div style={styles.card}>
 				<div>
+					{/* do a starwars intro theme kinda */}
 					This project reveals Counter-Strike 2 offsets, memory patterns, and more!
 				</div>
 
