@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <iostream>
 
-uintptr_t HackManager::g_client{ };
+uintptr_t HackManager::g_client{  };
 
 void HackManager::Loop()
 {
@@ -27,9 +27,9 @@ void HackManager::Loop()
 		ESP::renderEntity(ent, local);
 		Combat::DetermineBestPlayer(ent, iterator, size);
 
-		std::cout << "Entities found: " << entities.size() << "\n";
-		std::cout << "Local pawn: " << ent.pawn << "\n";
-		std::cout << "Local pawn: " << ent.controller << "\n";
+		//std::cout << "Entities found: " << entities.size() << "\n";
+		//std::cout << "Local pawn: " << ent.pawn << "\n";
+		//std::cout << "Local pawn: " << ent.controller << "\n";
 
 		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit

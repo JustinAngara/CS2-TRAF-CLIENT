@@ -1,15 +1,22 @@
 #pragma once
 #include <cstddef>
+
+/*
+	offsets are going to be rolled back to the 1/19 version
+	i will figure out the changes soon
+	use old cs2 version dating 1/19
+*/
+
 namespace Offsets
 {
 	// -> offsets.h on a2x dumper
-	constexpr uintptr_t dwEntityList			= 0x21C3AF8;
-	constexpr uintptr_t dwLocalPlayerPawn		= 0x2061850;
-	constexpr uintptr_t dwLocalPlayerController = 0x22EBA28;
-	constexpr uintptr_t dwViewMatrix			= 0x2307850;
-	constexpr uintptr_t dwViewAngles			= 0x2311A68;
-	constexpr uintptr_t dwGlobalVars			= 0x20562A8;
-	constexpr std::ptrdiff_t dwSensitivity		= 0x2303128;
+	constexpr uintptr_t		 dwEntityList			 = 0x1D13CE8;
+	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x1BEEF28;
+	constexpr uintptr_t		 dwLocalPlayerController = 0x1E1DC18;
+	constexpr uintptr_t		 dwViewMatrix			 = 0x1E323D0;
+	constexpr uintptr_t		 dwViewAngles			 = 0x1E3C800;
+	constexpr uintptr_t		 dwGlobalVars			 = 0x1BE41C0;
+	constexpr std::ptrdiff_t dwSensitivity			 = 0x1E2ED08;
 
 	// -> client.dll.hpp on a2x dumper -> C_BaseEntity
 	constexpr uintptr_t m_iHealth		 = 0x34C;
@@ -18,7 +25,7 @@ namespace Offsets
 	constexpr uintptr_t m_pGameSceneNode = 0x330;
 
 	// -> CbaseModelEntity
-	constexpr uintptr_t m_vecViewOffset = 0x8;
+	constexpr uintptr_t m_vecViewOffset = 0xD80;
 
 	// -> C_CSPlayerPawn
 	constexpr uintptr_t m_iShotsFired	= 0x272C;

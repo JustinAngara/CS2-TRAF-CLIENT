@@ -17,7 +17,7 @@ const RenderTextOffsets = () => {
 				id="tabs"
 				activeKey={ key }
 				onSelect={(k) => k && setKey(k)}
-				className="mb-3"
+				className="my-tabs mb-3"
 				transition={false}  fill
 			>
 				<Tab eventKey="client" title="client.dll">
@@ -42,5 +42,6 @@ const styles: Record<"root", CSSProperties> = {
 	root: {
 		padding: 12
 	},
+
 };
 export default RenderTextOffsets;

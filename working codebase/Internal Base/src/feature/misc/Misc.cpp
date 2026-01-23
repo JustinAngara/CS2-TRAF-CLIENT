@@ -8,6 +8,7 @@ void Misc::Render()
 }
 
 void Misc::Run() {
-	CUserCmd* pCmd{};
-	Bhop::Run(pCmd); // this is where bhop is
+	// DONT EVER RUN I AM A MORON
+	//CUserCmd* pCmd{};
+	//Bhop::Run(pCmd); // this is where bhop is
 }

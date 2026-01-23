@@ -5,7 +5,7 @@ import App from "./App";
 import Why from "./pages/Why";
 import Contact from "./pages/Contact";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "./App.css"
 const router = createBrowserRouter(
 	[
 		{
