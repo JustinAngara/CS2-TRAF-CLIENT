@@ -5,6 +5,8 @@ import React, { useState } from "react";
 
 /*
 * client.dll, server.dll, offsets.dll, buttons.dll
+*
+* encapsulate data via layer
 * */
 const RenderTextOffsets = () => {
 	const defaultTab = "client";

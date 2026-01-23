@@ -2,9 +2,17 @@
 #include <cstddef>
 
 /*
-	offsets are going to be rolled back to the 1/19 version
+* NOTE: Hopefully I RE correctly ;-;
+	offsets are going to be rolled back to the 1/19/26 version
 	i will figure out the changes soon
-	use old cs2 version dating 1/19
+	use old cs2 version dating 1/19/26
+	constexpr uintptr_t		 dwEntityList			 = 0x21C3AF8;
+	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2061850;
+	constexpr uintptr_t		 dwLocalPlayerController = 0x22EBA28;
+	constexpr uintptr_t		 dwViewMatrix			 = 0x2307850;
+	constexpr uintptr_t		 dwViewAngles			 = 0x2311A68;
+	constexpr uintptr_t		 dwGlobalVars			 = 0x20562A8;
+	constexpr std::ptrdiff_t dwSensitivity			 = 0x2303128;
 */
 
 namespace Offsets
