@@ -7,6 +7,7 @@
 #include "../../../feature/combat/Combat.h"
 #include "../../../feature/combat/Recoil/Recoil.h"
 #include <Windows.h>
+#include <iostream>
 #include "../../../core/HackManager.h"
 
 void Aimbot::run()
@@ -74,11 +75,20 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 	if (!local || !target) return;
 
-
-	if (!HackManager::g_client) return;
+	HackManager::g_client = Memory::GetModuleBase("client.dll");
+	if (!HackManager::g_client)
+	{
+		std::cout << "shit gClient is wrong\n";
+		std::cout << HackManager::g_client << ", please work\n";
+		return;
+	}
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
-	if (!currentAngles) return;
+	if (!currentAngles) 
+	{
+		std::cout << "shit current angles is wrong\n";
+		return;
+	}
 
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
 	BoneID targetBone = Combat::FindNearestBoneId(local, target, validBaim);

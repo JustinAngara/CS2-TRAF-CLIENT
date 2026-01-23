@@ -5,6 +5,7 @@
 #include "../feature/misc/bhop/Bhop.h"
 #include "../feature/visuals/esp/Esp.h"
 #include <cstdint>
+#include <iostream>
 
 uintptr_t HackManager::g_client{ };
 
@@ -16,6 +17,8 @@ void HackManager::Loop()
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	g_client = Memory::GetModuleBase("client.dll");
 
+	ESP::setup();
+
 	int iterator = 0, size = entities.size();
 
 	for (auto ent : entities)
@@ -24,6 +27,9 @@ void HackManager::Loop()
 		ESP::renderEntity(ent, local);
 		Combat::DetermineBestPlayer(ent, iterator, size);
 
+		std::cout << "Entities found: " << entities.size() << "\n";
+		std::cout << "Local pawn: " << ent.pawn << "\n";
+		std::cout << "Local pawn: " << ent.controller << "\n";
 
 		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit
