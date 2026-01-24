@@ -6,4 +6,5 @@ void Visuals::Render()
 {
     //GameTitle::Render();
 	FOV::Render();
+	
 }

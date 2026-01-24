@@ -16,9 +16,9 @@ class EntityManager
 private:
     std::vector<Entity_t> entities;
     std::shared_mutex mutex;
-    uintptr_t entityListAddress = 0;
-    C_CSPlayerPawn* localPawn = nullptr;
-	int	localPlayerIndex	= -1;
+	uintptr_t			  entityListAddress = 0;
+	C_CSPlayerPawn*		  localPawn			= nullptr;
+	int					  localPlayerIndex	= -1;
     EntityManager();
 
 public:

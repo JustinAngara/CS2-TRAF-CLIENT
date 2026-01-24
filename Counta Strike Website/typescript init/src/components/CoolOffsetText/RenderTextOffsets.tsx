@@ -2,6 +2,7 @@ import type { ReactNode, CSSProperties } from "react";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import React, { useState } from "react";
+import DisplayOffsets from "./DisplayOffsets.tsx";
 
 /*
 * client.dll, server.dll, offsets.dll, buttons.dll
@@ -14,6 +15,9 @@ const RenderTextOffsets = () => {
 
 	return (
 		<div style={styles.root}>
+
+			{/* maybe add props denoting what dll file*/}
+
 			<Tabs
 				defaultActiveKey={ defaultTab }
 				id="tabs"
@@ -23,16 +27,15 @@ const RenderTextOffsets = () => {
 				transition={false}  fill
 			>
 				<Tab eventKey="client" title="client.dll">
-					Tab content for Client
+					<DisplayOffsets dll = { key }/>
 				</Tab>
 				<Tab eventKey="server" title="server.dll">
+					<DisplayOffsets dll = { key }/>
 					Tab content for Server
 				</Tab>
 				<Tab eventKey="offsets" title="offsets.dll">
+					<DisplayOffsets dll = { key }/>
 					Tab content for Offsets
-				</Tab>
-				<Tab eventKey="buttons" title="buttons.dll">
-					Tab content for Buttons
 				</Tab>
 			</Tabs>
 

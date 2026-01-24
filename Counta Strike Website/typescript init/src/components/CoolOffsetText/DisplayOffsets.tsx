@@ -1,13 +1,17 @@
 import type { ReactNode, CSSProperties } from "react";
 import type { Data, Content} from "../../types/player.ts"
 
-
-const DisplayOffsets = () => {
+type DisplayOffsetsProps = {
+	dll: string;
+};
+const DisplayOffsets = ({ dll }:DisplayOffsetsProps) => {
 	const c:Content = {
 		varType: "damn i am ass",
 		varName: "lmao what the fuck",
-		offset: 0x04
+		offset: "0x330"
 	};
+
+	const x = `this is offset ${c.offset}`;
 
 	const data:Data = {
 		content: c,
@@ -15,7 +19,7 @@ const DisplayOffsets = () => {
 	};
     return (
         <div style={styles.root}>
-
+			{ x }
         </div>
     );
 }
