@@ -2,6 +2,7 @@
 #include "HandleGuard.h"
 #include "InjectorContext.h"
 #include "Globals.h"
+#include "Conditionals.h"
 #include <Windows.h>
 #include <winnt.h>
 #include <TlHelp32.h>
@@ -27,151 +28,9 @@
 
 using namespace std;
 
+/// logs start
 
-wstring GetCurrentTimestamp()
-{
-	auto now  = chrono::system_clock::now();
-	auto time = chrono::system_clock::to_time_t(now);
-	tm	 local_time;
-	localtime_s(&local_time, &time);
-	wstringstream wss;
-	wss << put_time(&local_time, L"%Y-%m-%d %H:%M:%S")
-		<< L"." << setfill(L'0') << setw(3)
-		<< (chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch()) % 1000).count();
-	return wss.str();
-}
-
-void LogToMemory(InjectorContext& ctx, const wstring& message)
-{
-	if (!ctx.enableLogging) return;
-	wstring timestampedMessage = L"[" + GetCurrentTimestamp() + L"] " + message;
-	ctx.logBuffer.push_back(timestampedMessage);
-}
-
-
-void LogErrorAndStatus(InjectorContext& ctx, const wstring& message, COLORREF color, bool isError)
-{
-	wstring			timestampedMessage = L"[" + GetCurrentTimestamp() + L"] " + message;
-	LRESULT			len				   = SendMessageW(ctx.hwndStatus, WM_GETTEXTLENGTH, 0, 0) + 1;
-	vector<wchar_t> buffer(len);
-	SendMessageW(ctx.hwndStatus, WM_GETTEXT, len, (LPARAM)buffer.data());
-	wstring currentText(buffer.data());
-	currentText		= currentText.substr(0, currentText.find_last_not_of(L"\r\n") + 1);
-	wstring newText = currentText.empty() ? timestampedMessage : currentText + L"\r\n" + timestampedMessage;
-	SendMessageW(ctx.hwndStatus, WM_SETTEXT, 0, (LPARAM)newText.c_str());
-	CHARFORMATW cf = { sizeof(CHARFORMATW) };
-	cf.dwMask	   = CFM_COLOR;
-	cf.crTextColor = color;
-	SendMessageW(ctx.hwndStatus, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cf);
-	SendMessageW(ctx.hwndStatus, EM_SETSEL, (WPARAM)-1, (LPARAM)-1);
-	SendMessageW(ctx.hwndStatus, EM_SCROLLCARET, 0, 0);
-	SendMessageW(ctx.hwndStatus, WM_VSCROLL, SB_BOTTOM, 0);
-	InvalidateRect(ctx.hwndStatus, NULL, TRUE);
-	UpdateWindow(ctx.hwndStatus);
-	LogToMemory(ctx, timestampedMessage);
-	if (isError)
-	{
-		// do something if error
-	}
-}
-
-bool IsRunAsAdmin()
-{
-	BOOL					 isAdmin	 = FALSE;
-	PSID					 adminGroup	 = nullptr;
-	SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
-	if (AllocateAndInitializeSid(&ntAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &adminGroup))
-	{
-		CheckTokenMembership(NULL, adminGroup, &isAdmin);
-		FreeSid(adminGroup);
-	}
-	return isAdmin;
-}
-
-BOOL Is64BitWindows()
-{
-	SYSTEM_INFO si;
-	GetNativeSystemInfo(&si);
-	return (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64);
-}
-
-BOOL Is64BitProcess(HANDLE hProcess, PBOOL isWow64)
-{
-	if (!Is64BitWindows())
-	{
-		*isWow64 = FALSE;
-		return TRUE;
-	}
-	return IsWow64Process(hProcess, isWow64);
-}
-
-bool IsCorrectArchitecture(HANDLE hProcess)
-{
-	if (!Is64BitWindows()) return true;
-	BOOL isTargetWow64 = FALSE;
-	if (!Is64BitProcess(hProcess, &isTargetWow64))
-	{
-		return false;
-	}
-	BOOL isHostWow64 = FALSE;
-	Is64BitProcess(GetCurrentProcess(), &isHostWow64);
-	return isTargetWow64 == isHostWow64;
-}
-
-bool CheckDLLArchitecture(InjectorContext& ctx, const vector<BYTE>& dllData, HANDLE hProcess)
-{
-	try
-	{
-		if (dllData.size() < sizeof(IMAGE_DOS_HEADER))
-		{
-			LogErrorAndStatus(ctx, L"[-] Invalid DLL data size for architecture check", RGB(255, 0, 0), true);
-			return false;
-		}
-		const BYTE*		  rawData	 = dllData.data();
-		IMAGE_DOS_HEADER* pDosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(rawData));
-		if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE)
-		{
-			LogErrorAndStatus(ctx, L"[-] Invalid DLL (no MZ signature)", RGB(255, 0, 0), true);
-			return false;
-		}
-		if (static_cast<SIZE_T>(pDosHeader->e_lfanew) + sizeof(IMAGE_NT_HEADERS) > dllData.size() || pDosHeader->e_lfanew < 0)
-		{
-			LogErrorAndStatus(ctx, L"[-] Invalid NT headers offset in DLL", RGB(255, 0, 0), true);
-			return false;
-		}
-		IMAGE_NT_HEADERS* pNtHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(rawData + pDosHeader->e_lfanew));
-		if (pNtHeaders->Signature != IMAGE_NT_SIGNATURE)
-		{
-			LogErrorAndStatus(ctx, L"[-] Invalid NT signature in DLL", RGB(255, 0, 0), true);
-			return false;
-		}
-		BOOL isProcessWow64 = FALSE;
-		if (!Is64BitProcess(hProcess, &isProcessWow64))
-		{
-			LogErrorAndStatus(ctx, L"[-] Error checking process architecture for DLL validation", RGB(255, 0, 0), true);
-			return false;
-		}
-		bool isProcess64Bit = !isProcessWow64 && Is64BitWindows();
-#ifdef _WIN64
-		bool isDLL64Bit = pNtHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
-#else
-		bool isDLL64Bit = pNtHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_I386;
-#endif
-		if (isDLL64Bit != isProcess64Bit)
-		{
-			LogErrorAndStatus(ctx, L"[-] DLL architecture does not match process architecture", RGB(255, 0, 0), true);
-			return false;
-		}
-		LogErrorAndStatus(ctx, L"[+] DLL architecture verified", RGB(0, 255, 0), false);
-		return true;
-	}
-	catch (const exception& e)
-	{
-		wstring error = L"[-] Exception in CheckDLLArchitecture: " + wstring(e.what(), e.what() + strlen(e.what()));
-		LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
-		return false;
-	}
-}
+// conditionals end
 
 DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
 {
@@ -179,14 +38,14 @@ DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
 	if (snapshot.get() == INVALID_HANDLE_VALUE)
 	{
 		DWORD error = GetLastError();
-		LogErrorAndStatus(ctx, L"[-] Failed to create process snapshot, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to create process snapshot, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
 		return 0;
 	}
 	PROCESSENTRY32W entry = { sizeof(PROCESSENTRY32W) };
 	if (!Process32FirstW(snapshot, &entry))
 	{
 		DWORD error = GetLastError();
-		LogErrorAndStatus(ctx, L"[-] Failed to enumerate first process, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to enumerate first process, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
 		return 0;
 	}
 	wstring lowerName = name;
@@ -198,34 +57,36 @@ DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
 		transform(exeName.begin(), exeName.end(), exeName.begin(), ::towlower);
 		if (exeName == lowerName)
 		{
-			LogErrorAndStatus(ctx, L"[+] Found process: " + wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")", RGB(0, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, L"[+] Found process: " + wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")", RGB(0, 255, 0), false);
 			return entry.th32ProcessID;
 		}
 		foundProcesses += wstring(entry.szExeFile) + L", ";
 	} while (Process32NextW(snapshot, &entry));
-	LogErrorAndStatus(ctx, L"[-] Process not found: " + name + L". Processes scanned: " + foundProcesses, RGB(255, 0, 0), true);
+	Conditionals::LogErrorAndStatus(ctx, L"[-] Process not found: " + name + L". Processes scanned: " + foundProcesses, RGB(255, 0, 0), true);
 	return 0;
 }
+
 
 bool InjectorContext::ValidateDLLPath(const wstring& dllPath)
 {
 	if (dllPath.length() > 260)
 	{
-		LogErrorAndStatus(*this, L"[-] DLL path too long", RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(*this, L"[-] DLL path too long", RGB(255, 0, 0), true);
 		return false;
 	}
 	if (dllPath.find(L"..\\") != wstring::npos || dllPath.find(L"/") != wstring::npos || dllPath.find(L"\\") == 0)
 	{
-		LogErrorAndStatus(*this, L"[-] Invalid characters in DLL path", RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(*this, L"[-] Invalid characters in DLL path", RGB(255, 0, 0), true);
 		return false;
 	}
 	if (PathFileExistsW(dllPath.c_str()) == FALSE)
 	{
-		LogErrorAndStatus(*this, L"[-] DLL file does not exist", RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(*this, L"[-] DLL file does not exist", RGB(255, 0, 0), true);
 		return false;
 	}
 	return true;
 }
+
 
 // START HERE
 #define RELOC_FLAG(RelInfo) ((RelInfo >> 0x0C) == IMAGE_REL_BASED_DIR64)
@@ -356,14 +217,14 @@ vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
 		ifstream file(dllPath, ios::binary | ios::ate);
 		if (!file.is_open())
 		{
-			LogErrorAndStatus(ctx, L"[-] Could not open DLL file", RGB(255, 0, 0), true);
+			Conditionals::LogErrorAndStatus(ctx, L"[-] Could not open DLL file", RGB(255, 0, 0), true);
 			throw runtime_error("Could not open DLL file");
 		}
 		auto fileSize = file.tellg();
 		if (fileSize < 0x1000)
 		{
 			file.close();
-			LogErrorAndStatus(ctx, L"[-] Invalid DLL file size", RGB(255, 0, 0), true);
+			Conditionals::LogErrorAndStatus(ctx, L"[-] Invalid DLL file size", RGB(255, 0, 0), true);
 			throw runtime_error("Invalid DLL file size");
 		}
 		vector<BYTE> dllData(static_cast<size_t>(fileSize));
@@ -375,7 +236,7 @@ vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
 	catch (const exception& e)
 	{
 		wstring error = L"[-] Exception in LoadDLL: " + wstring(e.what(), e.what() + strlen(e.what()));
-		LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 		throw;
 	}
 }
@@ -662,28 +523,28 @@ bool AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* 
 	wstring errorMsg;
 	if (!ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	pNtHeaders	= reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData))->e_lfanew));
 	pTargetBase = AllocateProcessMemory(ctx, hProcess, pNtHeaders->OptionalHeader.SizeOfImage, oldProtect, errorMsg);
 	if (!pTargetBase)
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	if (!WritePEHeaders(ctx, hProcess, pTargetBase, pSourceData, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	return true;
 }
 
@@ -692,7 +553,7 @@ bool WriteSectionsToMemory(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetB
 	wstring errorMsg;
 	if (!WriteSections(ctx, hProcess, pTargetBase, pSourceData, pNtHeaders, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
@@ -709,7 +570,7 @@ bool PrepareMappingData(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase
 	HMODULE hNtdll					= GetModuleHandleA(ctx.ntdllName);
 	if (!hNtdll)
 	{
-		LogErrorAndStatus(ctx, L"[-] Error getting handle to module, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Error getting handle to module, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
 		return false;
 	}
 	mappingData.pRtlAddFunctionTable = reinterpret_cast<f_RtlAddFunctionTable>(GetProcAddress(hNtdll, "RtlAddFunctionTable"));
@@ -720,10 +581,10 @@ bool PrepareMappingData(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase
 	pMappingDataAlloc				 = AllocateMappingData(ctx, hProcess, mappingData, errorMsg);
 	if (!pMappingDataAlloc)
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	return true;
 }
 
@@ -733,16 +594,16 @@ bool AllocateAndWriteShellcodeAndExecute(InjectorContext& ctx, HANDLE hProcess, 
 	pShellcode = AllocateAndWriteShellcode(ctx, hProcess, errorMsg);
 	if (!pShellcode)
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	if (!ExecuteShellcode(ctx, hProcess, pShellcode, pMappingDataAlloc, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	return true;
 }
 
@@ -752,16 +613,16 @@ bool WaitAndCleanUp(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, IM
 	HINSTANCE hModule = nullptr;
 	if (!WaitForInjection(ctx, hProcess, pMappingDataAlloc, hModule, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	if (!CleanAndProtectMemory(ctx, hProcess, pTargetBase, pNtHeaders, pShellcode, pMappingDataAlloc, cleanHeader, cleanUnneededSections, adjustProtections, sehSupport, errorMsg))
 	{
-		LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		return false;
 	}
-	LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
 	return true;
 }
 
@@ -772,7 +633,7 @@ DWORD reason, LPVOID reserved)
 	try
 	{
 		auto startTime = chrono::high_resolution_clock::now();
-		LogErrorAndStatus(ctx, L"[+] Initializing injection process...", RGB(0, 255, 0), false);
+		Conditionals::LogErrorAndStatus(ctx, L"[+] Initializing injection process...", RGB(0, 255, 0), false);
 		SendMessage(ctx.hwndProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTEP, (WPARAM)10, 0);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
@@ -834,7 +695,7 @@ DWORD reason, LPVOID reserved)
 		double		  durationSec = durationMs / 1000.0;
 		wstringstream durationStream;
 		durationStream << fixed << setprecision(3) << durationSec;
-		LogErrorAndStatus(ctx, L"[+] Injection completed in " + durationStream.str() + L" seconds", RGB(0, 255, 0), false);
+		Conditionals::LogErrorAndStatus(ctx, L"[+] Injection completed in " + durationStream.str() + L" seconds", RGB(0, 255, 0), false);
 		SendMessage(ctx.hwndProgressBar, PBM_SETPOS, 100, 0);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
 		return true;
@@ -842,7 +703,7 @@ DWORD reason, LPVOID reserved)
 	catch (const exception& e)
 	{
 		wstring error = L"[-] Exception in ManualMapDLL: " + wstring(e.what(), e.what() + strlen(e.what()));
-		LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
 	}
@@ -874,7 +735,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		if (!hBitmap)
 		{
 			DWORD error = GetLastError();
-			LogErrorAndStatus(ctx, L"[-] Error loading bitmap, code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+			Conditionals::LogErrorAndStatus(ctx, L"[-] Error loading bitmap, code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
 		}
 		ctx.hwndMain = hwnd;
 		HWND hImage	 = CreateWindowW(L"STATIC", NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP | SS_CENTERIMAGE,
@@ -919,7 +780,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		HandleGuard snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
 		if (snapshot.get() == INVALID_HANDLE_VALUE)
 		{
-			LogErrorAndStatus(ctx, L"[-] Failed to load process list, please try refreshing", RGB(255, 0, 0), true);
+			Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to load process list, please try refreshing", RGB(255, 0, 0), true);
 			EnableWindow(ctx.hwndInjectButton, FALSE);
 		}
 		else
@@ -947,7 +808,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (!ctx.dllPath.empty())
 			{
 				SetWindowTextW(ctx.hwndDllLabel, (L"Selected DLL: " + ctx.dllPath).c_str());
-				LogErrorAndStatus(ctx, L"[+] Loaded last DLL: " + ctx.dllPath, RGB(0, 255, 0), false);
+				Conditionals::LogErrorAndStatus(ctx, L"[+] Loaded last DLL: " + ctx.dllPath, RGB(0, 255, 0), false);
 			}
 			EnableWindow(ctx.hwndInjectButton, !ctx.processName.empty() && !ctx.dllPath.empty());
 		}
@@ -1006,7 +867,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			HandleGuard snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
 			if (snapshot.get() == INVALID_HANDLE_VALUE)
 			{
-				LogErrorAndStatus(ctx, L"[-] Failed to refresh process list", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to refresh process list", RGB(255, 0, 0), true);
 				EnableWindow(ctx.hwndInjectButton, FALSE);
 			}
 			else
@@ -1021,7 +882,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					} while (Process32NextW(snapshot, &entry));
 				}
 				SendMessageW(ctx.hwndProcessCombo, CB_SETCURSEL, 0, 0);
-				LogErrorAndStatus(ctx, L"[+] Process list refreshed", RGB(0, 255, 0), false);
+				Conditionals::LogErrorAndStatus(ctx, L"[+] Process list refreshed", RGB(0, 255, 0), false);
 				EnableWindow(ctx.hwndInjectButton, !ctx.processName.empty() && !ctx.dllPath.empty());
 			}
 		}
@@ -1039,7 +900,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					ctx.processName = selected.substr(0, pos);
 					SetWindowTextW(ctx.hwndProcessLabel, (L"Selected Process: " + ctx.processName).c_str());
 					WritePrivateProfileStringW(L"Settings", L"LastProcess", ctx.processName.c_str(), L"Injector.ini");
-					LogErrorAndStatus(ctx, L"[+] Selected process: " + ctx.processName, RGB(0, 255, 0), false);
+					Conditionals::LogErrorAndStatus(ctx, L"[+] Selected process: " + ctx.processName, RGB(0, 255, 0), false);
 					EnableWindow(ctx.hwndInjectButton, !ctx.processName.empty() && !ctx.dllPath.empty());
 				}
 			}
@@ -1068,43 +929,43 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				SetWindowTextW(ctx.hwndDllLabel, (L"Selected DLL: " + ctx.dllPath).c_str());
 				WritePrivateProfileStringW(L"Settings", L"LastDLL", ctx.dllPath.c_str(), L"Injector.ini");
 				wstring status = L"[+] DLL selected: " + ctx.dllPath;
-				LogErrorAndStatus(ctx, status, RGB(0, 255, 0), false);
+				Conditionals::LogErrorAndStatus(ctx, status, RGB(0, 255, 0), false);
 				EnableWindow(ctx.hwndInjectButton, !ctx.processName.empty() && !ctx.dllPath.empty());
 			}
 		}
 		else if (LOWORD(wParam) == 2)
 		{
-			if (!IsRunAsAdmin())
+			if (!Conditionals::IsRunAsAdmin())
 			{
 				MessageBoxW(hwnd, L"ＴＲＥ▼ＯＲ５ Injector MUST be run as Administrator.", L"Error", MB_OK | MB_ICONERROR);
-				LogErrorAndStatus(ctx, L"[-] Application MUST be run as administrator", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Application MUST be run as administrator", RGB(255, 0, 0), true);
 				return 0;
 			}
 			if (ctx.dllPath.empty())
 			{
-				LogErrorAndStatus(ctx, L"[-] Please select a DLL file first", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Please select a DLL file first", RGB(255, 0, 0), true);
 				return 0;
 			}
 			if (ctx.processName.empty())
 			{
-				LogErrorAndStatus(ctx, L"[-] Please select a process first", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Please select a process first", RGB(255, 0, 0), true);
 				return 0;
 			}
 			wstring confirmMsg = L"Are you sure you want to inject\n" + ctx.dllPath + L"\ninto process: " + ctx.processName + L"?";
 			if (MessageBoxW(hwnd, confirmMsg.c_str(), L"Confirm Injection", MB_YESNO | MB_ICONQUESTION) != IDYES)
 			{
-				LogErrorAndStatus(ctx, L"[*] Injection cancelled by user", RGB(255, 255, 0), false);
+				Conditionals::LogErrorAndStatus(ctx, L"[*] Injection cancelled by user", RGB(255, 255, 0), false);
 				return 0;
 			}
-			LogErrorAndStatus(ctx, L"[*] Searching for process: " + ctx.processName, RGB(255, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, L"[*] Searching for process: " + ctx.processName, RGB(255, 255, 0), false);
 			DWORD pid = GetPIDByName(ctx, ctx.processName);
 			if (pid == 0)
 			{
-				LogErrorAndStatus(ctx, L"[-] Target process not found. Ensure the process is running!", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Target process not found. Ensure the process is running!", RGB(255, 0, 0), true);
 				return 0;
 			}
 			wstring pidStatus = L"[+] Injecting into target process (PID: " + to_wstring(pid) + L")";
-			LogErrorAndStatus(ctx, pidStatus, RGB(0, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, pidStatus, RGB(0, 255, 0), false);
 			HandleGuard hToken;
 			HANDLE		hTokenTemp = nullptr;
 			if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hTokenTemp))
@@ -1116,53 +977,53 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				if (LookupPrivilegeValue(nullptr, SE_DEBUG_NAME, &privileges.Privileges[0].Luid))
 				{
 					AdjustTokenPrivileges(hToken, FALSE, &privileges, 0, nullptr, nullptr);
-					LogErrorAndStatus(ctx, L"[+] Debug privileges enabled", RGB(0, 255, 0), false);
+					Conditionals::LogErrorAndStatus(ctx, L"[+] Debug privileges enabled", RGB(0, 255, 0), false);
 				}
 				else
 				{
-					LogErrorAndStatus(ctx, L"[!] Warning: Could not enable debug privileges, code: 0x" + to_wstring(GetLastError()), RGB(255, 255, 0), true);
+					Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not enable debug privileges, code: 0x" + to_wstring(GetLastError()), RGB(255, 255, 0), true);
 				}
 			}
 			else
 			{
-				LogErrorAndStatus(ctx, L"[!] Warning: Could not open process token, code: 0x" + to_wstring(GetLastError()), RGB(255, 225, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not open process token, code: 0x" + to_wstring(GetLastError()), RGB(255, 225, 0), true);
 			}
 			HandleGuard hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid));
 			if (!hProcess)
 			{
-				LogErrorAndStatus(ctx, L"[-] Error opening target process, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Error opening target process, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
 				return 0;
 			}
-			LogErrorAndStatus(ctx, L"[+] Target process opened successfully", RGB(0, 255, 0), false);
-			if (!IsCorrectArchitecture(hProcess))
+			Conditionals::LogErrorAndStatus(ctx, L"[+] Target process opened successfully", RGB(0, 255, 0), false);
+			if (!Conditionals::IsCorrectArchitecture(hProcess))
 			{
-				LogErrorAndStatus(ctx, L"[-] Target process architecture not compatible", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Target process architecture not compatible", RGB(255, 0, 0), true);
 				return 0;
 			}
-			LogErrorAndStatus(ctx, L"[+] Target process architecture verified", RGB(0, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, L"[+] Target process architecture verified", RGB(0, 255, 0), false);
 			vector<BYTE> dllData;
 			try
 			{
 				dllData = LoadDLL(ctx, ctx.dllPath);
-				LogErrorAndStatus(ctx, L"[+] DLL file loaded successfully", RGB(0, 255, 0), false);
+				Conditionals::LogErrorAndStatus(ctx, L"[+] DLL file loaded successfully", RGB(0, 255, 0), false);
 			}
 			catch (const exception& e)
 			{
 				wstring error = L"[-] Error loading DLL: " + wstring(e.what(), e.what() + strlen(e.what()));
-				LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 				return 0;
 			}
-			if (!CheckDLLArchitecture(ctx, dllData, hProcess))
+			if (!Conditionals::CheckDLLArchitecture(ctx, dllData, hProcess))
 			{
 				return 0;
 			}
-			LogErrorAndStatus(ctx, L"[+] Starting DLL injection process...", RGB(0, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, L"[+] Starting DLL injection process...", RGB(0, 255, 0), false);
 			if (!ManualMapDLL(ctx, hProcess, dllData.data(), dllData.size(), true, true, true, true, DLL_PROCESS_ATTACH, nullptr))
 			{
-				LogErrorAndStatus(ctx, L"[-] Error during injection", RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Error during injection", RGB(255, 0, 0), true);
 				return 0;
 			}
-			LogErrorAndStatus(ctx, L"[+] INJECTION COMPLETED SUCCESSFULLY!", RGB(0, 255, 0), false);
+			Conditionals::LogErrorAndStatus(ctx, L"[+] INJECTION COMPLETED SUCCESSFULLY!", RGB(0, 255, 0), false);
 			SetTimer(hwnd, 1, 5000, NULL);
 		}
 		break;
@@ -1215,9 +1076,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	MoveFileW(currentExePath, newExePath.c_str());
 
 	// --- 2. Admin Check ---
-	if (!IsRunAsAdmin())
+	if (!Conditionals::IsRunAsAdmin())
 	{
-		MessageBoxW(NULL, L"ＴＲＥ▼ＯＲ５ Injector MUST be run as Administrator.", L"Error", MB_OK | MB_ICONERROR);
+		MessageBoxW(NULL, L"Injector MUST be run as Administrator.", L"Error", MB_OK | MB_ICONERROR);
 		return -1;
 	}
 
@@ -1240,7 +1101,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	int posY		 = (screenHeight - windowHeight) / 2;
 
 	// --- 4. Create Window ---
-	HWND hwndMain = CreateWindowW(L"InjectorWindowClass", L"ＴＲＥ▼ＯＲ Injector ５",
+	HWND hwndMain = CreateWindowW(L"InjectorWindowClass", L"Traf Injector",
 	WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 	posX, posY, windowWidth, windowHeight, NULL, NULL, hInstance, NULL);
 
