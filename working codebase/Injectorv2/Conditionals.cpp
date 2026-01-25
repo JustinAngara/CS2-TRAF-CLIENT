@@ -130,11 +130,7 @@ bool Conditionals::CheckDLLArchitecture(InjectorContext& ctx, const std::vector<
 			return false;
 		}
 		bool isProcess64Bit = !isProcessWow64 && Is64BitWindows();
-#ifdef _WIN64
 		bool isDLL64Bit = pNtHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
-#else
-		bool isDLL64Bit = pNtHeaders->FileHeader.Machine == IMAGE_FILE_MACHINE_I386;
-#endif
 		if (isDLL64Bit != isProcess64Bit)
 		{
 			LogErrorAndStatus(ctx, L"[-] DLL architecture does not match process architecture", RGB(255, 0, 0), true);
@@ -178,13 +174,9 @@ bool Conditionals::ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceDa
 			errorMsg = L"[-] Invalid NT signature";
 			return false;
 		}
-#ifdef _WIN64
+
 		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64)
 		{
-#else
-		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_I386)
-		{
-#endif
 			errorMsg = L"[-] Invalid file architecture";
 			return false;
 		}

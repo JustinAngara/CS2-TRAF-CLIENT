@@ -3,6 +3,8 @@
 #include "InjectorContext.h"
 #include "Globals.h"
 #include "Conditionals.h"
+#include "Memory.h"
+#include "Process.h"
 #include <Windows.h>
 #include <winnt.h>
 #include <TlHelp32.h>
@@ -25,8 +27,6 @@
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "shlwapi.lib")
-
-using namespace std;
 
 // START HERE
 #define RELOC_FLAG(RelInfo) ((RelInfo >> 0x0C) == IMAGE_REL_BASED_DIR64)
@@ -143,97 +143,63 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA* pData)
 	pData->hMod = bExceptionSupportFailed ? reinterpret_cast<HINSTANCE>(0x505050) : reinterpret_cast<HINSTANCE>(pBase);
 }
 
-#pragma optimize("", on)
+#pragma optimize("", on) 
 #pragma runtime_checks("", restore)
 
 
 // new end
 
 
-DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
-{
-	HandleGuard snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
-	if (snapshot.get() == INVALID_HANDLE_VALUE)
-	{
-		DWORD error = GetLastError();
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to create process snapshot, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
-		return 0;
-	}
-	PROCESSENTRY32W entry = { sizeof(PROCESSENTRY32W) };
-	if (!Process32FirstW(snapshot, &entry))
-	{
-		DWORD error = GetLastError();
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to enumerate first process, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
-		return 0;
-	}
-	wstring lowerName = name;
-	transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::towlower);
-	wstring foundProcesses;
-	do
-	{
-		wstring exeName(entry.szExeFile);
-		transform(exeName.begin(), exeName.end(), exeName.begin(), ::towlower);
-		if (exeName == lowerName)
-		{
-			Conditionals::LogErrorAndStatus(ctx, L"[+] Found process: " + wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")", RGB(0, 255, 0), false);
-			return entry.th32ProcessID;
-		}
-		foundProcesses += wstring(entry.szExeFile) + L", ";
-	} while (Process32NextW(snapshot, &entry));
-	Conditionals::LogErrorAndStatus(ctx, L"[-] Process not found: " + name + L". Processes scanned: " + foundProcesses, RGB(255, 0, 0), true);
-	return 0;
-}
-
 
 
 ////////////////////////////////////// start for add to memory
-vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
+std::vector<BYTE> LoadDLL(InjectorContext& ctx, const std::wstring& dllPath)
 {
 	try
 	{
 		if (!ctx.ValidateDLLPath(dllPath))
 		{
-			throw runtime_error("Invalid DLL path");
+			throw std::runtime_error("Invalid DLL path");
 		}
-		ifstream file(dllPath, ios::binary | ios::ate);
+		std::ifstream file(dllPath, std::ios::binary | std::ios::ate);
 		if (!file.is_open())
 		{
 			Conditionals::LogErrorAndStatus(ctx, L"[-] Could not open DLL file", RGB(255, 0, 0), true);
-			throw runtime_error("Could not open DLL file");
+			throw std::runtime_error("Could not open DLL file");
 		}
 		auto fileSize = file.tellg();
 		if (fileSize < 0x1000)
 		{
 			file.close();
 			Conditionals::LogErrorAndStatus(ctx, L"[-] Invalid DLL file size", RGB(255, 0, 0), true);
-			throw runtime_error("Invalid DLL file size");
+			throw std::runtime_error("Invalid DLL file size");
 		}
-		vector<BYTE> dllData(static_cast<size_t>(fileSize));
-		file.seekg(0, ios::beg);
+		std::vector<BYTE> dllData(static_cast<size_t>(fileSize));
+		file.seekg(0, std::ios::beg);
 		file.read(reinterpret_cast<char*>(dllData.data()), fileSize);
 		file.close();
 		return dllData;
 	}
-	catch (const exception& e)
+	catch (const std::exception& e)
 	{
-		wstring error = L"[-] Exception in LoadDLL: " + wstring(e.what(), e.what() + strlen(e.what()));
+		std::wstring error = L"[-] Exception in LoadDLL: " + std::wstring(e.what(), e.what() + strlen(e.what()));
 		Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 		throw;
 	}
 }
 
 
-BYTE* AllocateProcessMemory(InjectorContext& ctx, HANDLE hProcess, SIZE_T size, DWORD& oldProtect, wstring& errorMsg)
+BYTE* AllocateProcessMemory(InjectorContext& ctx, HANDLE hProcess, SIZE_T size, DWORD& oldProtect, std::wstring& errorMsg)
 {
 	BYTE* pTargetBase = reinterpret_cast<BYTE*>(VirtualAllocEx(hProcess, nullptr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 	if (!pTargetBase)
 	{
-		errorMsg = L"[-] Error allocating process memory, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error allocating process memory, code: 0x" + std::to_wstring(GetLastError());
 		return nullptr;
 	}
 	if (!VirtualProtectEx(hProcess, pTargetBase, size, PAGE_EXECUTE_READWRITE, &oldProtect))
 	{
-		errorMsg = L"[-] Error setting memory protection, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error setting memory protection, code: 0x" + std::to_wstring(GetLastError());
 		VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
 		return nullptr;
 	}
@@ -241,7 +207,7 @@ BYTE* AllocateProcessMemory(InjectorContext& ctx, HANDLE hProcess, SIZE_T size, 
 	return pTargetBase;
 }
 
-bool WritePEHeaders(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, const BYTE* pSourceData, wstring& errorMsg)
+bool WritePEHeaders(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, const BYTE* pSourceData, std::wstring& errorMsg)
 {
 	IMAGE_DOS_HEADER* pDosHeader   = reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData));
 	IMAGE_NT_HEADERS* pNtHeaders   = reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + pDosHeader->e_lfanew));
@@ -249,14 +215,14 @@ bool WritePEHeaders(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, co
 	if (!WriteProcessMemory(hProcess, pTargetBase, pSourceData, pNtHeaders->OptionalHeader.SizeOfHeaders, &bytesWritten) ||
 	bytesWritten != pNtHeaders->OptionalHeader.SizeOfHeaders)
 	{
-		errorMsg = L"[-] Error writing PE headers, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error writing PE headers, code: 0x" + std::to_wstring(GetLastError());
 		return false;
 	}
 	errorMsg = L"[+] PE headers written successfully";
 	return true;
 }
 
-bool WriteSections(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, const BYTE* pSourceData, IMAGE_NT_HEADERS* pNtHeaders, wstring& errorMsg)
+bool WriteSections(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, const BYTE* pSourceData, IMAGE_NT_HEADERS* pNtHeaders, std::wstring& errorMsg)
 {
 	IMAGE_SECTION_HEADER* pSectionHeader = IMAGE_FIRST_SECTION(pNtHeaders);
 	SIZE_T				  bytesWritten	 = 0;
@@ -269,7 +235,7 @@ bool WriteSections(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, con
 				pSectionHeader[i].SizeOfRawData, &bytesWritten) ||
 			bytesWritten != pSectionHeader[i].SizeOfRawData)
 			{
-				errorMsg = L"[-] Error writing section " + to_wstring(i) + L", code: 0x" + to_wstring(GetLastError());
+				errorMsg = L"[-] Error writing section " + std::to_wstring(i) + L", code: 0x" + std::to_wstring(GetLastError());
 				return false;
 			}
 		}
@@ -278,20 +244,20 @@ bool WriteSections(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, con
 	return true;
 }
 
-BYTE* AllocateMappingData(InjectorContext& ctx, HANDLE hProcess, const MANUAL_MAPPING_DATA& mappingData, wstring& errorMsg)
+BYTE* AllocateMappingData(InjectorContext& ctx, HANDLE hProcess, const MANUAL_MAPPING_DATA& mappingData, std::wstring& errorMsg)
 {
 	BYTE* pMappingDataAlloc = reinterpret_cast<BYTE*>(VirtualAllocEx(hProcess, nullptr, sizeof(MANUAL_MAPPING_DATA),
 	MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 	if (!pMappingDataAlloc)
 	{
-		errorMsg = L"[-] Error allocating mapping data, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error allocating mapping data, code: 0x" + std::to_wstring(GetLastError());
 		return nullptr;
 	}
 	SIZE_T bytesWritten = 0;
 	if (!WriteProcessMemory(hProcess, pMappingDataAlloc, &mappingData, sizeof(MANUAL_MAPPING_DATA), &bytesWritten) ||
 	bytesWritten != sizeof(MANUAL_MAPPING_DATA))
 	{
-		errorMsg = L"[-] Error writing mapping data, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error writing mapping data, code: 0x" + std::to_wstring(GetLastError());
 		VirtualFreeEx(hProcess, pMappingDataAlloc, 0, MEM_RELEASE);
 		return nullptr;
 	}
@@ -299,18 +265,18 @@ BYTE* AllocateMappingData(InjectorContext& ctx, HANDLE hProcess, const MANUAL_MA
 	return pMappingDataAlloc;
 }////////////////////////////////////// end for add to memory
 
-void* AllocateAndWriteShellcode(InjectorContext& ctx, HANDLE hProcess, wstring& errorMsg)
+void* AllocateAndWriteShellcode(InjectorContext& ctx, HANDLE hProcess, std::wstring& errorMsg)
 {
 	void* pShellcode = VirtualAllocEx(hProcess, nullptr, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	if (!pShellcode)
 	{
-		errorMsg = L"[-] Error allocating shellcode memory, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error allocating shellcode memory, code: 0x" + std::to_wstring(GetLastError());
 		return nullptr;
 	}
 	SIZE_T bytesWritten = 0;
 	if (!WriteProcessMemory(hProcess, pShellcode, Shellcode, 4096, &bytesWritten) || bytesWritten != 4096)
 	{
-		errorMsg = L"[-] Error writing shellcode, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error writing shellcode, code: 0x" + std::to_wstring(GetLastError());
 		VirtualFreeEx(hProcess, pShellcode, 0, MEM_RELEASE);
 		return nullptr;
 	}
@@ -318,13 +284,13 @@ void* AllocateAndWriteShellcode(InjectorContext& ctx, HANDLE hProcess, wstring& 
 	return pShellcode;
 }
 
-bool ExecuteShellcode(InjectorContext& ctx, HANDLE hProcess, void* pShellcode, BYTE* pMappingData, wstring& errorMsg)
+bool ExecuteShellcode(InjectorContext& ctx, HANDLE hProcess, void* pShellcode, BYTE* pMappingData, std::wstring& errorMsg)
 {
 	HANDLE hThread = CreateRemoteThread(hProcess, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(pShellcode),
 	pMappingData, 0, nullptr);
 	if (!hThread)
 	{
-		errorMsg = L"[-] Error creating remote thread, code: 0x" + to_wstring(GetLastError());
+		errorMsg = L"[-] Error creating remote thread, code: 0x" + std::to_wstring(GetLastError());
 		return false;
 	}
 	CloseHandle(hThread);
@@ -332,11 +298,11 @@ bool ExecuteShellcode(InjectorContext& ctx, HANDLE hProcess, void* pShellcode, B
 	return true;
 }
 
-bool WaitForInjection(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingData, HINSTANCE& hModule, wstring& errorMsg)
+bool WaitForInjection(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingData, HINSTANCE& hModule, std::wstring& errorMsg)
 {
-	random_device			   rd;
-	mt19937					   gen(rd());
-	uniform_int_distribution<> dis(5, 15);
+	std::random_device		   rd;
+	std::mt19937			   gen(rd());
+	std::uniform_int_distribution<> dis(5, 15);
 	for (int i = 0; i < 100; ++i)
 	{
 		SIZE_T	  bytesRead = 0;
@@ -345,7 +311,7 @@ bool WaitForInjection(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingData,
 			&tempModule, sizeof(HINSTANCE), &bytesRead) ||
 		bytesRead != sizeof(HINSTANCE))
 		{
-			errorMsg = L"[-] Error reading module handle, code: 0x" + to_wstring(GetLastError());
+			errorMsg = L"[-] Error reading module handle, code: 0x" + std::to_wstring(GetLastError());
 			return false;
 		}
 		if (tempModule != nullptr)
@@ -365,7 +331,7 @@ bool WaitForInjection(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingData,
 			errorMsg = L"[+] Injection successful, module handle retrieved";
 			return true;
 		}
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 	}
 	errorMsg = L"[-] Injection timed out";
 	return false;
@@ -373,18 +339,18 @@ bool WaitForInjection(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingData,
 
 bool CleanAndProtectMemory(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, IMAGE_NT_HEADERS* pNtHeaders,
 void* pShellcode, BYTE* pMappingData, bool cleanHeader, bool cleanUnneededSections,
-bool adjustProtections, bool sehSupport, wstring& errorMsg)
+bool adjustProtections, bool sehSupport, std::wstring& errorMsg)
 {
-	random_device			   rd;
-	mt19937					   gen(rd());
-	uniform_int_distribution<> dis(5, 15);
+	std::random_device		   rd;
+	std::mt19937			   gen(rd());
+	std::uniform_int_distribution<> dis(5, 15);
 	if (cleanHeader)
 	{
 		BYTE   cleanBuffer[0x1000] = { 0 };
 		SIZE_T bytesWritten		   = 0;
 		if (!WriteProcessMemory(hProcess, pTargetBase, cleanBuffer, pNtHeaders->OptionalHeader.SizeOfHeaders, &bytesWritten))
 		{
-			errorMsg = L"[-] Error cleaning headers, code: 0x" + to_wstring(GetLastError());
+			errorMsg = L"[-] Error cleaning headers, code: 0x" + std::to_wstring(GetLastError());
 			return false;
 		}
 	}
@@ -405,7 +371,7 @@ bool adjustProtections, bool sehSupport, wstring& errorMsg)
 					if (!WriteProcessMemory(hProcess, pTargetBase + pSectionHeader[i].VirtualAddress,
 						cleanBuffer, pSectionHeader[i].SizeOfRawData, &bytesWritten))
 					{
-						errorMsg = L"[-] Error cleaning section " + to_wstring(i) + L", code: 0x" + to_wstring(GetLastError());
+						errorMsg = L"[-] Error cleaning section " + std::to_wstring(i) + L", code: 0x" + std::to_wstring(GetLastError());
 						return false;
 					}
 				}
@@ -436,7 +402,7 @@ bool adjustProtections, bool sehSupport, wstring& errorMsg)
 				if (!VirtualProtectEx(hProcess, pTargetBase + pSectionHeader[i].VirtualAddress,
 					pSectionHeader[i].SizeOfRawData, newProtect, &oldProtect))
 				{
-					errorMsg = L"[-] Error adjusting section protection " + to_wstring(i) + L", code: 0x" + to_wstring(GetLastError());
+					errorMsg = L"[-] Error adjusting section protection " + std::to_wstring(i) + L", code: 0x" + std::to_wstring(GetLastError());
 					return false;
 				}
 			}
@@ -456,7 +422,7 @@ bool adjustProtections, bool sehSupport, wstring& errorMsg)
 
 bool AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* pSourceData, SIZE_T fileSize, BYTE*& pTargetBase, IMAGE_NT_HEADERS*& pNtHeaders, DWORD& oldProtect)
 {
-	wstring errorMsg;
+	std::wstring errorMsg;
 	if (!Conditionals::ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
 	{
 		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
@@ -486,7 +452,7 @@ bool AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* 
 
 bool WriteSectionsToMemory(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, const BYTE* pSourceData, IMAGE_NT_HEADERS* pNtHeaders)
 {
-	wstring errorMsg;
+	std::wstring errorMsg;
 	if (!WriteSections(ctx, hProcess, pTargetBase, pSourceData, pNtHeaders, errorMsg))
 	{
 		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
@@ -499,14 +465,14 @@ bool WriteSectionsToMemory(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetB
 
 bool PrepareMappingData(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, bool sehSupport, DWORD reason, LPVOID reserved, BYTE*& pMappingDataAlloc)
 {
-	wstring				errorMsg;
+	std::wstring		errorMsg;
 	MANUAL_MAPPING_DATA mappingData = { 0 };
 	mappingData.pLoadLibraryA		= LoadLibraryA;
 	mappingData.pGetProcAddress		= GetProcAddress;
 	HMODULE hNtdll					= GetModuleHandleA(ctx.ntdllName);
 	if (!hNtdll)
 	{
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Error getting handle to module, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Error getting handle to module, code: 0x" + std::to_wstring(GetLastError()), RGB(255, 0, 0), true);
 		return false;
 	}
 	mappingData.pRtlAddFunctionTable = reinterpret_cast<f_RtlAddFunctionTable>(GetProcAddress(hNtdll, "RtlAddFunctionTable"));
@@ -526,7 +492,7 @@ bool PrepareMappingData(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase
 
 bool AllocateAndWriteShellcodeAndExecute(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingDataAlloc, void*& pShellcode)
 {
-	wstring errorMsg;
+	std::wstring errorMsg;
 	pShellcode = AllocateAndWriteShellcode(ctx, hProcess, errorMsg);
 	if (!pShellcode)
 	{
@@ -545,7 +511,7 @@ bool AllocateAndWriteShellcodeAndExecute(InjectorContext& ctx, HANDLE hProcess, 
 
 bool WaitAndCleanUp(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, IMAGE_NT_HEADERS* pNtHeaders, void* pShellcode, BYTE* pMappingDataAlloc, bool cleanHeader, bool cleanUnneededSections, bool adjustProtections, bool sehSupport)
 {
-	wstring	  errorMsg;
+	std::wstring errorMsg;
 	HINSTANCE hModule = nullptr;
 	if (!WaitForInjection(ctx, hProcess, pMappingDataAlloc, hModule, errorMsg))
 	{
@@ -568,16 +534,16 @@ DWORD reason, LPVOID reserved)
 {
 	try
 	{
-		auto startTime = chrono::high_resolution_clock::now();
+		auto startTime = std::chrono::high_resolution_clock::now();
 		Conditionals::LogErrorAndStatus(ctx, L"[+] Initializing injection process...", RGB(0, 255, 0), false);
 		SendMessage(ctx.hwndProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTEP, (WPARAM)10, 0);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
 		SendMessage(ctx.hwndProgressBar, PBM_SETPOS, 0, 0);
 
-		random_device			   rd;
-		mt19937					   gen(rd());
-		uniform_int_distribution<> dis(5, 15);
+		std::random_device		   rd;
+		std::mt19937			   gen(rd());
+		std::uniform_int_distribution<> dis(5, 15);
 
 		BYTE*			  pTargetBase = nullptr;
 		IMAGE_NT_HEADERS* pNtHeaders  = nullptr;
@@ -587,7 +553,7 @@ DWORD reason, LPVOID reserved)
 			return false;
 		}
 		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 
 		if (!WriteSectionsToMemory(ctx, hProcess, pTargetBase, pSourceData, pNtHeaders))
 		{
@@ -595,7 +561,7 @@ DWORD reason, LPVOID reserved)
 			return false;
 		}
 		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 
 		BYTE* pMappingDataAlloc = nullptr;
 		if (!PrepareMappingData(ctx, hProcess, pTargetBase, sehSupport, reason, reserved, pMappingDataAlloc))
@@ -604,7 +570,7 @@ DWORD reason, LPVOID reserved)
 			return false;
 		}
 		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 
 		void* pShellcode = nullptr;
 		if (!AllocateAndWriteShellcodeAndExecute(ctx, hProcess, pMappingDataAlloc, pShellcode))
@@ -614,7 +580,7 @@ DWORD reason, LPVOID reserved)
 			return false;
 		}
 		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 
 		if (!WaitAndCleanUp(ctx, hProcess, pTargetBase, pNtHeaders, pShellcode, pMappingDataAlloc, cleanHeader, cleanUnneededSections, adjustProtections, sehSupport))
 		{
@@ -624,21 +590,21 @@ DWORD reason, LPVOID reserved)
 			return false;
 		}
 		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		this_thread::sleep_for(chrono::milliseconds(dis(gen)));
+		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
 
-		auto		  endTime	  = chrono::high_resolution_clock::now();
-		auto		  durationMs  = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		auto		  endTime	  = std::chrono::high_resolution_clock::now();
+		auto			   durationMs  = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 		double		  durationSec = durationMs / 1000.0;
-		wstringstream durationStream;
-		durationStream << fixed << setprecision(3) << durationSec;
+		std::wstringstream durationStream;
+		durationStream << std::fixed << std::setprecision(3) << durationSec;
 		Conditionals::LogErrorAndStatus(ctx, L"[+] Injection completed in " + durationStream.str() + L" seconds", RGB(0, 255, 0), false);
 		SendMessage(ctx.hwndProgressBar, PBM_SETPOS, 100, 0);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
 		return true;
 	}
-	catch (const exception& e)
+	catch (const std::exception& e)
 	{
-		wstring error = L"[-] Exception in ManualMapDLL: " + wstring(e.what(), e.what() + strlen(e.what()));
+		std::wstring error = L"[-] Exception in ManualMapDLL: " + std::wstring(e.what(), e.what() + strlen(e.what()));
 		Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
 		return false;
@@ -671,7 +637,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		if (!hBitmap)
 		{
 			DWORD error = GetLastError();
-			Conditionals::LogErrorAndStatus(ctx, L"[-] Error loading bitmap, code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+			Conditionals::LogErrorAndStatus(ctx, L"[-] Error loading bitmap, code: 0x" + std::to_wstring(error), RGB(255, 0, 0), true);
 		}
 		ctx.hwndMain = hwnd;
 		HWND hImage	 = CreateWindowW(L"STATIC", NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP | SS_CENTERIMAGE,
@@ -726,14 +692,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				do
 				{
-					wstring display = wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")";
+					std::wstring display = std::wstring(entry.szExeFile) + L" (PID: " + std::to_wstring(entry.th32ProcessID) + L")";
 					SendMessageW(ctx.hwndProcessCombo, CB_ADDSTRING, 0, (LPARAM)display.c_str());
 				} while (Process32NextW(snapshot, &entry));
 			}
 			SendMessageW(ctx.hwndProcessCombo, CB_SETCURSEL, 0, 0);
 			if (!ctx.processName.empty())
 			{
-				wstring searchStr = ctx.processName + L" (PID: ";
+				std::wstring searchStr = ctx.processName + L" (PID: ";
 				LRESULT index	  = SendMessageW(ctx.hwndProcessCombo, CB_FINDSTRING, (WPARAM)-1, (LPARAM)searchStr.c_str());
 				if (index != CB_ERR)
 				{
@@ -813,7 +779,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					do
 					{
-						wstring display = wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")";
+						std::wstring display = std::wstring(entry.szExeFile) + L" (PID: " + std::to_wstring(entry.th32ProcessID) + L")";
 						SendMessageW(ctx.hwndProcessCombo, CB_ADDSTRING, 0, (LPARAM)display.c_str());
 					} while (Process32NextW(snapshot, &entry));
 				}
@@ -829,9 +795,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				wchar_t buffer[260];
 				SendMessageW(ctx.hwndProcessCombo, CB_GETLBTEXT, index, (LPARAM)buffer);
-				wstring selected = buffer;
+				std::wstring selected = buffer;
 				size_t	pos		 = selected.find(L" (PID:");
-				if (pos != wstring::npos)
+				if (pos != std::wstring::npos)
 				{
 					ctx.processName = selected.substr(0, pos);
 					SetWindowTextW(ctx.hwndProcessLabel, (L"Selected Process: " + ctx.processName).c_str());
@@ -864,7 +830,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				SetWindowTextW(ctx.hwndDllLabel, (L"Selected DLL: " + ctx.dllPath).c_str());
 				WritePrivateProfileStringW(L"Settings", L"LastDLL", ctx.dllPath.c_str(), L"Injector.ini");
-				wstring status = L"[+] DLL selected: " + ctx.dllPath;
+				std::wstring status = L"[+] DLL selected: " + ctx.dllPath;
 				Conditionals::LogErrorAndStatus(ctx, status, RGB(0, 255, 0), false);
 				EnableWindow(ctx.hwndInjectButton, !ctx.processName.empty() && !ctx.dllPath.empty());
 			}
@@ -887,20 +853,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				Conditionals::LogErrorAndStatus(ctx, L"[-] Please select a process first", RGB(255, 0, 0), true);
 				return 0;
 			}
-			wstring confirmMsg = L"Are you sure you want to inject\n" + ctx.dllPath + L"\ninto process: " + ctx.processName + L"?";
+			std::wstring confirmMsg = L"Are you sure you want to inject\n" + ctx.dllPath + L"\ninto process: " + ctx.processName + L"?";
 			if (MessageBoxW(hwnd, confirmMsg.c_str(), L"Confirm Injection", MB_YESNO | MB_ICONQUESTION) != IDYES)
 			{
 				Conditionals::LogErrorAndStatus(ctx, L"[*] Injection cancelled by user", RGB(255, 255, 0), false);
 				return 0;
 			}
 			Conditionals::LogErrorAndStatus(ctx, L"[*] Searching for process: " + ctx.processName, RGB(255, 255, 0), false);
-			DWORD pid = GetPIDByName(ctx, ctx.processName);
+			DWORD pid = Process::GetPIDByName(ctx, ctx.processName);
 			if (pid == 0)
 			{
 				Conditionals::LogErrorAndStatus(ctx, L"[-] Target process not found. Ensure the process is running!", RGB(255, 0, 0), true);
 				return 0;
 			}
-			wstring pidStatus = L"[+] Injecting into target process (PID: " + to_wstring(pid) + L")";
+			std::wstring pidStatus = L"[+] Injecting into target process (PID: " + std::to_wstring(pid) + L")";
 			Conditionals::LogErrorAndStatus(ctx, pidStatus, RGB(0, 255, 0), false);
 			HandleGuard hToken;
 			HANDLE		hTokenTemp = nullptr;
@@ -917,17 +883,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else
 				{
-					Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not enable debug privileges, code: 0x" + to_wstring(GetLastError()), RGB(255, 255, 0), true);
+					Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not enable debug privileges, code: 0x" + std::to_wstring(GetLastError()), RGB(255, 255, 0), true);
 				}
 			}
 			else
 			{
-				Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not open process token, code: 0x" + to_wstring(GetLastError()), RGB(255, 225, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[!] Warning: Could not open process token, code: 0x" + std::to_wstring(GetLastError()), RGB(255, 225, 0), true);
 			}
 			HandleGuard hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid));
 			if (!hProcess)
 			{
-				Conditionals::LogErrorAndStatus(ctx, L"[-] Error opening target process, code: 0x" + to_wstring(GetLastError()), RGB(255, 0, 0), true);
+				Conditionals::LogErrorAndStatus(ctx, L"[-] Error opening target process, code: 0x" + std::to_wstring(GetLastError()), RGB(255, 0, 0), true);
 				return 0;
 			}
 			Conditionals::LogErrorAndStatus(ctx, L"[+] Target process opened successfully", RGB(0, 255, 0), false);
@@ -937,15 +903,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				return 0;
 			}
 			Conditionals::LogErrorAndStatus(ctx, L"[+] Target process architecture verified", RGB(0, 255, 0), false);
-			vector<BYTE> dllData;
+			std::vector<BYTE> dllData;
 			try
 			{
 				dllData = LoadDLL(ctx, ctx.dllPath);
 				Conditionals::LogErrorAndStatus(ctx, L"[+] DLL file loaded successfully", RGB(0, 255, 0), false);
 			}
-			catch (const exception& e)
+			catch (const std::exception& e)
 			{
-				wstring error = L"[-] Error loading DLL: " + wstring(e.what(), e.what() + strlen(e.what()));
+				std::wstring error = L"[-] Error loading DLL: " + std::wstring(e.what(), e.what() + strlen(e.what()));
 				Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
 				return 0;
 			}
@@ -983,23 +949,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	// --- 1. Randomize EXE Name (Self-Obfuscation) ---
-	random_device				  rd;
-	mt19937						  gen(rd());
-	string						  chars = "$%&/=$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	uniform_int_distribution<int> dis(0, static_cast<int>(chars.size() - 1));
-	wstring						  randomStr;
+	std::random_device			  rd;
+	std::mt19937				  gen(rd());
+	std::string					  chars = "$%&/=$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	std::uniform_int_distribution<int> dis(0, static_cast<int>(chars.size() - 1));
+	std::wstring					   randomStr;
 	for (int i = 0; i < 4; ++i)
 	{
 		randomStr += static_cast<wchar_t>(chars[dis(gen)]);
 	}
 
-	wstring exeName = L"Traf" + randomStr + L".exe";
+	std::wstring exeName = L"Traf" + randomStr + L".exe";
 	wchar_t currentExePath[MAX_PATH];
 	GetModuleFileNameW(NULL, currentExePath, MAX_PATH);
-	wstring newExePath = wstring(currentExePath);
+	std::wstring newExePath = std::wstring(currentExePath);
 	size_t	lastSlash  = newExePath.find_last_of(L"\\");
 
-	if (lastSlash != wstring::npos)
+	if (lastSlash != std::wstring::npos)
 	{
 		newExePath = newExePath.substr(0, lastSlash + 1) + exeName;
 	}

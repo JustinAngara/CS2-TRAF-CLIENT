@@ -132,12 +132,15 @@
     <ClCompile Include="HandleGuard.cpp" />
     <ClCompile Include="InjectorContext.cpp" />
     <ClCompile Include="Injectorv2.cpp" />
+    <ClCompile Include="Process.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Conditionals.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HandleGuard.h" />
     <ClInclude Include="InjectorContext.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="Process.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
