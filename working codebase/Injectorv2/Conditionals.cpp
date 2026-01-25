@@ -152,7 +152,7 @@ bool Conditionals::CheckDLLArchitecture(InjectorContext& ctx, const std::vector<
 }
 
 
-bool Conditionals::ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceData, SIZE_T fileSize, wstring& errorMsg)
+bool Conditionals::ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceData, SIZE_T fileSize, std::wstring& errorMsg)
 {
 	try
 	{
@@ -193,7 +193,7 @@ bool Conditionals::ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceDa
 	}
 	catch (const std::exception& e)
 	{
-		errorMsg = L"[-] Exception in ValidatePEHeaders: " + wstring(e.what(), e.what() + strlen(e.what()));
+		errorMsg = L"[-] Exception in ValidatePEHeaders: " + std::wstring(e.what(), e.what() + strlen(e.what()));
 		return false;
 	}
 }

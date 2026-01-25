@@ -28,7 +28,6 @@
 
 using namespace std;
 
-
 // START HERE
 #define RELOC_FLAG(RelInfo) ((RelInfo >> 0x0C) == IMAGE_REL_BASED_DIR64)
 
@@ -187,7 +186,7 @@ DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
 
 
 
-
+////////////////////////////////////// start for add to memory
 vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
 {
 	try
@@ -298,7 +297,7 @@ BYTE* AllocateMappingData(InjectorContext& ctx, HANDLE hProcess, const MANUAL_MA
 	}
 	errorMsg = L"[+] Mapping data allocated and written";
 	return pMappingDataAlloc;
-}
+}////////////////////////////////////// end for add to memory
 
 void* AllocateAndWriteShellcode(InjectorContext& ctx, HANDLE hProcess, wstring& errorMsg)
 {
