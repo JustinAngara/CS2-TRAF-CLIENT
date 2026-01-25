@@ -1,4 +1,7 @@
 #include "resource.h"
+#include "HandleGuard.h"
+#include "InjectorContext.h"
+#include "Globals.h"
 #include <Windows.h>
 #include <winnt.h>
 #include <TlHelp32.h>
@@ -24,120 +27,6 @@
 
 using namespace std;
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1900)
-#define NOEXCEPT noexcept
-#else
-#define NOEXCEPT
-#endif
-
-using f_LoadLibraryA		= HINSTANCE(WINAPI*)(LPCSTR lpLibFilename);
-using f_GetProcAddress		= FARPROC(WINAPI*)(HMODULE hModule, LPCSTR lpProcName);
-using f_DLL_ENTRY_POINT		= BOOL(WINAPI*)(void* hDll, DWORD dwReason, void* pReserved);
-using f_RtlAddFunctionTable = BOOLEAN(WINAPI*)(PRUNTIME_FUNCTION FunctionTable, DWORD EntryCount, DWORD64 BaseAddress);
-
-struct MANUAL_MAPPING_DATA
-{
-	f_LoadLibraryA		  pLoadLibraryA;
-	f_GetProcAddress	  pGetProcAddress;
-	f_RtlAddFunctionTable pRtlAddFunctionTable;
-	BYTE*				  pBase;
-	HINSTANCE			  hMod;
-	DWORD				  dwReason;
-	LPVOID				  lpReserved;
-	BOOL				  bSEHSupport;
-};
-
-class HandleGuard
-{
-	HANDLE m_handle;
-
-public:
-	explicit HandleGuard(HANDLE h = nullptr) :
-		m_handle(h) { }
-
-	~HandleGuard()
-	{
-		if (m_handle && m_handle != INVALID_HANDLE_VALUE) CloseHandle(m_handle);
-	}
-
-	HandleGuard(const HandleGuard&)			   = delete;
-	HandleGuard& operator=(const HandleGuard&) = delete;
-
-	HANDLE get() const
-	{
-		return m_handle;
-	}
-
-	operator HANDLE() const
-	{
-		return m_handle;
-	}
-
-	void reset(HANDLE h = nullptr)
-	{
-		if (m_handle && m_handle != INVALID_HANDLE_VALUE) CloseHandle(m_handle);
-		m_handle = h;
-	}
-};
-
-class InjectorContext
-{
-public:
-	HWND			hwndMain		  = nullptr;
-	HWND			hwndStatus		  = nullptr;
-	HWND			hwndBrowseButton  = nullptr;
-	HWND			hwndInjectButton  = nullptr;
-	HWND			hwndProgressBar	  = nullptr;
-	HWND			hwndProcessCombo  = nullptr;
-	HWND			hwndRefreshButton = nullptr;
-	HWND			hwndProcessLabel  = nullptr;
-	HWND			hwndDllLabel	  = nullptr;
-	wstring			dllPath;
-	vector<wstring> logBuffer;
-	bool			enableLogging = false;
-	wstring			processName;
-	const char*		ntdllName;
-	const char		kXorKey;
-
-	InjectorContext() :
-		processName(L""), ntdllName("ntdll.dll"), kXorKey(GenerateXorKey())
-	{
-		InitializeLogging();
-	}
-
-	bool ValidateDLLPath(const wstring& dllPath);
-
-private:
-	static char GenerateXorKey()
-	{
-		random_device			   rd;
-		mt19937					   gen(rd());
-		uniform_int_distribution<> dis(1, 255);
-		return static_cast<char>(dis(gen));
-	}
-
-	void InitializeLogging()
-	{
-		wstring configPath = L"Injector.ini";
-		if (GetFileAttributesW(configPath.c_str()) != INVALID_FILE_ATTRIBUTES)
-		{
-			enableLogging		= GetPrivateProfileIntW(L"Settings", L"EnableLogging", 0, configPath.c_str()) != 0;
-			wchar_t buffer[260] = { 0 };
-			if (GetPrivateProfileStringW(L"Settings", L"LastProcess", L"", buffer, 260, configPath.c_str()))
-			{
-				processName = buffer;
-			}
-			if (GetPrivateProfileStringW(L"Settings", L"LastDLL", L"", buffer, 260, configPath.c_str()))
-			{
-				dllPath = buffer;
-				if (!ValidateDLLPath(dllPath))
-				{
-					dllPath.clear();
-				}
-			}
-		}
-	}
-};
 
 wstring GetCurrentTimestamp()
 {
@@ -159,15 +48,6 @@ void LogToMemory(InjectorContext& ctx, const wstring& message)
 	ctx.logBuffer.push_back(timestampedMessage);
 }
 
-void PlaySuccessSound()
-{
-	PlaySound(MAKEINTRESOURCE(IDR_TREVOR_WAV), GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
-}
-
-void PlayErrorSound()
-{
-	PlaySound(TEXT("SystemHand"), NULL, SND_ALIAS | SND_ASYNC);
-}
 
 void LogErrorAndStatus(InjectorContext& ctx, const wstring& message, COLORREF color, bool isError)
 {
@@ -191,7 +71,7 @@ void LogErrorAndStatus(InjectorContext& ctx, const wstring& message, COLORREF co
 	LogToMemory(ctx, timestampedMessage);
 	if (isError)
 	{
-		PlayErrorSound();
+		// do something if error
 	}
 }
 
@@ -347,6 +227,7 @@ bool InjectorContext::ValidateDLLPath(const wstring& dllPath)
 	return true;
 }
 
+// START HERE
 #define RELOC_FLAG(RelInfo) ((RelInfo >> 0x0C) == IMAGE_REL_BASED_DIR64)
 
 #pragma runtime_checks("", off)
@@ -989,7 +870,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX), ICC_STANDARD_CLASSES | ICC_PROGRESS_CLASS };
 		InitCommonControlsEx(&icex);
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG_PTR)hBackgroundBrush);
-		hBitmap = (HBITMAP)LoadImageW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TREVOR_BMP), IMAGE_BITMAP, 0, 0, 0);
+		hBitmap = (HBITMAP)LoadImageW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_TRAF_BMP), IMAGE_BITMAP, 0, 0, 0);
 		if (!hBitmap)
 		{
 			DWORD error = GetLastError();
@@ -1282,7 +1163,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				return 0;
 			}
 			LogErrorAndStatus(ctx, L"[+] INJECTION COMPLETED SUCCESSFULLY!", RGB(0, 255, 0), false);
-			PlaySuccessSound();
 			SetTimer(hwnd, 1, 5000, NULL);
 		}
 		break;
@@ -1305,8 +1185,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-
-
 	// --- 1. Randomize EXE Name (Self-Obfuscation) ---
 	random_device				  rd;
 	mt19937						  gen(rd());

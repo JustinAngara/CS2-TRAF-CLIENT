@@ -23,17 +23,9 @@ void HackManager::Loop()
 	// entity list is not getting hit
 	for (auto ent : entities)
 	{
-		std::cout << "-----------------" << "\n";
 		// directly mention esp from here and pass in render
-		ESP::renderEntity(ent, local);
-		//Combat::DetermineBestPlayer(ent, iterator, size);
+		//ESP::renderEntity(ent, local);
 
-
-		std::cout << "Entities found: " << entities.size() << "\n";
-		std::cout << "Local pawn: " << ent.pawn << "\n";
-		std::cout << "Local pawn: " << ent.controller << "\n";
-
-		std::cout << "-----------------" << "\n";
 		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit
 

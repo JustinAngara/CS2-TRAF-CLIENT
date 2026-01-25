@@ -18,9 +18,21 @@
     <ClCompile Include="Injectorv2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HandleGuard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleGuard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InjectorContext.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
