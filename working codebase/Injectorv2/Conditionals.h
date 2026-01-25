@@ -13,5 +13,5 @@ namespace Conditionals
 	BOOL Is64BitProcess(HANDLE hProcess, PBOOL isWow64);
 	bool IsCorrectArchitecture(HANDLE hProcess);
 	bool CheckDLLArchitecture(InjectorContext& ctx, const std::vector<BYTE>& dllData, HANDLE hProcess);
-
+	bool ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceData, SIZE_T fileSize, wstring& errorMsg);
 }

@@ -150,3 +150,50 @@ bool Conditionals::CheckDLLArchitecture(InjectorContext& ctx, const std::vector<
 		return false;
 	}
 }
+
+
+bool Conditionals::ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceData, SIZE_T fileSize, wstring& errorMsg)
+{
+	try
+	{
+		if (!pSourceData || fileSize < sizeof(IMAGE_DOS_HEADER))
+		{
+			errorMsg = L"[-] Invalid source data size";
+			return false;
+		}
+		IMAGE_DOS_HEADER* pDosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData));
+		if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE)
+		{
+			errorMsg = L"[-] Invalid file (no MZ signature)";
+			return false;
+		}
+		if (pDosHeader->e_lfanew < 0 || static_cast<SIZE_T>(pDosHeader->e_lfanew) + sizeof(IMAGE_NT_HEADERS) > fileSize)
+		{
+			errorMsg = L"[-] Invalid NT headers offset";
+			return false;
+		}
+		IMAGE_NT_HEADERS* pNtHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + pDosHeader->e_lfanew));
+		if (pNtHeaders->Signature != IMAGE_NT_SIGNATURE)
+		{
+			errorMsg = L"[-] Invalid NT signature";
+			return false;
+		}
+#ifdef _WIN64
+		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64)
+		{
+#else
+		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_I386)
+		{
+#endif
+			errorMsg = L"[-] Invalid file architecture";
+			return false;
+		}
+		errorMsg = L"[+] Valid PE file detected";
+		return true;
+	}
+	catch (const std::exception& e)
+	{
+		errorMsg = L"[-] Exception in ValidatePEHeaders: " + wstring(e.what(), e.what() + strlen(e.what()));
+		return false;
+	}
+}

@@ -28,65 +28,6 @@
 
 using namespace std;
 
-/// logs start
-
-// conditionals end
-
-DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
-{
-	HandleGuard snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
-	if (snapshot.get() == INVALID_HANDLE_VALUE)
-	{
-		DWORD error = GetLastError();
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to create process snapshot, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
-		return 0;
-	}
-	PROCESSENTRY32W entry = { sizeof(PROCESSENTRY32W) };
-	if (!Process32FirstW(snapshot, &entry))
-	{
-		DWORD error = GetLastError();
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to enumerate first process, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
-		return 0;
-	}
-	wstring lowerName = name;
-	transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::towlower);
-	wstring foundProcesses;
-	do
-	{
-		wstring exeName(entry.szExeFile);
-		transform(exeName.begin(), exeName.end(), exeName.begin(), ::towlower);
-		if (exeName == lowerName)
-		{
-			Conditionals::LogErrorAndStatus(ctx, L"[+] Found process: " + wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")", RGB(0, 255, 0), false);
-			return entry.th32ProcessID;
-		}
-		foundProcesses += wstring(entry.szExeFile) + L", ";
-	} while (Process32NextW(snapshot, &entry));
-	Conditionals::LogErrorAndStatus(ctx, L"[-] Process not found: " + name + L". Processes scanned: " + foundProcesses, RGB(255, 0, 0), true);
-	return 0;
-}
-
-
-bool InjectorContext::ValidateDLLPath(const wstring& dllPath)
-{
-	if (dllPath.length() > 260)
-	{
-		Conditionals::LogErrorAndStatus(*this, L"[-] DLL path too long", RGB(255, 0, 0), true);
-		return false;
-	}
-	if (dllPath.find(L"..\\") != wstring::npos || dllPath.find(L"/") != wstring::npos || dllPath.find(L"\\") == 0)
-	{
-		Conditionals::LogErrorAndStatus(*this, L"[-] Invalid characters in DLL path", RGB(255, 0, 0), true);
-		return false;
-	}
-	if (PathFileExistsW(dllPath.c_str()) == FALSE)
-	{
-		Conditionals::LogErrorAndStatus(*this, L"[-] DLL file does not exist", RGB(255, 0, 0), true);
-		return false;
-	}
-	return true;
-}
-
 
 // START HERE
 #define RELOC_FLAG(RelInfo) ((RelInfo >> 0x0C) == IMAGE_REL_BASED_DIR64)
@@ -206,6 +147,47 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA* pData)
 #pragma optimize("", on)
 #pragma runtime_checks("", restore)
 
+
+// new end
+
+
+DWORD GetPIDByName(InjectorContext& ctx, const wstring& name)
+{
+	HandleGuard snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
+	if (snapshot.get() == INVALID_HANDLE_VALUE)
+	{
+		DWORD error = GetLastError();
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to create process snapshot, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+		return 0;
+	}
+	PROCESSENTRY32W entry = { sizeof(PROCESSENTRY32W) };
+	if (!Process32FirstW(snapshot, &entry))
+	{
+		DWORD error = GetLastError();
+		Conditionals::LogErrorAndStatus(ctx, L"[-] Failed to enumerate first process, error code: 0x" + to_wstring(error), RGB(255, 0, 0), true);
+		return 0;
+	}
+	wstring lowerName = name;
+	transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::towlower);
+	wstring foundProcesses;
+	do
+	{
+		wstring exeName(entry.szExeFile);
+		transform(exeName.begin(), exeName.end(), exeName.begin(), ::towlower);
+		if (exeName == lowerName)
+		{
+			Conditionals::LogErrorAndStatus(ctx, L"[+] Found process: " + wstring(entry.szExeFile) + L" (PID: " + to_wstring(entry.th32ProcessID) + L")", RGB(0, 255, 0), false);
+			return entry.th32ProcessID;
+		}
+		foundProcesses += wstring(entry.szExeFile) + L", ";
+	} while (Process32NextW(snapshot, &entry));
+	Conditionals::LogErrorAndStatus(ctx, L"[-] Process not found: " + name + L". Processes scanned: " + foundProcesses, RGB(255, 0, 0), true);
+	return 0;
+}
+
+
+
+
 vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
 {
 	try
@@ -241,51 +223,6 @@ vector<BYTE> LoadDLL(InjectorContext& ctx, const wstring& dllPath)
 	}
 }
 
-bool ValidatePEHeaders(InjectorContext& ctx, const BYTE* pSourceData, SIZE_T fileSize, wstring& errorMsg)
-{
-	try
-	{
-		if (!pSourceData || fileSize < sizeof(IMAGE_DOS_HEADER))
-		{
-			errorMsg = L"[-] Invalid source data size";
-			return false;
-		}
-		IMAGE_DOS_HEADER* pDosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData));
-		if (pDosHeader->e_magic != IMAGE_DOS_SIGNATURE)
-		{
-			errorMsg = L"[-] Invalid file (no MZ signature)";
-			return false;
-		}
-		if (pDosHeader->e_lfanew < 0 || static_cast<SIZE_T>(pDosHeader->e_lfanew) + sizeof(IMAGE_NT_HEADERS) > fileSize)
-		{
-			errorMsg = L"[-] Invalid NT headers offset";
-			return false;
-		}
-		IMAGE_NT_HEADERS* pNtHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + pDosHeader->e_lfanew));
-		if (pNtHeaders->Signature != IMAGE_NT_SIGNATURE)
-		{
-			errorMsg = L"[-] Invalid NT signature";
-			return false;
-		}
-#ifdef _WIN64
-		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_AMD64)
-		{
-#else
-		if (pNtHeaders->FileHeader.Machine != IMAGE_FILE_MACHINE_I386)
-		{
-#endif
-			errorMsg = L"[-] Invalid file architecture";
-			return false;
-		}
-		errorMsg = L"[+] Valid PE file detected";
-		return true;
-	}
-	catch (const exception& e)
-	{
-		errorMsg = L"[-] Exception in ValidatePEHeaders: " + wstring(e.what(), e.what() + strlen(e.what()));
-		return false;
-	}
-}
 
 BYTE* AllocateProcessMemory(InjectorContext& ctx, HANDLE hProcess, SIZE_T size, DWORD& oldProtect, wstring& errorMsg)
 {
@@ -521,7 +458,7 @@ bool adjustProtections, bool sehSupport, wstring& errorMsg)
 bool AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* pSourceData, SIZE_T fileSize, BYTE*& pTargetBase, IMAGE_NT_HEADERS*& pNtHeaders, DWORD& oldProtect)
 {
 	wstring errorMsg;
-	if (!ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
+	if (!Conditionals::ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
 	{
 		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
 		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
@@ -937,7 +874,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			if (!Conditionals::IsRunAsAdmin())
 			{
-				MessageBoxW(hwnd, L"ＴＲＥ▼ＯＲ５ Injector MUST be run as Administrator.", L"Error", MB_OK | MB_ICONERROR);
+				MessageBoxW(hwnd, L"DLL Injector MUST be run as Administrator.", L"Error", MB_OK | MB_ICONERROR);
 				Conditionals::LogErrorAndStatus(ctx, L"[-] Application MUST be run as administrator", RGB(255, 0, 0), true);
 				return 0;
 			}
