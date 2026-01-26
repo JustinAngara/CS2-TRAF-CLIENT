@@ -134,6 +134,7 @@
     <ClCompile Include="InjectorContext.cpp" />
     <ClCompile Include="Injectorv2.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ManualMap.cpp" />
   </ItemGroup>
