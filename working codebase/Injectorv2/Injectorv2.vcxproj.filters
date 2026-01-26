@@ -30,6 +30,12 @@
     <ClCompile Include="Process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -51,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Process.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cleanup.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

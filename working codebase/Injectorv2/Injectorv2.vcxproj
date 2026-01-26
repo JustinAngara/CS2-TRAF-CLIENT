@@ -128,13 +128,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cleanup.cpp" />
     <ClCompile Include="Conditionals.cpp" />
     <ClCompile Include="HandleGuard.cpp" />
     <ClCompile Include="InjectorContext.cpp" />
     <ClCompile Include="Injectorv2.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Process.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cleanup.h" />
     <ClInclude Include="Conditionals.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HandleGuard.h" />
