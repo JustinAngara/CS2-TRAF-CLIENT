@@ -71,5 +71,8 @@
     <ClInclude Include="Procedure.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShellcodeHelper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

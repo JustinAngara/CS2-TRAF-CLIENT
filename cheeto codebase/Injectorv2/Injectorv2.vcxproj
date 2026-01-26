@@ -148,6 +148,7 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ManualMap.h" />
+    <ClInclude Include="ShellcodeHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
