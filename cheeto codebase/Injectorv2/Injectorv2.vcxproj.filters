@@ -36,6 +36,9 @@
     <ClCompile Include="Cleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ManualMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -60,6 +63,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Cleanup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ManualMap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Procedure.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

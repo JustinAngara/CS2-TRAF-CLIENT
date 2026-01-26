@@ -5,6 +5,7 @@
 #include "Conditionals.h"
 #include "Memory.h"
 #include "Cleanup.h"
+#include "ManualMap.h"
 #include "Process.h"
 #include <Windows.h>
 #include <winnt.h>
@@ -149,9 +150,6 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA* pData)
 // new end
 
 
-
-
-
 void* AllocateAndWriteShellcode(InjectorContext& ctx, HANDLE hProcess, std::wstring& errorMsg)
 {
 	void* pShellcode = VirtualAllocEx(hProcess, nullptr, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
@@ -185,64 +183,6 @@ bool ExecuteShellcode(InjectorContext& ctx, HANDLE hProcess, void* pShellcode, B
 	return true;
 }
 
-
-bool AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* pSourceData, SIZE_T fileSize, BYTE*& pTargetBase, IMAGE_NT_HEADERS*& pNtHeaders, DWORD& oldProtect)
-{
-	std::wstring errorMsg;
-	if (!Conditionals::ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
-	{
-		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
-		return false;
-	}
-	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
-	pNtHeaders	= reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData))->e_lfanew));
-	pTargetBase = Memory::AllocateProcessMemory(ctx, hProcess, pNtHeaders->OptionalHeader.SizeOfImage, oldProtect, errorMsg);
-	if (!pTargetBase)
-	{
-		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
-		return false;
-	}
-	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
-	if (!Memory::WritePEHeaders(ctx, hProcess, pTargetBase, pSourceData, errorMsg))
-	{
-		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
-		VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
-		return false;
-	}
-	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
-	return true;
-}
-
-bool PrepareMappingData(InjectorContext& ctx, HANDLE hProcess, BYTE* pTargetBase, bool sehSupport, DWORD reason, LPVOID reserved, BYTE*& pMappingDataAlloc)
-{
-	std::wstring		errorMsg;
-	MANUAL_MAPPING_DATA mappingData = { 0 };
-	mappingData.pLoadLibraryA		= LoadLibraryA;
-	mappingData.pGetProcAddress		= GetProcAddress;
-	HMODULE hNtdll					= GetModuleHandleA(ctx.ntdllName);
-	if (!hNtdll)
-	{
-		Conditionals::LogErrorAndStatus(ctx, L"[-] Error getting handle to module, code: 0x" + std::to_wstring(GetLastError()), RGB(255, 0, 0), true);
-		return false;
-	}
-	mappingData.pRtlAddFunctionTable = reinterpret_cast<f_RtlAddFunctionTable>(GetProcAddress(hNtdll, "RtlAddFunctionTable"));
-	mappingData.pBase				 = pTargetBase;
-	mappingData.dwReason			 = reason;
-	mappingData.lpReserved			 = reserved;
-	mappingData.bSEHSupport			 = sehSupport;
-	pMappingDataAlloc				 = Memory::AllocateMappingData(ctx, hProcess, mappingData, errorMsg);
-	if (!pMappingDataAlloc)
-	{
-		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
-		return false;
-	}
-	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
-	return true;
-}
-
 bool AllocateAndWriteShellcodeAndExecute(InjectorContext& ctx, HANDLE hProcess, BYTE* pMappingDataAlloc, void*& pShellcode)
 {
 	std::wstring errorMsg;
@@ -268,77 +208,60 @@ bool ManualMapDLL(InjectorContext& ctx, HANDLE hProcess, const BYTE* pSourceData
 	{
 		auto startTime = std::chrono::high_resolution_clock::now();
 		Conditionals::LogErrorAndStatus(ctx, L"[+] Initializing injection process...", RGB(0, 255, 0), false);
-		SendMessage(ctx.hwndProgressBar, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTEP, (WPARAM)10, 0);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
-		SendMessage(ctx.hwndProgressBar, PBM_SETPOS, 0, 0);
+		InjectionHelpers::InitializeProgressBar(ctx.hwndProgressBar);
 
-		std::random_device		   rd;
-		std::mt19937			   gen(rd());
+		std::random_device				rd;
+		std::mt19937					gen(rd());
 		std::uniform_int_distribution<> dis(5, 15);
 
 		BYTE*			  pTargetBase = nullptr;
 		IMAGE_NT_HEADERS* pNtHeaders  = nullptr;
 		DWORD			  oldProtect  = 0;
-		if (!AllocateAndWriteHeaders(ctx, hProcess, pSourceData, fileSize, pTargetBase, pNtHeaders, oldProtect))
+		if (!Memory::AllocateAndWriteHeaders(ctx, hProcess, pSourceData, fileSize, pTargetBase, pNtHeaders, oldProtect))
 		{
 			return false;
 		}
-		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
+		InjectionHelpers::StepProgressBarWithDelay(ctx.hwndProgressBar, gen, dis);
 
 		if (!Memory::WriteSectionsToMemory(ctx, hProcess, pTargetBase, pSourceData, pNtHeaders))
 		{
 			VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
 			return false;
 		}
-		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
+		InjectionHelpers::StepProgressBarWithDelay(ctx.hwndProgressBar, gen, dis);
 
 		BYTE* pMappingDataAlloc = nullptr;
-		if (!PrepareMappingData(ctx, hProcess, pTargetBase, sehSupport, reason, reserved, pMappingDataAlloc))
+		if (!InjectionHelpers::PrepareMappingData(ctx, hProcess, pTargetBase, sehSupport, reason, reserved, pMappingDataAlloc))
 		{
 			VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
 			return false;
 		}
-		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
+		InjectionHelpers::StepProgressBarWithDelay(ctx.hwndProgressBar, gen, dis);
 
 		void* pShellcode = nullptr;
 		if (!AllocateAndWriteShellcodeAndExecute(ctx, hProcess, pMappingDataAlloc, pShellcode))
 		{
-			VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
-			VirtualFreeEx(hProcess, pMappingDataAlloc, 0, MEM_RELEASE);
+			InjectionHelpers::CleanupOnFailure(hProcess, pTargetBase, pMappingDataAlloc, nullptr);
 			return false;
 		}
-		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
+		InjectionHelpers::StepProgressBarWithDelay(ctx.hwndProgressBar, gen, dis);
 
 		if (!Cleanup::WaitAndCleanUp(ctx, hProcess, pTargetBase, pNtHeaders, pShellcode, pMappingDataAlloc, cleanHeader, cleanUnneededSections, adjustProtections, sehSupport))
 		{
-			VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
-			VirtualFreeEx(hProcess, pMappingDataAlloc, 0, MEM_RELEASE);
-			VirtualFreeEx(hProcess, pShellcode, 0, MEM_RELEASE);
+			InjectionHelpers::CleanupOnFailure(hProcess, pTargetBase, pMappingDataAlloc, pShellcode);
 			return false;
 		}
-		SendMessage(ctx.hwndProgressBar, PBM_STEPIT, 0, 0);
-		std::this_thread::sleep_for(std::chrono::milliseconds(dis(gen)));
+		InjectionHelpers::StepProgressBarWithDelay(ctx.hwndProgressBar, gen, dis);
 
-		auto		  endTime	  = std::chrono::high_resolution_clock::now();
-		auto			   durationMs  = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-		double		  durationSec = durationMs / 1000.0;
-		std::wstringstream durationStream;
-		durationStream << std::fixed << std::setprecision(3) << durationSec;
-		Conditionals::LogErrorAndStatus(ctx, L"[+] Injection completed in " + durationStream.str() + L" seconds", RGB(0, 255, 0), false);
-		SendMessage(ctx.hwndProgressBar, PBM_SETPOS, 100, 0);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_NORMAL, 0);
+		InjectionHelpers::LogCompletionTime(ctx, startTime);
+		InjectionHelpers::FinalizeProgressBar(ctx.hwndProgressBar);
 		return true;
 	}
 	catch (const std::exception& e)
 	{
 		std::wstring error = L"[-] Exception in ManualMapDLL: " + std::wstring(e.what(), e.what() + strlen(e.what()));
 		Conditionals::LogErrorAndStatus(ctx, error, RGB(255, 0, 0), true);
-		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
+		InjectionHelpers::SetProgressBarError(ctx.hwndProgressBar);
 		return false;
 	}
 }

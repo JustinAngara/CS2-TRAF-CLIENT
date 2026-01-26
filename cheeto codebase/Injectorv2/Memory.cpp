@@ -136,3 +136,34 @@ bool Memory::WriteSectionsToMemory(InjectorContext& ctx, HANDLE hProcess, BYTE* 
 	}
 	return true;
 }
+
+
+bool Memory::AllocateAndWriteHeaders(InjectorContext& ctx, HANDLE hProcess, const BYTE* pSourceData, SIZE_T fileSize, BYTE*& pTargetBase, IMAGE_NT_HEADERS*& pNtHeaders, DWORD& oldProtect)
+{
+	std::wstring errorMsg;
+	if (!Conditionals::ValidatePEHeaders(ctx, pSourceData, fileSize, errorMsg))
+	{
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
+		return false;
+	}
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	pNtHeaders	= reinterpret_cast<IMAGE_NT_HEADERS*>(const_cast<BYTE*>(pSourceData + reinterpret_cast<IMAGE_DOS_HEADER*>(const_cast<BYTE*>(pSourceData))->e_lfanew));
+	pTargetBase = Memory::AllocateProcessMemory(ctx, hProcess, pNtHeaders->OptionalHeader.SizeOfImage, oldProtect, errorMsg);
+	if (!pTargetBase)
+	{
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
+		return false;
+	}
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	if (!Memory::WritePEHeaders(ctx, hProcess, pTargetBase, pSourceData, errorMsg))
+	{
+		Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(255, 0, 0), true);
+		VirtualFreeEx(hProcess, pTargetBase, 0, MEM_RELEASE);
+		SendMessage(ctx.hwndProgressBar, PBM_SETSTATE, PBST_ERROR, 0);
+		return false;
+	}
+	Conditionals::LogErrorAndStatus(ctx, errorMsg, RGB(0, 255, 0), false);
+	return true;
+}
