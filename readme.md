@@ -30,7 +30,6 @@
 - [freetype](https://freetype.org/) - font rasterizer
 - [minhook](https://github.com/TsudaKageyu/minhook) - hooking library
 - [unknowncheats](https://www.unknowncheats.me/) - for helping building this base
-- [injector] (https://github.com/s0mbra-1973/Trevor) - for creating the insane injector
 
 ## Reminder
 - this project is for educational purposes only.
