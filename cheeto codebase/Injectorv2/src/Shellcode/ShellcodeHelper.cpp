@@ -1,6 +1,6 @@
 #include "ShellcodeHelper.h"
-#include "Conditionals.h"
-#include "Memory.h"
+#include "../Global/Conditionals.h"
+#include "../Memory/Memory.h"
 #include <winnt.h>
 
 

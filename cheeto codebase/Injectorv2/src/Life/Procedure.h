@@ -1,6 +1,6 @@
 #pragma once
 #include "InjectorContext.h"
-#include "HandleGuard.h"
+#include "../Global/HandleGuard.h"
 #include <windows.h>
 
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "InjectorContext.h"
-#include "Globals.h"
+#include "../Life/InjectorContext.h"
+#include "../Global/Globals.h"
 #include <Richedit.h>
 #include <vector>
 #include <CommCtrl.h>

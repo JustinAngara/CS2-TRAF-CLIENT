@@ -1,10 +1,9 @@
 #include "Procedure.h"
-
-#include "Conditionals.h"
-#include "Procedure.h"
-#include "Process.h"
-#include "Resource.h"
-#include "Memory.h"
+#include "../Global/Conditionals.h"
+#include "../Global/Process.h"
+#include "../Global/Resource.h"
+#include "../Global/HandleGuard.h"
+#include "../Memory/Memory.h"
 #include <TlHelp32.h>
 #include <CommCtrl.h>
 #include <WinUser.h>

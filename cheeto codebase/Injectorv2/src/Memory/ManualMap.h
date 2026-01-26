@@ -1,8 +1,8 @@
 #pragma once
 
-#include "InjectorContext.h"
-#include "Cleanup.h"
-#include "Conditionals.h"
+#include "../Life/InjectorContext.h"
+#include "../Cleanup/Cleanup.h"
+#include "../Global/Conditionals.h"
 #include "Memory.h"
 #include <windows.h>
 #include <thread>

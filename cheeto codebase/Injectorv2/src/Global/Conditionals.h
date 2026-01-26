@@ -2,7 +2,8 @@
 #include <windows.h>
 #include <string>
 #include <vector>
-#include "InjectorContext.h"
+#include "../Life/InjectorContext.h"
+
 namespace Conditionals
 {
 	std::wstring GetCurrentTimestamp();

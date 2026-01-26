@@ -19,6 +19,31 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Cleanup\Cleanup.cpp" />
+    <ClCompile Include="src\Global\Conditionals.cpp" />
+    <ClCompile Include="src\Global\HandleGuard.cpp" />
+    <ClCompile Include="src\Global\Process.cpp" />
+    <ClCompile Include="src\Life\InjectorContext.cpp" />
+    <ClCompile Include="src\Life\Injectorv2.cpp" />
+    <ClCompile Include="src\Life\Procedure.cpp" />
+    <ClCompile Include="src\Memory\ManualMap.cpp" />
+    <ClCompile Include="src\Memory\Memory.cpp" />
+    <ClCompile Include="src\Shellcode\ShellcodeHelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Cleanup\Cleanup.h" />
+    <ClInclude Include="src\Global\Conditionals.h" />
+    <ClInclude Include="src\Global\Globals.h" />
+    <ClInclude Include="src\Global\HandleGuard.h" />
+    <ClInclude Include="src\Global\Process.h" />
+    <ClInclude Include="src\Global\Resource.h" />
+    <ClInclude Include="src\Life\InjectorContext.h" />
+    <ClInclude Include="src\Life\Procedure.h" />
+    <ClInclude Include="src\Memory\ManualMap.h" />
+    <ClInclude Include="src\Memory\Memory.h" />
+    <ClInclude Include="src\Shellcode\ShellcodeHelper.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -71,6 +96,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -127,31 +164,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Cleanup.cpp" />
-    <ClCompile Include="Conditionals.cpp" />
-    <ClCompile Include="HandleGuard.cpp" />
-    <ClCompile Include="InjectorContext.cpp" />
-    <ClCompile Include="Injectorv2.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="Procedure.cpp" />
-    <ClCompile Include="Process.cpp" />
-    <ClCompile Include="ManualMap.cpp" />
-    <ClCompile Include="ShellcodeHelper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Cleanup.h" />
-    <ClInclude Include="Conditionals.h" />
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="HandleGuard.h" />
-    <ClInclude Include="InjectorContext.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="Procedure.h" />
-    <ClInclude Include="Process.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="ManualMap.h" />
-    <ClInclude Include="ShellcodeHelper.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.220531.1\build\native\Microsoft.Windows.CppWinRT.targets')" />

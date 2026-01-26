@@ -1,5 +1,6 @@
 #pragma once
-#include "InjectorContext.h"
+#include "../Life/InjectorContext.h"
+#include "../Memory/Memory.h"
 #include <Windows.h>
 
 

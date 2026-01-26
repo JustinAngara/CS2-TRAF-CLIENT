@@ -1,7 +1,7 @@
 #include "Cleanup.h"
-#include "Conditionals.h"
-#include "InjectorContext.h"
-#include "Globals.h"
+#include "../Global/Conditionals.h"
+#include "../Life/InjectorContext.h"
+#include "../Global/Globals.h"
 #include <windows.h>
 #include <thread>
 #include <chrono>

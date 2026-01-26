@@ -1,5 +1,6 @@
-#include "InjectorContext.h"
-#include "Conditionals.h"
+
+#include "../Life/InjectorContext.h"
+#include "../Global/Conditionals.h"
 #include <string>
 #include <Shlwapi.h>
 
