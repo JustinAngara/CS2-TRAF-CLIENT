@@ -58,7 +58,7 @@ namespace Offsets
 	constexpr uintptr_t m_bPawnIsAlive = 0x914;
 
 	// -> CBodyComponentSkeletonInstance
-	constexpr uintptr_t m_modelState = 0x190;
+	constexpr uintptr_t m_modelState = 0x160;
 
 	// -> CObserverServices
 	constexpr std::ptrdiff_t m_pObserverServices  = 0x13F0;

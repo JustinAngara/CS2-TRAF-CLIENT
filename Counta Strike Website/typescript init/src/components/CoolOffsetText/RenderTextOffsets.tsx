@@ -12,7 +12,7 @@ import DisplayOffsets from "./DisplayOffsets.tsx";
 const RenderTextOffsets = () => {
 	const defaultTab = "client";
 	const [key, setKey] = useState(defaultTab);
-
+	const xz:number = 4;
 	return (
 		<div style={styles.root}>
 

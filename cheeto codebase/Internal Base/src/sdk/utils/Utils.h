@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include <vector>
+#include <iostream>
 #include <cmath>
 #include <algorithm>
 #include "../utils/Vector.h"
@@ -236,48 +237,31 @@ namespace Utils
 	inline Vector GetBonePos(C_CSPlayerPawn* pawn, BoneID boneID)
 	{
 		if (!pawn)
+		{
+			
 			return {};
+		}
 
-		auto scene = reinterpret_cast<CGameSceneNode*>(pawn->m_pGameSceneNode());
-		if (!scene)
+		uintptr_t sceneAddr = pawn->m_pGameSceneNode();
+		
+		if (!sceneAddr)
+		{
 			return {};
+		}
 
-		uintptr_t boneArray = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(scene) + Offsets::m_modelState + 0x80);
+		auto scene = reinterpret_cast<CGameSceneNode*>(sceneAddr);
+
+		uintptr_t modelStateAddr = reinterpret_cast<uintptr_t>(scene) + Offsets::m_modelState + 0x80;
+		
+		uintptr_t boneArray = *reinterpret_cast<uintptr_t*>(modelStateAddr);
+		
 		if (!IsValidPtr(boneArray))
+		{
 			return {};
-
-		return *reinterpret_cast<Vector*>(boneArray + static_cast<int>(boneID) * 0x20);
-	}
-
-	// safely reads a null-terminated string from a memory address with exception handling to prevent crashes
-	inline bool SafeReadString(uintptr_t addr, char* out, size_t maxLen = 128)
-	{
-		if (!addr || !out || maxLen == 0)
-			return false;
-
-		__try
-		{
-			for (size_t i = 0; i < maxLen - 1; i++)
-			{
-				char c;
-				memcpy(&c, reinterpret_cast<void*>(addr + i), 1);
-				
-				if (c == '\0')
-				{
-					out[i] = '\0';
-					return true;
-				}
-
-				out[i] = c;
-			}
-
-			out[maxLen - 1] = '\0';
-			return true;
 		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			return false;
-		}
+
+		Vector result = *reinterpret_cast<Vector*>(boneArray + static_cast<int>(boneID) * 0x20);
+		return result;
 	}
 
 }

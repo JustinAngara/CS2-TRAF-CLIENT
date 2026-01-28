@@ -100,16 +100,16 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 		m_dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
-	if (Globals::esp_name && ent.controller)
-	{
-		char nameBuf[128]{};
-		uintptr_t namePtr = reinterpret_cast<uintptr_t>(ent.controller->m_szTeamname());
-		if (Utils::SafeReadString(namePtr, nameBuf))
-		{
-			ImVec2 ts = ImGui::CalcTextSize(nameBuf);
-			m_dl->AddText({ x + (w - ts.x) * 0.5f, y - ts.y - 2 }, m_nameCol, nameBuf);
-		}
-	}
+	//if (Globals::esp_name && ent.controller)
+	//{
+	//	char nameBuf[128]{};
+	//	uintptr_t namePtr = reinterpret_cast<uintptr_t>(ent.controller->m_szTeamname());
+	//	if (Utils::SafeReadString(namePtr, nameBuf))
+	//	{
+	//		ImVec2 ts = ImGui::CalcTextSize(nameBuf);
+	//		m_dl->AddText({ x + (w - ts.x) * 0.5f, y - ts.y - 2 }, m_nameCol, nameBuf);
+	//	}
+	//}
 
 	if (Globals::esp_skeleton)
 	{
