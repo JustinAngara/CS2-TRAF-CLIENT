@@ -16,33 +16,39 @@ EntityManager& EntityManager::Get()
     return instance;
 }
 
-
 void EntityManager::Update()
 {
-    if (!entityListAddress) return;
+	uintptr_t client = Memory::GetModuleBase("client.dll");
+	if (!client)
+	{
+		
+		return;
+	}
 
-    uintptr_t listPtr = *reinterpret_cast<uintptr_t*>(entityListAddress);
-    if (!listPtr) return;
+	uintptr_t listPtr = *reinterpret_cast<uintptr_t*>(client + Offsets::dwEntityList);
 
-    uintptr_t client = Memory::GetModuleBase("client.dll");
-    C_CSPlayerPawn* currentLocalPawn = nullptr;
 
-    if (client)
-    {
-        uintptr_t localPawnAddr = *reinterpret_cast<uintptr_t*>(client + Offsets::dwLocalPlayerPawn);
-        currentLocalPawn = reinterpret_cast<C_CSPlayerPawn*>(localPawnAddr);
-    }
+	C_CSPlayerPawn* currentLocalPawn = nullptr;
 
-    std::vector<Entity_t> temp;
-    temp.reserve(64);
+	uintptr_t localPawnAddr = *reinterpret_cast<uintptr_t*>(client + Offsets::dwLocalPlayerPawn);
+	if (localPawnAddr)
+	{
+		currentLocalPawn = reinterpret_cast<C_CSPlayerPawn*>(localPawnAddr);
+	}
+
+	std::vector<Entity_t> temp;
+	temp.reserve(64);
+
 	for (int i = 1; i < 64; ++i)
 	{
-		uintptr_t listEntry =
-		*reinterpret_cast<uintptr_t*>(listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
+		uintptr_t listEntry = *reinterpret_cast<uintptr_t*>(
+		listPtr + (8 * ((i & 0x7FFF) >> 9)) + 16);
+
 		if (!listEntry) continue;
 
-		uintptr_t controllerPtr =
-		*reinterpret_cast<uintptr_t*>(listEntry + 112 * (i & 0x1FF));
+		uintptr_t controllerPtr = *reinterpret_cast<uintptr_t*>(
+		listEntry + 112 * (i & 0x1FF));
+
 		if (!controllerPtr) continue;
 
 		auto	 controller = reinterpret_cast<C_CSPlayerController*>(controllerPtr);
@@ -50,12 +56,14 @@ void EntityManager::Update()
 
 		if (!pawnHandle || pawnHandle == static_cast<uint32_t>(-1)) continue;
 
-		uintptr_t pawnListEntry =
-		*reinterpret_cast<uintptr_t*>(listPtr + 8 * ((pawnHandle & 0x7FFF) >> 9) + 16);
+		uintptr_t pawnListEntry = *reinterpret_cast<uintptr_t*>(
+		listPtr + 8 * ((pawnHandle & 0x7FFF) >> 9) + 16);
+
 		if (!pawnListEntry) continue;
 
-		uintptr_t pawnPtr =
-		*reinterpret_cast<uintptr_t*>(pawnListEntry + 112 * (pawnHandle & 0x1FF));
+		uintptr_t pawnPtr = *reinterpret_cast<uintptr_t*>(
+		pawnListEntry + 112 * (pawnHandle & 0x1FF));
+
 		if (!pawnPtr) continue;
 
 		auto pawn = reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);
@@ -64,8 +72,7 @@ void EntityManager::Update()
 
 		if (pawn == currentLocalPawn)
 		{
-			localPlayerIndex = i; 
-			// std::cout << localPlayerIndex << '\n';
+			localPlayerIndex = i;
 			continue;
 		}
 
@@ -75,20 +82,15 @@ void EntityManager::Update()
 		ent.index	   = i;
 		ent.isEnemy	   = currentLocalPawn && pawn->m_iTeamNum() != currentLocalPawn->m_iTeamNum();
 
-		//bool spotted = ent.pawn->IsSpottedByLocal(localPlayerIndex);
-		//if (spotted) std::cout << "SPOTTED: " << ent.index;
-
 		temp.push_back(ent);
 	}
 
-
-
-    {
-		// for mutex to go close
-        std::unique_lock lock(mutex);
-        entities.swap(temp);
-        localPawn = currentLocalPawn;
-    }
+	
+	{
+		std::unique_lock lock(mutex);
+		entities.swap(temp);
+		localPawn = currentLocalPawn;
+	}
 }
 
 C_CSPlayerPawn* EntityManager::GetPawnFromHandle(uint32_t handle)
@@ -106,9 +108,9 @@ C_CSPlayerPawn* EntityManager::GetPawnFromHandle(uint32_t handle)
     if (!entry)
         return nullptr;
 
-    uintptr_t pawnPtr = *reinterpret_cast<uintptr_t*>(
-        entry + 112 * (handle & 0x1FF)
-    );
+	uintptr_t pawnPtr = *reinterpret_cast<uintptr_t*>(
+		entry + 112 * (handle & 0x1FF) // Changed from 112
+	);
     if (!pawnPtr) return nullptr;
 
     return reinterpret_cast<C_CSPlayerPawn*>(pawnPtr);

@@ -39,7 +39,7 @@ namespace Offsets
 
 
 	// -> client.dll.hpp on a2x dumper -> C_BaseEntity
-	constexpr uintptr_t m_iHealth		 = 0x644;
+	constexpr uintptr_t m_iHealth		 = 0x354;
 	constexpr uintptr_t m_iTeamNum		 = 0x3F3;
 	constexpr uintptr_t m_vOldOrigin	 = 0x1588;
 	constexpr uintptr_t m_pGameSceneNode = 0x338;
@@ -61,14 +61,14 @@ namespace Offsets
 	constexpr uintptr_t m_modelState = 0x190;
 
 	// -> CObserverServices
-	constexpr std::ptrdiff_t m_pObserverServices  = 0x1408;
-	constexpr std::ptrdiff_t m_hObserverTarget	  = 0x44;
+	constexpr std::ptrdiff_t m_pObserverServices  = 0x13F0;
+	constexpr std::ptrdiff_t m_hObserverTarget	  = 0x4C;
 	constexpr std::ptrdiff_t m_iObserverMode	  = 0x48;
 	constexpr std::ptrdiff_t m_entitySpottedState = 0x1F98;
 	constexpr std::ptrdiff_t m_aimPunchAngleVel	  = 0x16D8;
 
 	// -> Buttons
 	constexpr std::ptrdiff_t jump			 = 0x205BAF0;
-	constexpr std::ptrdiff_t m_aimPunchCache = 0x1008;
+	constexpr std::ptrdiff_t m_aimPunchCache = 0x16F0;
 
 }

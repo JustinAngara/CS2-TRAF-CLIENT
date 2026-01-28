@@ -17,15 +17,19 @@ void HackManager::Loop()
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	g_client = Memory::GetModuleBase("client.dll");
 
+	std::cout << "this is g client 0x" << g_client << "\n";
+
 	ESP::setup();
 
 	int iterator = 0, size = entities.size();
 	// entity list is not getting hit
+	std::cout << "this is entity list size: " << size << "\n";
+
 	for (auto ent : entities)
 	{
 		// directly mention esp from here and pass in render
-		//ESP::renderEntity(ent, local);
-
+		ESP::renderEntity(ent, local);
+		
 		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit
 
@@ -36,8 +40,8 @@ void HackManager::Loop()
 
 void HackManager::RunFeatures()
 {
-	//Combat::Render();
-	//Visuals::Render();
+	Combat::Render();
+	Visuals::Render();
 	//Misc::Render();
 
 
