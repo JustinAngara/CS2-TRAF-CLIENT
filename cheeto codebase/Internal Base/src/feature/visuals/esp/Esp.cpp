@@ -44,30 +44,20 @@ void ESP::setup()
 
 void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 {
-	std::cout << "[ESP] renderEntity called for index " << ent.index << "\n";
-
 	C_CSPlayerPawn* pawn = ent.pawn;
 	if (!Globals::esp_enabled) return;
 	if (!localPawn || !pawn->IsAlive()) return;
-	std::cout << "[ESP] passed base case " << ent.index << "\n";
-
+	
 
 	const ImU32 boxCol = (pawn->m_iTeamNum() == localPawn->m_iTeamNum()) ? m_boxCol1 : m_boxCol2;
 
 	if (pawn->m_iTeamNum() == localPawn->m_iTeamNum() && !Globals::esp_teamate) return;
-	std::cout << "[ESP] team stuff " << ent.index << "\n";
-
-	std::cout << "[ESP] team stuff " << ent.index << "\n";
-
+	
 	Vector feet = pawn->m_vOldOrigin();
 	Vector head = Utils::GetBonePos(pawn, BoneID::Head);
 
-	std::cout << "[ESP] " << ent.index << " feet: " << feet.x << "," << feet.y << "," << feet.z << "\n";
-	std::cout << "[ESP] " << ent.index << " head: " << head.x << "," << head.y << "," << head.z << "\n";
-
 	if (head.IsZero())
 	{
-		std::cout << "[ESP] " << ent.index << " head is zero\n";
 		return;
 	}
 
@@ -100,6 +90,7 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 		m_dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
+	// todo fix later
 	//if (Globals::esp_name && ent.controller)
 	//{
 	//	char nameBuf[128]{};
