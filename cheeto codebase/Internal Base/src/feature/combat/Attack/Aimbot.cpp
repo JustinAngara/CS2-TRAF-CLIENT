@@ -56,6 +56,8 @@ void Aimbot::run()
 
 	C_CSPlayerPawn* bestTarget = Combat::GetBestTarget(local);
 
+	std::cout << "[Aimbot] Best target: 0x" << std::hex << (uintptr_t)bestTarget << std::dec << "\n";
+	
 	if (!bestTarget)
 	{
 		// no target found
