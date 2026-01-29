@@ -18,6 +18,12 @@
     <ClInclude Include="src\Cleanup\Cleanup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Parse\Parse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Data\server_dll.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Data\client_dll.hpp">
@@ -26,9 +32,6 @@
     <ClInclude Include="src\Data\offsets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Data\server_dll.cs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Life\Main.cpp">

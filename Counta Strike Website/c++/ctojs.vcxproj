@@ -26,9 +26,8 @@
     <ClInclude Include="src\Cleanup\Cleanup.h" />
     <ClInclude Include="src\Data\client_dll.hpp" />
     <ClInclude Include="src\Data\offsets.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Data\server_dll.cs" />
+    <ClInclude Include="src\Data\server_dll.hpp" />
+    <ClInclude Include="src\Parse\Parse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
