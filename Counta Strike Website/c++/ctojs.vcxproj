@@ -21,12 +21,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Life\Main.cpp" />
+    <ClCompile Include="src\Parse\GrabContent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Cleanup\Cleanup.h" />
     <ClInclude Include="src\Data\client_dll.hpp" />
     <ClInclude Include="src\Data\offsets.hpp" />
     <ClInclude Include="src\Data\server_dll.hpp" />
+    <ClInclude Include="src\Parse\GrabContent.h" />
     <ClInclude Include="src\Parse\Parse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

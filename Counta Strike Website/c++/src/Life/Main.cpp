@@ -1,9 +1,23 @@
+#include "../Parse/GrabContent.h"
+#include "../Parse/Parse.h"
 
 #define UNICODE
 #define NOMINMAX
 #include <windows.h>
 
 static const wchar_t* kClassName = L"CTOJS";
+
+static void AttachDebugConsole()
+{
+	AllocConsole();
+
+	FILE* f = nullptr;
+	freopen_s(&f, "CONOUT$", "w", stdout);
+	freopen_s(&f, "CONOUT$", "w", stderr);
+	freopen_s(&f, "CONIN$", "r", stdin);
+
+	SetConsoleOutputCP(CP_UTF8);
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -36,6 +50,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
+#ifdef _DEBUG
+	AttachDebugConsole();
+#endif
+	Parse p{ R"(src\Data\client_dll.hpp)" };
+	GrabContent::Run(p);
+	
+
 	WNDCLASSEXW wc{};
 	wc.cbSize		 = sizeof(wc);
 	wc.style		 = CS_HREDRAW | CS_VREDRAW;

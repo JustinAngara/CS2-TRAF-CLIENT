@@ -24,6 +24,9 @@
     <ClInclude Include="src\Data\server_dll.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Parse\GrabContent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Data\client_dll.hpp">
@@ -35,6 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Life\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parse\GrabContent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
