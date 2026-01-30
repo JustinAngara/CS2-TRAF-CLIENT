@@ -5,13 +5,13 @@
 namespace Offsets
 {
 	// -> offsets.h on a2x dumper
-	constexpr uintptr_t		 dwEntityList			 = 0x24A7B48; // 
+	constexpr uintptr_t		 dwEntityList			 = 0x24A7B28; //
 	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2062850; //
-	constexpr uintptr_t		 dwLocalPlayerController = 0x22ECA18; //
-	constexpr uintptr_t		 dwViewMatrix			 = 0x2308850; //
-	constexpr uintptr_t		 dwViewAngles			 = 0x2312A68; //
-	constexpr uintptr_t		 dwGlobalVars			 = 0x20572A8; //
-	constexpr std::ptrdiff_t dwSensitivity			 = 0x2304128; //
+	constexpr uintptr_t		 dwLocalPlayerController = 0x22ECA28; //
+	constexpr uintptr_t		 dwViewMatrix			 = 0x2308860; //
+	constexpr uintptr_t		 dwViewAngles			 = 0x2312BD8; //
+	constexpr uintptr_t		 dwGlobalVars			 = 0x20572A8; // 
+	constexpr std::ptrdiff_t dwSensitivity			 = 0x2304128; // 
 
 	// needs updates
 	//constexpr std::ptrdiff_t dwSensitivity = 0x2303128;
