@@ -95,12 +95,8 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	BoneID targetBone = Combat::FindNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 
-	if (targetPos.IsZero()) return;
-	Vector localPos	= local->m_vOldOrigin() + local->m_vecViewOffset();
-	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
-	Vector delta = aimAngles - *currentAngles;
+	Vector delta = Combat::GetDeltaAngle(local, target, targetBone);
 
-	Utils::NormalizeAngles(delta);
 
 	// get recoil compensation
 	Vector recoilDelta{};

@@ -2,6 +2,7 @@
 #include "../combat/legitbot/LegitAimbot.h"
 #include "../combat/Recoil/Recoil.h"
 #include "../combat/Attack/Aimbot.h"
+#include "../misc/AutoStop/AutoStop.h"
 #include "../combat/AutoFire/AutoFire.h"
 #include "../../sdk/utils/Globals.h"
 #include "../../sdk/utils/Utils.h"
@@ -145,6 +146,7 @@ Vector Combat::GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, Bone
 	Vector aimAngles = Utils::CalcAngle(localPos, targetPos);
 	Vector delta = aimAngles - *currentAngles;
 
+	Utils::NormalizeAngles(delta);
 	return delta;
 }
 
@@ -174,7 +176,7 @@ void Combat::clickFire(FireInput input)
 void Combat::holdFire(FireInput input)
 {
 	// if autostop -> then basically 'release' the keys and perform stop then allow the shoot to occur
-	// AutoStop::Run();
+	AutoStop::Run();
 	if (input == FireInput::KeyboardL)
 	{
 		if (!(GetAsyncKeyState('L') & 0x8000))

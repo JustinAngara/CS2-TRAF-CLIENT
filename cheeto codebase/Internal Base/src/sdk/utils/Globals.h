@@ -57,4 +57,8 @@ namespace Globals
 
 	// FOV CROSSHAIR
 	inline bool fov_crosshair_enabled = false;
+
+	// AUTO STOP
+	inline bool autostop_enabled = false;
+	
 }
