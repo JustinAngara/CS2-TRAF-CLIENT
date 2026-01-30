@@ -173,6 +173,8 @@ void Combat::clickFire(FireInput input)
 
 void Combat::holdFire(FireInput input)
 {
+	// if autostop -> then basically 'release' the keys and perform stop then allow the shoot to occur
+	// AutoStop::Run();
 	if (input == FireInput::KeyboardL)
 	{
 		if (!(GetAsyncKeyState('L') & 0x8000))

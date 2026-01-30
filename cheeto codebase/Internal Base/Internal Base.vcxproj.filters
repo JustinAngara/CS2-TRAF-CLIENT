@@ -111,6 +111,9 @@
     <ClCompile Include="src\feature\visuals\fov\Fov.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\feature\misc\AutoStop\AutoStop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">
@@ -255,6 +258,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\feature\visuals\fov\Fov.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\feature\misc\AutoStop\AutoStop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
