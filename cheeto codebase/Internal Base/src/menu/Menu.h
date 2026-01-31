@@ -22,6 +22,7 @@ namespace Menu
 	static void createBhop();
 	static void createAutoFire();
 	static void createFovCrosshair();
+	static void createAutoStop();
 	
 
 }

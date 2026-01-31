@@ -180,6 +180,11 @@ void Menu::createBhop()
 
 	MenuStyles::CustomCheckbox("Enable Bhop", &Globals::bhop_enabled);
 }
+void Menu::createAutoStop()
+{
+
+	MenuStyles::CustomCheckbox("Enable AutoStop", &Globals::autostop_enabled);
+}
 
 void Menu::Render()
 {
@@ -236,6 +241,8 @@ void Menu::Render()
 	ImGui::Spacing();
 	createBhop();
 
+	ImGui::Spacing();
+	createAutoStop();
 
 	////////////////// CONTENT END
 

@@ -5,17 +5,13 @@
 namespace Offsets
 {
 	// -> offsets.h on a2x dumper
-	constexpr uintptr_t		 dwEntityList			 = 0x24A7B28; //
-	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2062850; //
-	constexpr uintptr_t		 dwLocalPlayerController = 0x22ECA28; //
-	constexpr uintptr_t		 dwViewMatrix			 = 0x2308860; //
-	constexpr uintptr_t		 dwViewAngles			 = 0x2312BD8; //
-	constexpr uintptr_t		 dwGlobalVars			 = 0x20572A8; // 
-	constexpr std::ptrdiff_t dwSensitivity			 = 0x2304128; // 
-
-	// needs updates
-	//constexpr std::ptrdiff_t dwSensitivity = 0x2303128;
-
+	constexpr uintptr_t		 dwEntityList			 = 0x24A7B28; 
+	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2062850; 
+	constexpr uintptr_t		 dwLocalPlayerController = 0x22ECA28; 
+	constexpr uintptr_t		 dwViewMatrix			 = 0x2308860; 
+	constexpr uintptr_t		 dwViewAngles			 = 0x2312BD8; 
+	constexpr uintptr_t		 dwGlobalVars			 = 0x20572A8;  
+	constexpr std::ptrdiff_t dwSensitivity			 = 0x2304128; 
 
 	// -> client.dll.hpp on a2x dumper -> C_BaseEntity
 	constexpr uintptr_t m_iHealth		 = 0x354;
@@ -45,9 +41,9 @@ namespace Offsets
 	constexpr std::ptrdiff_t m_iObserverMode	  = 0x48;
 	constexpr std::ptrdiff_t m_entitySpottedState = 0x1F98;
 	constexpr std::ptrdiff_t m_aimPunchAngleVel	  = 0x16D8;
+	constexpr std::ptrdiff_t m_aimPunchCache = 0x16F0;
 
 	// -> Buttons
 	constexpr std::ptrdiff_t jump			 = 0x205BAF0;
-	constexpr std::ptrdiff_t m_aimPunchCache = 0x16F0;
 
 }
