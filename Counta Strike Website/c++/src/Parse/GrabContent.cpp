@@ -1,9 +1,13 @@
 #include "GrabContent.h"
+#include "Item.h"
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
+
+
+// edit the parse attributes now
 void GrabContent::Run(Parse& parse)
 {
 	std::string fileLoc{ parse.getFileLoc() };
@@ -20,5 +24,19 @@ void GrabContent::Run(Parse& parse)
 
 	std::cout << content << '\n';
 
+	// now format the content into the vectors of parse items
 
+
+};
+
+
+Item GrabContent::GetItem(std::string content, int index)
+{
+	// first needs to hit the 
+	Item item{};
+
+	// check the first line
+	std::string firstLine = content.substr();
+
+	return item;
 };
