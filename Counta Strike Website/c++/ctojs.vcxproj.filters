@@ -27,6 +27,9 @@
     <ClInclude Include="src\Parse\GrabContent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Parse\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Data\client_dll.hpp">

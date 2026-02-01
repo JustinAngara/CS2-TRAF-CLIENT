@@ -10,8 +10,6 @@ public:
 	
 private:
 	std::string m_fileLoc;
-	std::string m_content;
-
 	// ordered list
-
+	
 };
