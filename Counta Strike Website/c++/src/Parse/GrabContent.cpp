@@ -30,13 +30,3 @@ void GrabContent::Run(Parse& parse)
 };
 
 
-Item GrabContent::GetItem(std::string content, int index)
-{
-	// first needs to hit the 
-	Item item{};
-
-	// check the first line
-	std::string firstLine = content.substr();
-
-	return item;
-};

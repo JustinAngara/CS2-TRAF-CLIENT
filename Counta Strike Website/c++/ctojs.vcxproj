@@ -28,6 +28,7 @@
     <ClInclude Include="src\Data\client_dll.hpp" />
     <ClInclude Include="src\Data\offsets.hpp" />
     <ClInclude Include="src\Data\server_dll.hpp" />
+    <ClInclude Include="src\Parse\Block.h" />
     <ClInclude Include="src\Parse\GrabContent.h" />
     <ClInclude Include="src\Parse\Item.h" />
     <ClInclude Include="src\Parse\Parse.h" />
