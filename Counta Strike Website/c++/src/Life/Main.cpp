@@ -54,11 +54,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 	AttachDebugConsole();
 #endif
 	Parse p1 { R"(src\Data\client_dll.hpp)" };
-	Parse p2 { R"(src\Data\server_dll.hpp)" };
-	Parse p3 { R"(src\Data\offsets.hpp)" };
 	GrabContent::Run(p1);
-	GrabContent::Run(p2);
-	GrabContent::Run(p3);
+	GrabContent::PrintBlocks(p1);
 	
 
 	WNDCLASSEXW wc{};
