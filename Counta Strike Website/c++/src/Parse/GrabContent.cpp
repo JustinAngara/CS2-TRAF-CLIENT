@@ -80,7 +80,6 @@ void GrabContent::ParseItems(Block& block, const std::string& blockContent)
         lineNum++;
         
         if (isFirstLine) {
-            std::cout << "  Line " << lineNum << " (SKIPPED - declaration): " << line << "\n";
             isFirstLine = false;
             continue;
         }
@@ -88,18 +87,13 @@ void GrabContent::ParseItems(Block& block, const std::string& blockContent)
         std::string trimmed = TrimWS(line);
         
         if (trimmed.empty() || trimmed.find("//") == 0 || trimmed == "};" || trimmed == "}") {
-            std::cout << "  Line " << lineNum << " (SKIPPED): [" << trimmed << "]\n";
             continue;
         }
         
-        std::cout << "  Line " << lineNum << " (PARSING): [" << trimmed << "]\n";
         
         Item item = ParseLine(trimmed, block.getIsEnumClass());
         if (!item.getName().empty()) {
-            std::cout << "    -> SUCCESS: " << item.getName() << "\n";
-            block.addItem(item);
-        } else {
-            std::cout << "    -> FAILED to parse\n";
+			block.addItem(item);
         }
     }
 }
