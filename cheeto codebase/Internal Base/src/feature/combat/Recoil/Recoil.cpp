@@ -1,5 +1,6 @@
 #include "Recoil.h"
 #include "../../../sdk/utils/Utils.h"
+#include "../../../sdk/utils/Globals.h"
 #include "../../../core/HackManager.h"
 
 void Recoil::Run(C_CSPlayerPawn* local)
@@ -7,7 +8,7 @@ void Recoil::Run(C_CSPlayerPawn* local)
 	if (!local) return;
 
 	
-	if (!HackManager::g_client) return;
+	if (!HackManager::g_client || !Globals::norecoil_enabled) return;
 
 	Vector* viewAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!viewAngles) return;
