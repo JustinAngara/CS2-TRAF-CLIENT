@@ -21,6 +21,7 @@ namespace Menu
 	static void createAimbot();
 	static void createBhop();
 	static void createAutoFire();
+	static void createNoRecoil();
 	static void createFovCrosshair();
 	static void createAutoStop();
 	

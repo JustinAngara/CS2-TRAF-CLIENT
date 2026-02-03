@@ -163,6 +163,12 @@ void Menu::createAimbot()
 	
 }
 
+void Menu::createNoRecoil()
+{
+	MenuStyles::CustomCheckbox("Enable No Recoil", &Globals::norecoil_enabled);
+
+}
+
 void Menu::createFovCrosshair()
 {
 	MenuStyles::CustomCheckbox("Enable FoV Crosshair", &Globals::fov_crosshair_enabled);
@@ -236,6 +242,7 @@ void Menu::Render()
 	MenuStyles::SectionHeader("AIMBOT", 85.0f);
 	createAimbot();
 	createAutoFire();
+	createNoRecoil();
 
 	MenuStyles::SectionHeader("MISC", 85.0f);
 	ImGui::Spacing();
