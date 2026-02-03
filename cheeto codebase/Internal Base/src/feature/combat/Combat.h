@@ -27,6 +27,7 @@ public:
 	static void DetermineBestPlayer(Entity_t& ent, int i, int size); // this will be latched onto original game entities hook
 	static BoneID FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim);
 	static bool IsVisible(C_CSPlayerPawn* target, int localIndex = 1);
+	static void DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy);
 
 	// angle stuff
 	static Vector GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone);

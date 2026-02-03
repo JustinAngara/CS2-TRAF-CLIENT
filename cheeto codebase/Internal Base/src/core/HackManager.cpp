@@ -30,6 +30,7 @@ void HackManager::Loop()
 		// directly mention esp from here and pass in render
 		ESP::renderEntity(ent, local);
 		Combat::DetermineBestPlayer(ent, iterator, size);
+
 		iterator++;
 	} // now that we have all state ready we can do some fuck ass shit
 

@@ -67,6 +67,8 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 	Vector aimAngles = Utils::CalcAngle(localPos, headPos);
 	float  fov		 = Utils::GetFoV(*currentAngles, aimAngles);
 
+
+	// not only that but we newould need to account for some sort of proximity xyz than best distance
 	if (fov < m_bestDistance)
 	{
 		m_bestDistance = fov;
@@ -74,6 +76,14 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 	}
 }
 
+
+// TODO: Fix this method, account for some arbritrary magnitude and apply
+void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
+{
+	
+	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
+	Vector enemeyPos = enemy->m_vOldOrigin() + enemy->m_vecViewOffset();
+}
 
 
 BoneID Combat::FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
