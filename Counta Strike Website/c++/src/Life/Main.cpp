@@ -56,10 +56,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 #endif
 	Parse p1 { R"(src\Data\client_dll.hpp)" };
 	GrabContent::Run(p1);
-	GrabContent::PrintBlocks(p1);
-	//ConvertToJson ctj{p1};
-	//ctj.populateContent();
-	//ctj.printJson();
+	//GrabContent::PrintBlocks(p1);
+	ConvertToJson ctj{p1};
+	ctj.populateContent();
+	ctj.printJson();
 
 
 	WNDCLASSEXW wc{};

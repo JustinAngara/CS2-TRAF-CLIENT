@@ -1,5 +1,8 @@
 #include "ConvertToJson.h"
+#include "../../libs/json.hpp"
 #include <iostream>
+
+using json = nlohmann::json;
 
 /*
 
@@ -41,31 +44,49 @@ Items: 4
 
 /*
 
-{
-	"Key" : 530,
-	"Type" : "NAMESPACE",
-	"Name" : "CompositeMaterial_t",
-	"Items" : 4,
-	"List": [
-		["m_targetKVS", 0x8, "KeyValues3"],
-		["m_PreGenerationKVs", 0x17, "KeyValues3"],
-		...
-	]
+obj.data[0] -> first instance of object
 
+{
+	"data":[
+		{
+			"Key" : 530,
+			"Type" : "NAMESPACE",
+			"Name" : "CompositeMaterial_t",
+			"Items" : 4,
+			"List": [
+				["m_targetKVS", 0x8, "KeyValues3"],
+				["m_PreGenerationKVs", 0x17, "KeyValues3"],
+				...
+			]
+		},
+
+		{
+			Key....
+		}
+	]
 }
 
 */
 
 void ConvertToJson::populateContent()
 {
-	std::string content{ "{" };
+	json j;
+	j["data"] = json::array();
 
-	content += '\n';
+	// Add objects
+	json obj1;
+	obj1["Key"]	  = 530;
+	obj1["Type"]  = "NAMESPACE";
+	obj1["Name"]  = "CompositeMaterial_t";
+	obj1["Items"] = 4;
+	obj1["List"]  = {
+		 { "m_targetKVS", 0x8, "KeyValues3" },
+		 { "m_PreGenerationKVs", 0x17, "KeyValues3" }
+	};
 
-	
+	j["data"].push_back(obj1);
 
-	content += "}";
-	m_content = content;
+	m_content = j.dump(2); 
 }
 
 void ConvertToJson::printJson()
