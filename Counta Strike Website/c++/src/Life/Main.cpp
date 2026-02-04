@@ -53,7 +53,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 #ifdef _DEBUG
 	AttachDebugConsole();
 #endif
-	Parse p1 { R"(src\Data\client_dll.hpp)" };
+	Parse p1 { R"(src\Data\offsets.hpp)" };
 	GrabContent::Run(p1);
 	GrabContent::PrintBlocks(p1);
 	
