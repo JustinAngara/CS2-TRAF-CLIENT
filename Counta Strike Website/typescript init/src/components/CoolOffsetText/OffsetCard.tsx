@@ -58,7 +58,7 @@ const OffsetCard = ({ block }: OffsetCardProps) => {
 							<div className="name">{it.Name ?? ""}</div>
 							<div className="offset">{it.Offset ?? ""}</div>
 							<div className="type">
-								{it.Type && it.Type.trim().length > 0 ? it.Type : "uintptr_t"}
+								{it.Type && it.Type.trim().length > 0 ? it.Type : "uint"}
 							</div>
 						</div>
 					))}
