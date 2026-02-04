@@ -1,0 +1,158 @@
+
+
+/* --- card --- */
+.card {
+	background: rgba(255,255,255,0.03);
+	color: rgba(255,255,255,0.85);
+	display: inline-block;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	margin-bottom: 40px;
+	break-inside: avoid;
+
+	border: 2px solid rgba(255, 255, 255, 0.22);
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+/* --- Header --- */
+.cardHeader {
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cardTitle {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.metaRow {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin-top: 8px;
+}
+
+.badge {
+	font-size: 12px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.muted {
+	font-size: 12px;
+	opacity: 0.75;
+}
+
+/* --- list rows --- */
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.headerRow {
+	background: rgba(0, 0, 0, 0.25);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	font-size: 12px;
+	opacity: 0.9;
+}
+
+.row {
+	display: grid;
+	grid-template-columns: 1.7fr 0.7fr 1fr;
+	gap: 10px;
+	align-items: start;
+
+	padding: 6px 8px;
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.15);
+	transition: background 120ms ease, border-color 120ms ease;
+}
+
+/* (optional) hover feedback */
+.row:hover {
+	background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- header cells --- */
+.hName {
+	font-weight: 700;
+	opacity: 0.85;
+}
+
+.hOffset {
+	font-weight: 700;
+	opacity: 0.85;
+	font-family: monospace;
+}
+
+.hType {
+	font-weight: 700;
+	opacity: 0.85;
+}
+
+/* --- content cells --- */
+.name {
+	font-family: monospace;
+	font-size: 13px;
+	white-space: normal;
+	word-break: break-word;
+	overflow-wrap: anywhere;
+
+	color: #b26bff;
+	text-shadow: 0 0 6px rgba(178, 107, 255, 0.75), 0 0 14px rgba(178, 107, 255, 0.35);
+}
+
+.offset {
+	font-family: monospace;
+	font-size: 13px;
+	white-space: nowrap;
+	opacity: 0.95;
+
+	color: #ff4d4d;
+	text-shadow: 0 0 6px rgba(255, 77, 77, 0.75), 0 0 14px rgba(255, 77, 77, 0.35);
+}
+
+.type {
+	font-size: 12px;
+	opacity: 0.95;
+	white-space: normal;
+	word-break: break-word;
+	overflow-wrap: anywhere;
+
+	color: #ffd54a;
+	text-shadow: 0 0 6px rgba(255, 213, 74, 0.75), 0 0 14px rgba(255, 213, 74, 0.35);
+}
+
+/* --- badges --- */
+.badgeNamespace {
+	font-size: 12px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid rgba(90, 170, 255, 0.55);
+
+	color: #5aaaff;
+	text-shadow: 0 0 6px rgba(90, 170, 255, 0.75), 0 0 14px rgba(90, 170, 255, 0.35);
+}
+
+.badgeEnum {
+	font-size: 12px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px solid rgba(255, 255, 255, 0.55);
+
+	color: #ffffff;
+	background: rgba(0, 0, 0, 0.35);
+
+	text-shadow:
+		0 0 2px rgba(255, 255, 255, 0.95),
+		0 0 8px rgba(255, 255, 255, 0.8),
+		0 0 18px rgba(255, 255, 255, 0.55),
+		0 0 30px rgba(255, 255, 255, 0.35);
+}
