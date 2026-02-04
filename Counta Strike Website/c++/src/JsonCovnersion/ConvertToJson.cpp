@@ -68,30 +68,52 @@ obj.data[0] -> first instance of object
 
 */
 
-void ConvertToJson::populateContent()
+void ConvertToJson::populateContent() 
 {
+
+
 	json j;
 	j["data"] = json::array();
+	int iterator = 0;
 
-	// Add objects
-	json obj1;
-	obj1["Key"]	  = 530;
-	obj1["Type"]  = "NAMESPACE";
-	obj1["Name"]  = "CompositeMaterial_t";
-	obj1["Items"] = 4;
-	obj1["List"]  = {
-		 { "m_targetKVS", 0x8, "KeyValues3" },
-		 { "m_PreGenerationKVs", 0x17, "KeyValues3" }
-	};
+	
+	for (const auto& e : m_parse.getContent())
+	{
+		json temp;
+		temp["Key"]   = iterator;
+		temp["Type"]  = e.getIsEnumClass() ? "ENUM CLASS" : "NAMESPACE";
+		temp["Name"]  = e.getName();
+		temp["Items"] = e.getContent().size();
+		temp["List"]  = {};
 
-	j["data"].push_back(obj1);
+		// now populate list
+		auto items = e.getContent();
 
+		populateList(items, temp);
+
+		j["data"].push_back(temp);
+
+		iterator++;
+	}
+	
 	m_content = j.dump(2); 
+}
+
+void ConvertToJson::populateList(std::vector<Item>& items, json& j)
+{
+	for (const auto& e : items)
+	{ 
+        j["List"].push_back(
+			{
+				{ "Name", e.getName() },
+				{ "Offset", e.getOffset() },
+				{ "Type", e.getType() }
+			}
+		);
+	}
 }
 
 void ConvertToJson::printJson()
 {
 	std::cout << m_content;
 }
-
-

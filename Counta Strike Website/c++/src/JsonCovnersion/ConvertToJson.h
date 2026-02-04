@@ -1,27 +1,30 @@
 #pragma once
 
 
+#include "../../libs/json.hpp"
 #include "../Parse/Parse.h"
 #include <string>
+
+using json = nlohmann::json;
 
 class ConvertToJson
 {
 public:
-	ConvertToJson(Parse parse) :
+	ConvertToJson(Parse& parse) :
 		m_parse(parse)
 	{ };
 
 	void printJson();
 	void populateContent();
+	void populateList(std::vector<Item>& items, json& j);
 
 
-	Parse& getParse() { return m_parse; }
-
+	const Parse& getParse() const { return m_parse; }
 	void setParse(Parse parse) { m_parse = parse; }
 
 private:
 	// want some parse object
-	Parse&		m_parse;
-	std::string m_content;
+	Parse& m_parse;
+	std::string  m_content;
 	
 };
