@@ -20,7 +20,7 @@ type OffsetCardProps = {
 
 const OffsetCard = ({ block }: OffsetCardProps) => {
 	if (!block) {
-		return <div className="card">Invalid block</div>;
+		return <div className="offsetCard">Invalid block</div>;
 	}
 
 	const key = block.Key ?? -1;
@@ -31,7 +31,7 @@ const OffsetCard = ({ block }: OffsetCardProps) => {
 	const items = block.Items ?? list.length;
 
 	return (
-		<div className="card">
+		<div className="offsetCard">
 			<div className="cardHeader">
 				<h3 className="cardTitle">{title}</h3>
 
@@ -47,14 +47,14 @@ const OffsetCard = ({ block }: OffsetCardProps) => {
 				<div className="muted">No items</div>
 			) : (
 				<div className="list">
-					<div className="row headerRow">
+					<div className="offsetRow headerRow">
 						<div className="hName">Name</div>
 						<div className="hOffset">Offset</div>
 						<div className="hType">Type</div>
 					</div>
 
 					{list.map((it, idx) => (
-						<div key={`${key}-${it.Name ?? "item"}-${idx}`} className="row">
+						<div key={`${key}-${it.Name ?? "item"}-${idx}`} className="offsetRow">
 							<div className="name">{it.Name ?? ""}</div>
 							<div className="offset">{it.Offset ?? ""}</div>
 							<div className="type">

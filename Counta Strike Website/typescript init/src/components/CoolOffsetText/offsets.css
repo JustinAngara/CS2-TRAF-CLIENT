@@ -1,7 +1,18 @@
+.grid{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+	gap: 12px;
+}
 
+/* IMPORTANT: remove/stop using masonry columns */
+.masonry{
+	column-count: initial;
+	column-width: initial;
+	column-gap: initial;
+}
 
 /* --- card --- */
-.card {
+.offsetCard {
 	background: rgba(255,255,255,0.03);
 	color: rgba(255,255,255,0.85);
 	display: inline-block;
@@ -56,28 +67,31 @@
 	gap: 6px;
 }
 
-.headerRow {
-	background: rgba(0, 0, 0, 0.25);
-	border: 1px solid rgba(255, 255, 255, 0.08);
+.headerRow{
+	background: rgba(0,0,0,0.25);
+	border: 1px solid rgba(255,255,255,0.08);
 	font-size: 12px;
 	opacity: 0.9;
 }
-
-.row {
+.offsetRow{
 	display: grid;
 	grid-template-columns: 1.7fr 0.7fr 1fr;
 	gap: 10px;
-	align-items: start;
+	align-items: center;
 
 	padding: 6px 8px;
 	border-radius: 8px;
-	background: rgba(0, 0, 0, 0.15);
-	transition: background 120ms ease, border-color 120ms ease;
+	background: rgba(0,0,0,0.15);
 }
 
-/* (optional) hover feedback */
-.row:hover {
-	background: rgba(255, 255, 255, 0.06);
+.offsetRow:hover{
+	background: rgba(255,255,255,0.06);
+}
+
+.offsetMasonry{
+	column-count: 4;
+	column-gap: 12px;
+	width: 100%;
 }
 
 /* --- header cells --- */

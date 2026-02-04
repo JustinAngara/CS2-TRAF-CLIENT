@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import OffsetCard, { type OffsetBlock } from "./OffsetCard";
-
+import "./offsets.css";
 type OffsetsJson =
 	| {
 	data?: OffsetBlock[] | null;
@@ -22,7 +22,7 @@ const DisplayOffsets = ({ data, title = "Offsets" }: DisplayOffsetsProps) => {
 			{blocks.length === 0 ? (
 				<div style={styles.empty}>No data</div>
 			) : (
-				<div style={styles.masonry}>
+				<div className="offsetMasonry">
 					{blocks.map((block, i) => (
 						<OffsetCard key={(block && (block as any).Key) ?? i} block={block} />
 					))}

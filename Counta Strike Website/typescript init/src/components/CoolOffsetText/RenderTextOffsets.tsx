@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 import OffsetCard, { type OffsetBlock } from "./OffsetCard";
 
-// Expecting the imported JSON shape: { data: OffsetBlock[] }
 type OffsetsJson = {
 	data: OffsetBlock[] | null;
 };

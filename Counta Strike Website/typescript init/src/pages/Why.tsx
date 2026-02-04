@@ -1,9 +1,10 @@
 import type { ReactNode, CSSProperties } from "react";
 import React, { useState } from "react";
 import DisplayOffsets from "../components/CoolOffsetText/DisplayOffsets.tsx";
-import clientJson from "../../data/client_dll.json";
-import serverJson from "../../data/server_dll.json";
-import offsetsJson from "../../data/offsets.json";
+import clientJson from "../../public/data/client_dll.json";
+import serverJson from "../../public/data/server_dll.json";
+import offsetsJson from "../../public/data/offsets.json";
+
 import Tab from "react-bootstrap/Tab";
 import Tabs from 'react-bootstrap/Tabs';
 const Why = () => {
