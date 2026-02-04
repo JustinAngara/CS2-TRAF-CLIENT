@@ -26,6 +26,7 @@
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
 	border-radius: 8px;
 	overflow: hidden;
+	break-inside: avoid;
 }
 
 /* --- Header --- */
@@ -89,7 +90,8 @@
 }
 
 .offsetMasonry{
-	column-count: 4;
+	column-count: auto;
+	column-width: 420px;
 	column-gap: 12px;
 	width: 100%;
 }
