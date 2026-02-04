@@ -1,0 +1,204 @@
+{
+  "data": [
+    {
+      "Items": 17,
+      "Key": 0,
+      "List": [
+        {
+          "Name": "dwCSGOInput",
+          "Offset": "0x23123E0",
+          "Type": ""
+        },
+        {
+          "Name": "dwEntityList",
+          "Offset": "0x24A7B48",
+          "Type": ""
+        },
+        {
+          "Name": "dwGameEntitySystem",
+          "Offset": "0x24A7B48",
+          "Type": ""
+        },
+        {
+          "Name": "dwGameEntitySystem_highestEntityIndex",
+          "Offset": "0x20A0",
+          "Type": ""
+        },
+        {
+          "Name": "dwGameRules",
+          "Offset": "0x23035F0",
+          "Type": ""
+        },
+        {
+          "Name": "dwGlobalVars",
+          "Offset": "0x20572A8",
+          "Type": ""
+        },
+        {
+          "Name": "dwGlowManager",
+          "Offset": "0x2303600",
+          "Type": ""
+        },
+        {
+          "Name": "dwLocalPlayerController",
+          "Offset": "0x22ECA18",
+          "Type": ""
+        },
+        {
+          "Name": "dwLocalPlayerPawn",
+          "Offset": "0x2062850",
+          "Type": ""
+        },
+        {
+          "Name": "dwPlantedC4",
+          "Offset": "0x230FB80",
+          "Type": ""
+        },
+        {
+          "Name": "dwPrediction",
+          "Offset": "0x2062760",
+          "Type": ""
+        },
+        {
+          "Name": "dwSensitivity",
+          "Offset": "0x2304128",
+          "Type": ""
+        },
+        {
+          "Name": "dwSensitivity_sensitivity",
+          "Offset": "0x58",
+          "Type": ""
+        },
+        {
+          "Name": "dwViewAngles",
+          "Offset": "0x2312A68",
+          "Type": ""
+        },
+        {
+          "Name": "dwViewMatrix",
+          "Offset": "0x2308850",
+          "Type": ""
+        },
+        {
+          "Name": "dwViewRender",
+          "Offset": "0x2308A88",
+          "Type": ""
+        },
+        {
+          "Name": "dwWeaponC4",
+          "Offset": "0x2291910",
+          "Type": ""
+        }
+      ],
+      "Name": "client_dll",
+      "Type": "NAMESPACE"
+    },
+    {
+      "Items": 11,
+      "Key": 1,
+      "List": [
+        {
+          "Name": "dwBuildNumber",
+          "Offset": "0x606504",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient",
+          "Offset": "0x900FB0",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_clientTickCount",
+          "Offset": "0x378",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_deltaTick",
+          "Offset": "0x24C",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_isBackgroundMap",
+          "Offset": "0x2C141F",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_localPlayer",
+          "Offset": "0xF8",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_maxClients",
+          "Offset": "0x240",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_serverTickCount",
+          "Offset": "0x24C",
+          "Type": ""
+        },
+        {
+          "Name": "dwNetworkGameClient_signOnState",
+          "Offset": "0x230",
+          "Type": ""
+        },
+        {
+          "Name": "dwWindowHeight",
+          "Offset": "0x905364",
+          "Type": ""
+        },
+        {
+          "Name": "dwWindowWidth",
+          "Offset": "0x905360",
+          "Type": ""
+        }
+      ],
+      "Name": "engine2_dll",
+      "Type": "NAMESPACE"
+    },
+    {
+      "Items": 1,
+      "Key": 2,
+      "List": [
+        {
+          "Name": "dwInputSystem",
+          "Offset": "0x45AD0",
+          "Type": ""
+        }
+      ],
+      "Name": "inputsystem_dll",
+      "Type": "NAMESPACE"
+    },
+    {
+      "Items": 1,
+      "Key": 3,
+      "List": [
+        {
+          "Name": "dwGameTypes",
+          "Offset": "0x1B8000",
+          "Type": ""
+        }
+      ],
+      "Name": "matchmaking_dll",
+      "Type": "NAMESPACE"
+    },
+    {
+      "Items": 2,
+      "Key": 4,
+      "List": [
+        {
+          "Name": "dwSoundSystem",
+          "Offset": "0x4F3490",
+          "Type": ""
+        },
+        {
+          "Name": "dwSoundSystem_engineViewData",
+          "Offset": "0x7C",
+          "Type": ""
+        }
+      ],
+      "Name": "soundsystem_dll",
+      "Type": "NAMESPACE"
+    }
+  ]
+}

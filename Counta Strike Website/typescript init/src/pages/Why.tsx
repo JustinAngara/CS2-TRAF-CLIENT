@@ -1,28 +1,37 @@
 import type { ReactNode, CSSProperties } from "react";
-import RenderTextOffsets from "../components/CoolOffsetText/RenderTextOffsets.tsx";
-
-
+import React, { useState } from "react";
+import DisplayOffsets from "../components/CoolOffsetText/DisplayOffsets.tsx";
+import clientJson from "../../data/client_dll.json";
+import serverJson from "../../data/server_dll.json";
+import offsetsJson from "../../data/offsets.json";
+import Tab from "react-bootstrap/Tab";
+import Tabs from 'react-bootstrap/Tabs';
 const Why = () => {
-    return (
+	const defaultTab = "client";
+	const [key, setKey] = useState(defaultTab);
+
+	return (
         <div style={styles.root}>
-            {/* title */}
-            <div style={styles.title}>
-                <div>Counter-Strike 2</div>
-                <div>What is this?</div>
-            </div>
+			<Tabs
+				defaultActiveKey={ defaultTab }
+				id="tabs"
+				activeKey={ key }
+				onSelect={(k) => k && setKey(k)}
+				className="my-tabs mb-3"
+				transition={false}  fill
+			>
+				<Tab eventKey="client" title="client.dll">
+					<DisplayOffsets data={clientJson} title="client_dll" />;
+				</Tab>
+				<Tab eventKey="server" title="server.dll">
+					<DisplayOffsets data={serverJson} title="server_dll" />;
+				</Tab>
+				<Tab eventKey="offsets" title="offsets.dll">
+					<DisplayOffsets data={offsetsJson} title="offsets" />;
+				</Tab>
+			</Tabs>
 
-            {/* body */}
-            <div style={styles.card}>
-				<div>
-					This project reveals Counter-Strike 2 offsets, memory patterns, and more!
-				</div>
-
-				{/* do a starwars intro theme kinda */}
-				<RenderTextOffsets />
-
-
-            </div>
-        </div>
+		</div>
     );
 }
 

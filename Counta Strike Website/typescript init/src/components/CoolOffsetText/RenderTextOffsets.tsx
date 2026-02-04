@@ -1,52 +1,41 @@
-import type { ReactNode, CSSProperties } from "react";
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import React, { useState } from "react";
-import DisplayOffsets from "./DisplayOffsets.tsx";
+import type { CSSProperties } from "react";
+import OffsetCard, { type OffsetBlock } from "./OffsetCard";
 
-/*
-* client.dll, server.dll, offsets.dll, buttons.dll
-*
-* encapsulate data via layer
-* */
-const RenderTextOffsets = () => {
-	const defaultTab = "client";
-	const [key, setKey] = useState(defaultTab);
-	const xz:number = 4;
+// Expecting the imported JSON shape: { data: OffsetBlock[] }
+type OffsetsJson = {
+	data: OffsetBlock[] | null;
+};
+
+type DisplayOffsetsProps = {
+	data: OffsetsJson;   // pass the full imported json object
+	title?: string;
+};
+
+const DisplayOffsets = ({ data, title = "Offsets" }: DisplayOffsetsProps) => {
+	const blocks = data?.data ?? [];
+
 	return (
 		<div style={styles.root}>
+			<h2 style={styles.title}>{title}</h2>
 
-			{/* maybe add props denoting what dll file*/}
-
-			<Tabs
-				defaultActiveKey={ defaultTab }
-				id="tabs"
-				activeKey={ key }
-				onSelect={(k) => k && setKey(k)}
-				className="my-tabs mb-3"
-				transition={false}  fill
-			>
-				<Tab eventKey="client" title="client.dll">
-					<DisplayOffsets dll = { key }/>
-				</Tab>
-				<Tab eventKey="server" title="server.dll">
-					<DisplayOffsets dll = { key }/>
-					Tab content for Server
-				</Tab>
-				<Tab eventKey="offsets" title="offsets.dll">
-					<DisplayOffsets dll = { key }/>
-					Tab content for Offsets
-				</Tab>
-			</Tabs>
-
+			<div style={styles.grid}>
+				{blocks.map((block, i) => (
+					<OffsetCard key={block?.Key ?? i} block={block} />
+				))}
+			</div>
 		</div>
 	);
-}
-
-const styles: Record<"root", CSSProperties> = {
-	root: {
-		padding: 12
-	},
-
 };
-export default RenderTextOffsets;
+
+const styles: Record<"root" | "title" | "grid", CSSProperties> = {
+	root: { padding: 12 },
+	title: { margin: "0 0 12px 0" },
+
+	grid: {
+		display: "grid",
+		gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+		gap: 12,
+	},
+};
+
+export default DisplayOffsets;
