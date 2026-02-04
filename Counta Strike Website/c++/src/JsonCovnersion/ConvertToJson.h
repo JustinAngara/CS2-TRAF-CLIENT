@@ -20,6 +20,7 @@ public:
 
 
 	const Parse& getParse() const { return m_parse; }
+	const std::string& getContent() const { return m_content; }
 	void setParse(Parse parse) { m_parse = parse; }
 
 private:
