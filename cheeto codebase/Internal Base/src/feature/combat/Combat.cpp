@@ -82,7 +82,7 @@ void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 {
 	
 	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
-	Vector enemeyPos = enemy->m_vOldOrigin() + enemy->m_vecViewOffset();
+	Vector enemyPos = enemy->m_vOldOrigin() + enemy->m_vecViewOffset();
 }
 
 

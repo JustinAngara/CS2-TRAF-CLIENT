@@ -1,5 +1,6 @@
-﻿﻿# Traf: CS2 Hack
-# CS2 Updated Version: January
+﻿﻿
+# Traf: CS2 Hack
+# CS2 Updated Version: February
 
 ![Alt text](images/1.png)
 ![Alt text](images/2.png)
