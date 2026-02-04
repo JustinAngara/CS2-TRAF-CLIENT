@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JsonCovnersion\ConvertToJson.cpp" />
+    <ClCompile Include="src\JsonCovnersion\FIle.cpp" />
     <ClCompile Include="src\Life\Main.cpp" />
     <ClCompile Include="src\Parse\GrabContent.cpp" />
   </ItemGroup>
@@ -30,6 +31,8 @@
     <ClInclude Include="src\Data\offsets.hpp" />
     <ClInclude Include="src\Data\server_dll.hpp" />
     <ClInclude Include="src\JsonCovnersion\ConvertToJson.h" />
+    <ClInclude Include="src\JsonCovnersion\File.h" />
+    <ClInclude Include="src\Life\Populate.h" />
     <ClInclude Include="src\Parse\Block.h" />
     <ClInclude Include="src\Parse\GrabContent.h" />
     <ClInclude Include="src\Parse\Item.h" />

@@ -36,6 +36,12 @@
     <ClInclude Include="src\JsonCovnersion\ConvertToJson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Life\Populate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\JsonCovnersion\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Data\client_dll.hpp">
@@ -53,6 +59,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\JsonCovnersion\ConvertToJson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JsonCovnersion\FIle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
