@@ -20,8 +20,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Life\Main.cpp" />
     <ClCompile Include="src\JsonCovnersion\ConvertToJson.cpp" />
+    <ClCompile Include="src\Life\Main.cpp" />
     <ClCompile Include="src\Parse\GrabContent.cpp" />
   </ItemGroup>
   <ItemGroup>

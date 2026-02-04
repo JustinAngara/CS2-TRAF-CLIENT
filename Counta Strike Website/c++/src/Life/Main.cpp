@@ -1,5 +1,6 @@
 #include "../Parse/GrabContent.h"
 #include "../Parse/Parse.h"
+#include "../JsonCovnersion/ConvertToJson.h"
 
 #define UNICODE
 #define NOMINMAX
@@ -53,10 +54,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 #ifdef _DEBUG
 	AttachDebugConsole();
 #endif
-	Parse p1 { R"(src\Data\offsets.hpp)" };
+	Parse p1 { R"(src\Data\client_dll.hpp)" };
 	GrabContent::Run(p1);
 	GrabContent::PrintBlocks(p1);
-	
+	//ConvertToJson ctj{p1};
+	//ctj.populateContent();
+	//ctj.printJson();
+
 
 	WNDCLASSEXW wc{};
 	wc.cbSize		 = sizeof(wc);

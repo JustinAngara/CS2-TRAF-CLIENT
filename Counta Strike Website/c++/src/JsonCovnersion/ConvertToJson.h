@@ -7,6 +7,10 @@
 class ConvertToJson
 {
 public:
+	ConvertToJson(Parse parse) :
+		m_parse(parse)
+	{ };
+
 	void printJson();
 	void populateContent();
 
@@ -19,4 +23,5 @@ private:
 	// want some parse object
 	Parse&		m_parse;
 	std::string m_content;
+	
 };
