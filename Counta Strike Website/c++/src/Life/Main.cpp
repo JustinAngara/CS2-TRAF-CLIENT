@@ -2,11 +2,12 @@
 #include "../Parse/Parse.h"
 #include "../JsonCovnersion/ConvertToJson.h"
 #include "Populate.h"
+#include <windows.h>
 
 
 #define UNICODE
 #define NOMINMAX
-#include <windows.h>
+#define ID_BTN_RUN 1001
 
 static const wchar_t* kClassName = L"CTOJS";
 
@@ -27,10 +28,45 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_CREATE:
+	{
+		RECT rc{};
+		GetClientRect(hwnd, &rc);
+
+		const int btnW = 140;
+		const int btnH = 44;
+
+		const int x = (rc.right - btnW) / 2; // middle
+		const int y = (rc.bottom * 2) / 3 - btnH / 2; // 3rd down (2/3 height)
+
+		CreateWindowExW(
+		0,
+		L"BUTTON",
+		L"Run",
+		WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		x, y,
+		btnW, btnH,
+		hwnd,
+		(HMENU)(INT_PTR)ID_BTN_RUN,
+		(HINSTANCE)GetWindowLongPtrW(hwnd, GWLP_HINSTANCE),
+		nullptr);
+
 		return 0;
+	}
+
 
 	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == ID_BTN_RUN && HIWORD(wParam) == BN_CLICKED)
+		{
+			Populate::Run(R"(src\Data\client_dll.hpp)");
+			Populate::Run(R"(src\Data\offsets.hpp)");
+			Populate::Run(R"(src\Data\server_dll.hpp)");
+			MessageBoxW(hwnd, L"Produced files", L"ctojs", MB_OK);
+			return 0;
+		}
 		return 0;
+	}
+
 
 	case WM_PAINT:
 	{
@@ -57,9 +93,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 	AttachDebugConsole();
 #endif
 	
-	Populate::Run(R"(src\Data\client_dll.hpp)");
-	Populate::Run(R"(src\Data\offsets.hpp)");
-	Populate::Run(R"(src\Data\server_dll.hpp)");
+
 
 	WNDCLASSEXW wc{};
 	wc.cbSize		 = sizeof(wc);
@@ -76,7 +110,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 	HWND hwnd = CreateWindowExW(
 	0,
 	kClassName,
-	L"JAPOO",
+	L"ctojs",
 	WS_OVERLAPPEDWINDOW,
 	CW_USEDEFAULT, CW_USEDEFAULT,
 	900, 600,
