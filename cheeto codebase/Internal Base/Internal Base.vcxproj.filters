@@ -263,6 +263,9 @@
     <ClInclude Include="src\feature\misc\AutoStop\AutoStop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\sdk\memory\OffsetGrabber\OffsetGrabber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\menu\MenuStyles.inl">
