@@ -6,17 +6,17 @@
       "List": [
         {
           "Name": "dwCSGOInput",
-          "Offset": "0x23123E0",
+          "Offset": "0x2317080",
           "Type": ""
         },
         {
           "Name": "dwEntityList",
-          "Offset": "0x24A7B48",
+          "Offset": "0x24ABF98",
           "Type": ""
         },
         {
           "Name": "dwGameEntitySystem",
-          "Offset": "0x24A7B48",
+          "Offset": "0x24ABF98",
           "Type": ""
         },
         {
@@ -26,42 +26,42 @@
         },
         {
           "Name": "dwGameRules",
-          "Offset": "0x23035F0",
+          "Offset": "0x230AC50",
           "Type": ""
         },
         {
           "Name": "dwGlobalVars",
-          "Offset": "0x20572A8",
+          "Offset": "0x205B630",
           "Type": ""
         },
         {
           "Name": "dwGlowManager",
-          "Offset": "0x2303600",
+          "Offset": "0x2307A50",
           "Type": ""
         },
         {
           "Name": "dwLocalPlayerController",
-          "Offset": "0x22ECA18",
+          "Offset": "0x22F0FB8",
           "Type": ""
         },
         {
           "Name": "dwLocalPlayerPawn",
-          "Offset": "0x2062850",
+          "Offset": "0x2066AE0",
           "Type": ""
         },
         {
           "Name": "dwPlantedC4",
-          "Offset": "0x230FB80",
+          "Offset": "0x2314820",
           "Type": ""
         },
         {
           "Name": "dwPrediction",
-          "Offset": "0x2062760",
+          "Offset": "0x20669F0",
           "Type": ""
         },
         {
           "Name": "dwSensitivity",
-          "Offset": "0x2304128",
+          "Offset": "0x2308568",
           "Type": ""
         },
         {
@@ -71,22 +71,22 @@
         },
         {
           "Name": "dwViewAngles",
-          "Offset": "0x2312A68",
+          "Offset": "0x2317708",
           "Type": ""
         },
         {
           "Name": "dwViewMatrix",
-          "Offset": "0x2308850",
+          "Offset": "0x230CC90",
           "Type": ""
         },
         {
           "Name": "dwViewRender",
-          "Offset": "0x2308A88",
+          "Offset": "0x230D098",
           "Type": ""
         },
         {
           "Name": "dwWeaponC4",
-          "Offset": "0x2291910",
+          "Offset": "0x2295D30",
           "Type": ""
         }
       ],
@@ -99,12 +99,12 @@
       "List": [
         {
           "Name": "dwBuildNumber",
-          "Offset": "0x606504",
+          "Offset": "0x60A504",
           "Type": ""
         },
         {
           "Name": "dwNetworkGameClient",
-          "Offset": "0x900FB0",
+          "Offset": "0x905310",
           "Type": ""
         },
         {
@@ -144,12 +144,12 @@
         },
         {
           "Name": "dwWindowHeight",
-          "Offset": "0x905364",
+          "Offset": "0x9096C4",
           "Type": ""
         },
         {
           "Name": "dwWindowWidth",
-          "Offset": "0x905360",
+          "Offset": "0x9096C0",
           "Type": ""
         }
       ],
