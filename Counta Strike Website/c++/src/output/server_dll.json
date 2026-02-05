@@ -9346,7 +9346,7 @@
       "Type": "NAMESPACE"
     },
     {
-      "Items": 6,
+      "Items": 8,
       "Key": 224,
       "List": [
         {
@@ -9365,18 +9365,28 @@
           "Type": "int32"
         },
         {
-          "Name": "m_nTotalPausedTicks",
+          "Name": "m_nLastMatchTime",
           "Offset": "0xB4",
+          "Type": "uint32"
+        },
+        {
+          "Name": "m_nLastMatchTime_MatchID64",
+          "Offset": "0xB8",
+          "Type": "uint64"
+        },
+        {
+          "Name": "m_nTotalPausedTicks",
+          "Offset": "0xC0",
           "Type": "int32"
         },
         {
           "Name": "m_nPauseStartTick",
-          "Offset": "0xB8",
+          "Offset": "0xC4",
           "Type": "int32"
         },
         {
           "Name": "m_bGamePaused",
-          "Offset": "0xBC",
+          "Offset": "0xC8",
           "Type": "bool"
         }
       ],
@@ -16906,7 +16916,7 @@
       "List": [
         {
           "Name": "m_bSinglePlayerGameEnding",
-          "Offset": "0xC0",
+          "Offset": "0xD0",
           "Type": "bool"
         }
       ],
@@ -25942,947 +25952,947 @@
       "List": [
         {
           "Name": "m_bFreezePeriod",
-          "Offset": "0xC8",
+          "Offset": "0xD8",
           "Type": "bool"
         },
         {
           "Name": "m_bWarmupPeriod",
-          "Offset": "0xC9",
+          "Offset": "0xD9",
           "Type": "bool"
         },
         {
           "Name": "m_fWarmupPeriodEnd",
-          "Offset": "0xCC",
+          "Offset": "0xDC",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_fWarmupPeriodStart",
-          "Offset": "0xD0",
+          "Offset": "0xE0",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_bTerroristTimeOutActive",
-          "Offset": "0xD4",
+          "Offset": "0xE4",
           "Type": "bool"
         },
         {
           "Name": "m_bCTTimeOutActive",
-          "Offset": "0xD5",
+          "Offset": "0xE5",
           "Type": "bool"
         },
         {
           "Name": "m_flTerroristTimeOutRemaining",
-          "Offset": "0xD8",
+          "Offset": "0xE8",
           "Type": "float32"
         },
         {
           "Name": "m_flCTTimeOutRemaining",
-          "Offset": "0xDC",
+          "Offset": "0xEC",
           "Type": "float32"
         },
         {
           "Name": "m_nTerroristTimeOuts",
-          "Offset": "0xE0",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_nCTTimeOuts",
-          "Offset": "0xE4",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_bTechnicalTimeOut",
-          "Offset": "0xE8",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_bMatchWaitingForResume",
-          "Offset": "0xE9",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_iFreezeTime",
-          "Offset": "0xEC",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iRoundTime",
           "Offset": "0xF0",
           "Type": "int32"
         },
         {
-          "Name": "m_fMatchStartTime",
+          "Name": "m_nCTTimeOuts",
           "Offset": "0xF4",
-          "Type": "float32"
+          "Type": "int32"
         },
         {
-          "Name": "m_fRoundStartTime",
+          "Name": "m_bTechnicalTimeOut",
           "Offset": "0xF8",
-          "Type": "GameTime_t"
-        },
-        {
-          "Name": "m_flRestartRoundTime",
-          "Offset": "0xFC",
-          "Type": "GameTime_t"
-        },
-        {
-          "Name": "m_bGameRestart",
-          "Offset": "0x100",
           "Type": "bool"
         },
         {
-          "Name": "m_flGameStartTime",
+          "Name": "m_bMatchWaitingForResume",
+          "Offset": "0xF9",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_iFreezeTime",
+          "Offset": "0xFC",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iRoundTime",
+          "Offset": "0x100",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_fMatchStartTime",
           "Offset": "0x104",
           "Type": "float32"
         },
         {
-          "Name": "m_timeUntilNextPhaseStarts",
+          "Name": "m_fRoundStartTime",
           "Offset": "0x108",
+          "Type": "GameTime_t"
+        },
+        {
+          "Name": "m_flRestartRoundTime",
+          "Offset": "0x10C",
+          "Type": "GameTime_t"
+        },
+        {
+          "Name": "m_bGameRestart",
+          "Offset": "0x110",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_flGameStartTime",
+          "Offset": "0x114",
+          "Type": "float32"
+        },
+        {
+          "Name": "m_timeUntilNextPhaseStarts",
+          "Offset": "0x118",
           "Type": "float32"
         },
         {
           "Name": "m_gamePhase",
-          "Offset": "0x10C",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_totalRoundsPlayed",
-          "Offset": "0x110",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_nRoundsPlayedThisPhase",
-          "Offset": "0x114",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_nOvertimePlaying",
-          "Offset": "0x118",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iHostagesRemaining",
           "Offset": "0x11C",
           "Type": "int32"
         },
         {
-          "Name": "m_bAnyHostageReached",
+          "Name": "m_totalRoundsPlayed",
           "Offset": "0x120",
-          "Type": "bool"
+          "Type": "int32"
         },
         {
-          "Name": "m_bMapHasBombTarget",
-          "Offset": "0x121",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_bMapHasRescueZone",
-          "Offset": "0x122",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_bMapHasBuyZone",
-          "Offset": "0x123",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_bIsQueuedMatchmaking",
+          "Name": "m_nRoundsPlayedThisPhase",
           "Offset": "0x124",
-          "Type": "bool"
+          "Type": "int32"
         },
         {
-          "Name": "m_nQueuedMatchmakingMode",
+          "Name": "m_nOvertimePlaying",
           "Offset": "0x128",
           "Type": "int32"
         },
         {
-          "Name": "m_bIsValveDS",
+          "Name": "m_iHostagesRemaining",
           "Offset": "0x12C",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_bAnyHostageReached",
+          "Offset": "0x130",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_bMapHasBombTarget",
+          "Offset": "0x131",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_bMapHasRescueZone",
+          "Offset": "0x132",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_bMapHasBuyZone",
+          "Offset": "0x133",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_bIsQueuedMatchmaking",
+          "Offset": "0x134",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_nQueuedMatchmakingMode",
+          "Offset": "0x138",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_bIsValveDS",
+          "Offset": "0x13C",
           "Type": "bool"
         },
         {
           "Name": "m_bLogoMap",
-          "Offset": "0x12D",
+          "Offset": "0x13D",
           "Type": "bool"
         },
         {
           "Name": "m_bPlayAllStepSoundsOnServer",
-          "Offset": "0x12E",
+          "Offset": "0x13E",
           "Type": "bool"
         },
         {
           "Name": "m_iSpectatorSlotCount",
-          "Offset": "0x130",
+          "Offset": "0x140",
           "Type": "int32"
         },
         {
           "Name": "m_MatchDevice",
-          "Offset": "0x134",
+          "Offset": "0x144",
           "Type": "int32"
         },
         {
           "Name": "m_bHasMatchStarted",
-          "Offset": "0x138",
+          "Offset": "0x148",
           "Type": "bool"
         },
         {
           "Name": "m_nNextMapInMapgroup",
-          "Offset": "0x13C",
+          "Offset": "0x14C",
           "Type": "int32"
         },
         {
           "Name": "m_szTournamentEventName",
-          "Offset": "0x140",
+          "Offset": "0x150",
           "Type": "char[512]"
         },
         {
           "Name": "m_szTournamentEventStage",
-          "Offset": "0x340",
+          "Offset": "0x350",
           "Type": "char[512]"
         },
         {
           "Name": "m_szMatchStatTxt",
-          "Offset": "0x540",
+          "Offset": "0x550",
           "Type": "char[512]"
         },
         {
           "Name": "m_szTournamentPredictionsTxt",
-          "Offset": "0x740",
+          "Offset": "0x750",
           "Type": "char[512]"
         },
         {
           "Name": "m_nTournamentPredictionsPct",
-          "Offset": "0x940",
+          "Offset": "0x950",
           "Type": "int32"
         },
         {
           "Name": "m_flCMMItemDropRevealStartTime",
-          "Offset": "0x944",
+          "Offset": "0x954",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_flCMMItemDropRevealEndTime",
-          "Offset": "0x948",
+          "Offset": "0x958",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_bIsDroppingItems",
-          "Offset": "0x94C",
+          "Offset": "0x95C",
           "Type": "bool"
         },
         {
           "Name": "m_bIsQuestEligible",
-          "Offset": "0x94D",
+          "Offset": "0x95D",
           "Type": "bool"
         },
         {
           "Name": "m_bIsHltvActive",
-          "Offset": "0x94E",
+          "Offset": "0x95E",
           "Type": "bool"
         },
         {
           "Name": "m_bBombPlanted",
-          "Offset": "0x94F",
+          "Offset": "0x95F",
           "Type": "bool"
         },
         {
           "Name": "m_arrProhibitedItemIndices",
-          "Offset": "0x950",
+          "Offset": "0x960",
           "Type": "uint16[100]"
         },
         {
           "Name": "m_arrTournamentActiveCasterAccounts",
-          "Offset": "0xA18",
+          "Offset": "0xA28",
           "Type": "uint32[4]"
         },
         {
           "Name": "m_numBestOfMaps",
-          "Offset": "0xA28",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_nHalloweenMaskListSeed",
-          "Offset": "0xA2C",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_bBombDropped",
-          "Offset": "0xA30",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_iRoundWinStatus",
-          "Offset": "0xA34",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_eRoundWinReason",
           "Offset": "0xA38",
           "Type": "int32"
         },
         {
-          "Name": "m_bTCantBuy",
+          "Name": "m_nHalloweenMaskListSeed",
           "Offset": "0xA3C",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_bBombDropped",
+          "Offset": "0xA40",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_iRoundWinStatus",
+          "Offset": "0xA44",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_eRoundWinReason",
+          "Offset": "0xA48",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_bTCantBuy",
+          "Offset": "0xA4C",
           "Type": "bool"
         },
         {
           "Name": "m_bCTCantBuy",
-          "Offset": "0xA3D",
+          "Offset": "0xA4D",
           "Type": "bool"
         },
         {
           "Name": "m_iMatchStats_RoundResults",
-          "Offset": "0xA40",
+          "Offset": "0xA50",
           "Type": "int32[30]"
         },
         {
           "Name": "m_iMatchStats_PlayersAlive_CT",
-          "Offset": "0xAB8",
+          "Offset": "0xAC8",
           "Type": "int32[30]"
         },
         {
           "Name": "m_iMatchStats_PlayersAlive_T",
-          "Offset": "0xB30",
+          "Offset": "0xB40",
           "Type": "int32[30]"
         },
         {
           "Name": "m_TeamRespawnWaveTimes",
-          "Offset": "0xBA8",
+          "Offset": "0xBB8",
           "Type": "float32[32]"
         },
         {
           "Name": "m_flNextRespawnWave",
-          "Offset": "0xC28",
+          "Offset": "0xC38",
           "Type": "GameTime_t[32]"
         },
         {
           "Name": "m_vMinimapMins",
-          "Offset": "0xCA8",
+          "Offset": "0xCB8",
           "Type": "Vector"
         },
         {
           "Name": "m_vMinimapMaxs",
-          "Offset": "0xCB4",
+          "Offset": "0xCC4",
           "Type": "Vector"
         },
         {
           "Name": "m_MinimapVerticalSectionHeights",
-          "Offset": "0xCC0",
+          "Offset": "0xCD0",
           "Type": "float32[8]"
         },
         {
           "Name": "m_ullLocalMatchID",
-          "Offset": "0xCE0",
+          "Offset": "0xCF0",
           "Type": "uint64"
         },
         {
           "Name": "m_nEndMatchMapGroupVoteTypes",
-          "Offset": "0xCE8",
+          "Offset": "0xCF8",
           "Type": "int32[10]"
         },
         {
           "Name": "m_nEndMatchMapGroupVoteOptions",
-          "Offset": "0xD10",
+          "Offset": "0xD20",
           "Type": "int32[10]"
         },
         {
           "Name": "m_nEndMatchMapVoteWinner",
-          "Offset": "0xD38",
+          "Offset": "0xD48",
           "Type": "int32"
         },
         {
           "Name": "m_iNumConsecutiveCTLoses",
-          "Offset": "0xD3C",
+          "Offset": "0xD4C",
           "Type": "int32"
         },
         {
           "Name": "m_iNumConsecutiveTerroristLoses",
-          "Offset": "0xD40",
+          "Offset": "0xD50",
           "Type": "int32"
         },
         {
           "Name": "m_bHasHostageBeenTouched",
-          "Offset": "0xD60",
+          "Offset": "0xD70",
           "Type": "bool"
         },
         {
           "Name": "m_flIntermissionStartTime",
-          "Offset": "0xD64",
+          "Offset": "0xD74",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_flIntermissionEndTime",
-          "Offset": "0xD68",
+          "Offset": "0xD78",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_bLevelInitialized",
-          "Offset": "0xD6C",
+          "Offset": "0xD7C",
           "Type": "bool"
         },
         {
           "Name": "m_iTotalRoundsPlayed",
-          "Offset": "0xD70",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iUnBalancedRounds",
-          "Offset": "0xD74",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_endMatchOnRoundReset",
-          "Offset": "0xD78",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_endMatchOnThink",
-          "Offset": "0xD79",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_iNumTerrorist",
-          "Offset": "0xD7C",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iNumCT",
           "Offset": "0xD80",
           "Type": "int32"
         },
         {
-          "Name": "m_iNumSpawnableTerrorist",
+          "Name": "m_iUnBalancedRounds",
           "Offset": "0xD84",
           "Type": "int32"
         },
         {
-          "Name": "m_iNumSpawnableCT",
+          "Name": "m_endMatchOnRoundReset",
           "Offset": "0xD88",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_endMatchOnThink",
+          "Offset": "0xD89",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_iNumTerrorist",
+          "Offset": "0xD8C",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iNumCT",
+          "Offset": "0xD90",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iNumSpawnableTerrorist",
+          "Offset": "0xD94",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iNumSpawnableCT",
+          "Offset": "0xD98",
           "Type": "int32"
         },
         {
           "Name": "m_arrSelectedHostageSpawnIndices",
-          "Offset": "0xD90",
+          "Offset": "0xDA0",
           "Type": "CUtlVector<int32>"
         },
         {
           "Name": "m_nSpawnPointsRandomSeed",
-          "Offset": "0xDA8",
+          "Offset": "0xDB8",
           "Type": "int32"
         },
         {
           "Name": "m_bFirstConnected",
-          "Offset": "0xDAC",
+          "Offset": "0xDBC",
           "Type": "bool"
         },
         {
           "Name": "m_bCompleteReset",
-          "Offset": "0xDAD",
+          "Offset": "0xDBD",
           "Type": "bool"
         },
         {
           "Name": "m_bPickNewTeamsOnReset",
-          "Offset": "0xDAE",
+          "Offset": "0xDBE",
           "Type": "bool"
         },
         {
           "Name": "m_bScrambleTeamsOnRestart",
-          "Offset": "0xDAF",
+          "Offset": "0xDBF",
           "Type": "bool"
         },
         {
           "Name": "m_bSwapTeamsOnRestart",
-          "Offset": "0xDB0",
+          "Offset": "0xDC0",
           "Type": "bool"
         },
         {
           "Name": "m_nEndMatchTiedVotes",
-          "Offset": "0xDB8",
+          "Offset": "0xDC8",
           "Type": "CUtlVector<int32>"
         },
         {
           "Name": "m_bNeedToAskPlayersForContinueVote",
-          "Offset": "0xDD4",
+          "Offset": "0xDE4",
           "Type": "bool"
         },
         {
           "Name": "m_numQueuedMatchmakingAccounts",
-          "Offset": "0xDD8",
-          "Type": "uint32"
-        },
-        {
-          "Name": "m_fAvgPlayerRank",
-          "Offset": "0xDDC",
-          "Type": "float32"
-        },
-        {
-          "Name": "m_pQueuedMatchmakingReservationString",
-          "Offset": "0xDE0",
-          "Type": "char*"
-        },
-        {
-          "Name": "m_numTotalTournamentDrops",
           "Offset": "0xDE8",
           "Type": "uint32"
         },
         {
-          "Name": "m_numSpectatorsCountMax",
+          "Name": "m_fAvgPlayerRank",
           "Offset": "0xDEC",
+          "Type": "float32"
+        },
+        {
+          "Name": "m_pQueuedMatchmakingReservationString",
+          "Offset": "0xDF0",
+          "Type": "char*"
+        },
+        {
+          "Name": "m_numTotalTournamentDrops",
+          "Offset": "0xDF8",
+          "Type": "uint32"
+        },
+        {
+          "Name": "m_numSpectatorsCountMax",
+          "Offset": "0xDFC",
           "Type": "uint32"
         },
         {
           "Name": "m_numSpectatorsCountMaxTV",
-          "Offset": "0xDF0",
+          "Offset": "0xE00",
           "Type": "uint32"
         },
         {
           "Name": "m_numSpectatorsCountMaxLnk",
-          "Offset": "0xDF4",
+          "Offset": "0xE04",
           "Type": "uint32"
         },
         {
           "Name": "m_nCTsAliveAtFreezetimeEnd",
-          "Offset": "0xE00",
+          "Offset": "0xE10",
           "Type": "int32"
         },
         {
           "Name": "m_nTerroristsAliveAtFreezetimeEnd",
-          "Offset": "0xE04",
+          "Offset": "0xE14",
           "Type": "int32"
         },
         {
           "Name": "m_bForceTeamChangeSilent",
-          "Offset": "0xE08",
+          "Offset": "0xE18",
           "Type": "bool"
         },
         {
           "Name": "m_bLoadingRoundBackupData",
-          "Offset": "0xE09",
+          "Offset": "0xE19",
           "Type": "bool"
         },
         {
           "Name": "m_nMatchInfoShowType",
-          "Offset": "0xE40",
+          "Offset": "0xE50",
           "Type": "int32"
         },
         {
           "Name": "m_flMatchInfoDecidedTime",
-          "Offset": "0xE44",
+          "Offset": "0xE54",
           "Type": "float32"
         },
         {
           "Name": "mTeamDMLastWinningTeamNumber",
-          "Offset": "0xE60",
-          "Type": "int32"
-        },
-        {
-          "Name": "mTeamDMLastThinkTime",
-          "Offset": "0xE64",
-          "Type": "float32"
-        },
-        {
-          "Name": "m_flTeamDMLastAnnouncementTime",
-          "Offset": "0xE68",
-          "Type": "float32"
-        },
-        {
-          "Name": "m_iAccountTerrorist",
-          "Offset": "0xE6C",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iAccountCT",
           "Offset": "0xE70",
           "Type": "int32"
         },
         {
-          "Name": "m_iSpawnPointCount_Terrorist",
+          "Name": "mTeamDMLastThinkTime",
           "Offset": "0xE74",
-          "Type": "int32"
+          "Type": "float32"
         },
         {
-          "Name": "m_iSpawnPointCount_CT",
+          "Name": "m_flTeamDMLastAnnouncementTime",
           "Offset": "0xE78",
-          "Type": "int32"
+          "Type": "float32"
         },
         {
-          "Name": "m_iMaxNumTerrorists",
+          "Name": "m_iAccountTerrorist",
           "Offset": "0xE7C",
           "Type": "int32"
         },
         {
-          "Name": "m_iMaxNumCTs",
+          "Name": "m_iAccountCT",
           "Offset": "0xE80",
           "Type": "int32"
         },
         {
-          "Name": "m_iLoserBonusMostRecentTeam",
+          "Name": "m_iSpawnPointCount_Terrorist",
           "Offset": "0xE84",
           "Type": "int32"
         },
         {
-          "Name": "m_tmNextPeriodicThink",
+          "Name": "m_iSpawnPointCount_CT",
           "Offset": "0xE88",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iMaxNumTerrorists",
+          "Offset": "0xE8C",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iMaxNumCTs",
+          "Offset": "0xE90",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iLoserBonusMostRecentTeam",
+          "Offset": "0xE94",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_tmNextPeriodicThink",
+          "Offset": "0xE98",
           "Type": "float32"
         },
         {
           "Name": "m_bVoiceWonMatchBragFired",
-          "Offset": "0xE8C",
+          "Offset": "0xE9C",
           "Type": "bool"
         },
         {
           "Name": "m_fWarmupNextChatNoticeTime",
-          "Offset": "0xE90",
-          "Type": "float32"
-        },
-        {
-          "Name": "m_iHostagesRescued",
-          "Offset": "0xE98",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iHostagesTouched",
-          "Offset": "0xE9C",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_flNextHostageAnnouncement",
           "Offset": "0xEA0",
           "Type": "float32"
         },
         {
+          "Name": "m_iHostagesRescued",
+          "Offset": "0xEA8",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iHostagesTouched",
+          "Offset": "0xEAC",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_flNextHostageAnnouncement",
+          "Offset": "0xEB0",
+          "Type": "float32"
+        },
+        {
           "Name": "m_bNoTerroristsKilled",
-          "Offset": "0xEA4",
+          "Offset": "0xEB4",
           "Type": "bool"
         },
         {
           "Name": "m_bNoCTsKilled",
-          "Offset": "0xEA5",
+          "Offset": "0xEB5",
           "Type": "bool"
         },
         {
           "Name": "m_bNoEnemiesKilled",
-          "Offset": "0xEA6",
+          "Offset": "0xEB6",
           "Type": "bool"
         },
         {
           "Name": "m_bCanDonateWeapons",
-          "Offset": "0xEA7",
+          "Offset": "0xEB7",
           "Type": "bool"
         },
         {
           "Name": "m_firstKillTime",
-          "Offset": "0xEAC",
+          "Offset": "0xEBC",
           "Type": "float32"
         },
         {
           "Name": "m_firstBloodTime",
-          "Offset": "0xEB4",
+          "Offset": "0xEC4",
           "Type": "float32"
         },
         {
           "Name": "m_hostageWasInjured",
-          "Offset": "0xED0",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_hostageWasKilled",
-          "Offset": "0xED1",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_bVoteCalled",
           "Offset": "0xEE0",
           "Type": "bool"
         },
         {
-          "Name": "m_bServerVoteOnReset",
+          "Name": "m_hostageWasKilled",
           "Offset": "0xEE1",
           "Type": "bool"
         },
         {
-          "Name": "m_flVoteCheckThrottle",
-          "Offset": "0xEE4",
-          "Type": "float32"
-        },
-        {
-          "Name": "m_bBuyTimeEnded",
-          "Offset": "0xEE8",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_nLastFreezeEndBeep",
-          "Offset": "0xEEC",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_bTargetBombed",
+          "Name": "m_bVoteCalled",
           "Offset": "0xEF0",
           "Type": "bool"
         },
         {
-          "Name": "m_bBombDefused",
+          "Name": "m_bServerVoteOnReset",
           "Offset": "0xEF1",
           "Type": "bool"
         },
         {
+          "Name": "m_flVoteCheckThrottle",
+          "Offset": "0xEF4",
+          "Type": "float32"
+        },
+        {
+          "Name": "m_bBuyTimeEnded",
+          "Offset": "0xEF8",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_nLastFreezeEndBeep",
+          "Offset": "0xEFC",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_bTargetBombed",
+          "Offset": "0xF00",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_bBombDefused",
+          "Offset": "0xF01",
+          "Type": "bool"
+        },
+        {
           "Name": "m_bMapHasBombZone",
-          "Offset": "0xEF2",
+          "Offset": "0xF02",
           "Type": "bool"
         },
         {
           "Name": "m_vecMainCTSpawnPos",
-          "Offset": "0xF40",
+          "Offset": "0xF50",
           "Type": "Vector"
         },
         {
           "Name": "m_CTSpawnPointsMasterList",
-          "Offset": "0xF50",
+          "Offset": "0xF60",
           "Type": "CUtlVector<CHandle<SpawnPoint>>"
         },
         {
           "Name": "m_TerroristSpawnPointsMasterList",
-          "Offset": "0xF68",
+          "Offset": "0xF78",
           "Type": "CUtlVector<CHandle<SpawnPoint>>"
         },
         {
           "Name": "m_bRespawningAllRespawnablePlayers",
-          "Offset": "0xF80",
+          "Offset": "0xF90",
           "Type": "bool"
         },
         {
           "Name": "m_iNextCTSpawnPoint",
-          "Offset": "0xF84",
+          "Offset": "0xF94",
           "Type": "int32"
         },
         {
           "Name": "m_flCTSpawnPointUsedTime",
-          "Offset": "0xF88",
+          "Offset": "0xF98",
           "Type": "float32"
         },
         {
           "Name": "m_iNextTerroristSpawnPoint",
-          "Offset": "0xF8C",
+          "Offset": "0xF9C",
           "Type": "int32"
         },
         {
           "Name": "m_flTerroristSpawnPointUsedTime",
-          "Offset": "0xF90",
+          "Offset": "0xFA0",
           "Type": "float32"
         },
         {
           "Name": "m_CTSpawnPoints",
-          "Offset": "0xF98",
+          "Offset": "0xFA8",
           "Type": "CUtlVector<CHandle<SpawnPoint>>"
         },
         {
           "Name": "m_TerroristSpawnPoints",
-          "Offset": "0xFB0",
+          "Offset": "0xFC0",
           "Type": "CUtlVector<CHandle<SpawnPoint>>"
         },
         {
           "Name": "m_bIsUnreservedGameServer",
-          "Offset": "0xFC8",
+          "Offset": "0xFD8",
           "Type": "bool"
         },
         {
           "Name": "m_fAutobalanceDisplayTime",
-          "Offset": "0xFCC",
+          "Offset": "0xFDC",
           "Type": "float32"
         },
         {
           "Name": "m_bAllowWeaponSwitch",
-          "Offset": "0x1008",
+          "Offset": "0x1018",
           "Type": "bool"
         },
         {
           "Name": "m_bRoundTimeWarningTriggered",
-          "Offset": "0x1009",
+          "Offset": "0x1019",
           "Type": "bool"
         },
         {
           "Name": "m_phaseChangeAnnouncementTime",
-          "Offset": "0x100C",
+          "Offset": "0x101C",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_fNextUpdateTeamClanNamesTime",
-          "Offset": "0x1010",
+          "Offset": "0x1020",
           "Type": "float32"
         },
         {
           "Name": "m_flLastThinkTime",
-          "Offset": "0x1014",
+          "Offset": "0x1024",
           "Type": "GameTime_t"
         },
         {
           "Name": "m_fAccumulatedRoundOffDamage",
-          "Offset": "0x1018",
+          "Offset": "0x1028",
           "Type": "float32"
         },
         {
           "Name": "m_nShorthandedBonusLastEvalRound",
-          "Offset": "0x101C",
+          "Offset": "0x102C",
           "Type": "int32"
         },
         {
           "Name": "m_nMatchAbortedEarlyReason",
-          "Offset": "0x1068",
+          "Offset": "0x1078",
           "Type": "int32"
         },
         {
           "Name": "m_bHasTriggeredRoundStartMusic",
-          "Offset": "0x106C",
+          "Offset": "0x107C",
           "Type": "bool"
         },
         {
           "Name": "m_bSwitchingTeamsAtRoundReset",
-          "Offset": "0x106D",
+          "Offset": "0x107D",
           "Type": "bool"
         },
         {
           "Name": "m_pGameModeRules",
-          "Offset": "0x1088",
+          "Offset": "0x1098",
           "Type": "CCSGameModeRules*"
         },
         {
           "Name": "m_BtGlobalBlackboard",
-          "Offset": "0x1090",
+          "Offset": "0x10A0",
           "Type": "KeyValues3"
         },
         {
           "Name": "m_hPlayerResource",
-          "Offset": "0x1128",
+          "Offset": "0x1138",
           "Type": "CHandle<CBaseEntity>"
         },
         {
           "Name": "m_RetakeRules",
-          "Offset": "0x1130",
+          "Offset": "0x1140",
           "Type": "CRetakeGameRules"
         },
         {
           "Name": "m_arrTeamUniqueKillWeaponsMatch",
-          "Offset": "0x1320",
+          "Offset": "0x1330",
           "Type": "CUtlVector<int32>[4]"
         },
         {
           "Name": "m_bTeamLastKillUsedUniqueWeaponMatch",
-          "Offset": "0x1380",
+          "Offset": "0x1390",
           "Type": "bool[4]"
         },
         {
           "Name": "m_nMatchEndCount",
-          "Offset": "0x13A8",
+          "Offset": "0x13B8",
           "Type": "uint8"
         },
         {
           "Name": "m_nTTeamIntroVariant",
-          "Offset": "0x13AC",
+          "Offset": "0x13BC",
           "Type": "int32"
         },
         {
           "Name": "m_nCTTeamIntroVariant",
-          "Offset": "0x13B0",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_bTeamIntroPeriod",
-          "Offset": "0x13B4",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_fTeamIntroPeriodEnd",
-          "Offset": "0x13B8",
-          "Type": "GameTime_t"
-        },
-        {
-          "Name": "m_bPlayedTeamIntroVO",
-          "Offset": "0x13BC",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_iRoundEndWinnerTeam",
           "Offset": "0x13C0",
           "Type": "int32"
         },
         {
-          "Name": "m_eRoundEndReason",
+          "Name": "m_bTeamIntroPeriod",
           "Offset": "0x13C4",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_fTeamIntroPeriodEnd",
+          "Offset": "0x13C8",
+          "Type": "GameTime_t"
+        },
+        {
+          "Name": "m_bPlayedTeamIntroVO",
+          "Offset": "0x13CC",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_iRoundEndWinnerTeam",
+          "Offset": "0x13D0",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_eRoundEndReason",
+          "Offset": "0x13D4",
           "Type": "int32"
         },
         {
           "Name": "m_bRoundEndShowTimerDefend",
-          "Offset": "0x13C8",
+          "Offset": "0x13D8",
           "Type": "bool"
         },
         {
           "Name": "m_iRoundEndTimerTime",
-          "Offset": "0x13CC",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_sRoundEndFunFactToken",
-          "Offset": "0x13D0",
-          "Type": "CUtlString"
-        },
-        {
-          "Name": "m_iRoundEndFunFactPlayerSlot",
-          "Offset": "0x13D8",
-          "Type": "CPlayerSlot"
-        },
-        {
-          "Name": "m_iRoundEndFunFactData1",
           "Offset": "0x13DC",
           "Type": "int32"
         },
         {
-          "Name": "m_iRoundEndFunFactData2",
+          "Name": "m_sRoundEndFunFactToken",
           "Offset": "0x13E0",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_iRoundEndFunFactData3",
-          "Offset": "0x13E4",
-          "Type": "int32"
-        },
-        {
-          "Name": "m_sRoundEndMessage",
-          "Offset": "0x13E8",
           "Type": "CUtlString"
         },
         {
-          "Name": "m_iRoundEndPlayerCount",
+          "Name": "m_iRoundEndFunFactPlayerSlot",
+          "Offset": "0x13E8",
+          "Type": "CPlayerSlot"
+        },
+        {
+          "Name": "m_iRoundEndFunFactData1",
+          "Offset": "0x13EC",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_iRoundEndFunFactData2",
           "Offset": "0x13F0",
           "Type": "int32"
         },
         {
-          "Name": "m_bRoundEndNoMusic",
+          "Name": "m_iRoundEndFunFactData3",
           "Offset": "0x13F4",
-          "Type": "bool"
-        },
-        {
-          "Name": "m_iRoundEndLegacy",
-          "Offset": "0x13F8",
           "Type": "int32"
         },
         {
-          "Name": "m_nRoundEndCount",
-          "Offset": "0x13FC",
-          "Type": "uint8"
+          "Name": "m_sRoundEndMessage",
+          "Offset": "0x13F8",
+          "Type": "CUtlString"
         },
         {
-          "Name": "m_iRoundStartRoundNumber",
+          "Name": "m_iRoundEndPlayerCount",
           "Offset": "0x1400",
           "Type": "int32"
         },
         {
-          "Name": "m_nRoundStartCount",
+          "Name": "m_bRoundEndNoMusic",
           "Offset": "0x1404",
+          "Type": "bool"
+        },
+        {
+          "Name": "m_iRoundEndLegacy",
+          "Offset": "0x1408",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_nRoundEndCount",
+          "Offset": "0x140C",
+          "Type": "uint8"
+        },
+        {
+          "Name": "m_iRoundStartRoundNumber",
+          "Offset": "0x1410",
+          "Type": "int32"
+        },
+        {
+          "Name": "m_nRoundStartCount",
+          "Offset": "0x1414",
           "Type": "uint8"
         },
         {
           "Name": "m_flLastPerfSampleTime",
-          "Offset": "0x5410",
+          "Offset": "0x5420",
           "Type": "float64"
         }
       ],
