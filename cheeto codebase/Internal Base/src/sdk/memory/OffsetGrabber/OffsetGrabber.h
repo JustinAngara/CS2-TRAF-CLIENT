@@ -4,11 +4,13 @@
 /*
 this will be the setup to grab everything at init
 i am very sick of having to manually find offsets and then manually have to type it out.
-check out: https://justinangara.github.io/CS2-TRAF-CLIENT/
+check out: https://justinangara.github.io/CS2-Offsets-Website/
 ferda
-okay this is a test sorry for spamming commits
+okay this is a test sorry for spamming 
+
 */
 namespace OffsetGrabber
 {
-	
+	void Run();
+
 }

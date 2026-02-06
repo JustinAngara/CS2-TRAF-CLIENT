@@ -52,6 +52,7 @@
     <ClCompile Include="src\menu\Menu.cpp" />
     <ClCompile Include="src\menu\MenuStyles.cpp" />
     <ClCompile Include="src\sdk\entity\EntityManager.cpp" />
+    <ClCompile Include="src\sdk\memory\OffsetGrabber\OffsetGrabber.cpp" />
     <ClCompile Include="src\sdk\memory\PatternScan.cpp" />
   </ItemGroup>
   <ItemGroup>
