@@ -111,13 +111,12 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	Vector smoothedDelta = delta * (1.f - Globals::aimbot_smoothness);
 	Vector finalDelta = Globals::aimbot_smooth ? smoothedDelta : delta;
 
-	// Subtract recoil from the aim adjustment (from the recoil)
+	// apply recoil from here
 	finalDelta.x -= recoilDelta.x;
 	finalDelta.y -= recoilDelta.y;
 
 	*currentAngles = *currentAngles + finalDelta;
 
-	// calculate the REMAINING delta magnitude (how close we are to target) TODO CHANGE
 	float deltaX = fabsf(delta.x);
 	float deltaY = fabsf(delta.y);
 	float totalDelta = sqrtf(deltaX * deltaX + deltaY * deltaY);
@@ -125,6 +124,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	auto currentTime = GetTickCount();
 	bool isOnTarget = totalDelta <= Globals::aimbot_shoot_threshold;
 
+	// check between if it is between a first bullet fired vs continueing the spray pattern
 	if (isOnTarget)
 	{
 		if (!isAiming)

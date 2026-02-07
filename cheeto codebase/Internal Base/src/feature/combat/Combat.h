@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include "../../sdk/utils/Utils.h"
 
-// TODO: decide what is actually needs to be static, though its fine as is rn
 class Combat{
 public:
 	static void Render();

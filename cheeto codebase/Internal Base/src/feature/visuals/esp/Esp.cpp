@@ -90,7 +90,7 @@ void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)
 		m_dl->AddRectFilled({ x - 5, y + h - hpH }, { x - 3, y + h }, IM_COL32(0, 255, 0, 255));
 	}
 
-	// todo fix later
+	// TODO FIX (FEBRUARY) need to fix names
 	//if (Globals::esp_name && ent.controller)
 	//{
 	//	char nameBuf[128]{};

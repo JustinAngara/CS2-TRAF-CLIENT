@@ -77,7 +77,7 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 }
 
 
-// TODO: Fix this method, account for some arbritrary magnitude and apply
+// TODO: Fix this method, account for some arbritrary magnitude and apply (still needs fixingfebruary)
 void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 {
 	
