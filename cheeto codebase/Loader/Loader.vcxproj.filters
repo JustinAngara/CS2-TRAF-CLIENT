@@ -4,21 +4,30 @@
     <Filter Include="src">
       <UniqueIdentifier>{d951cb32-5f9a-42d3-8b87-c5c94664f316}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Loader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
+    <Filter Include="src\Inject">
+      <UniqueIdentifier>{8b1b1ca8-919a-4aec-8a17-e2de25a5259f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\LoaderGUI">
+      <UniqueIdentifier>{203ce923-dfe0-4acb-bd86-8f15a526036e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Loader.html">
-      <Filter>src</Filter>
+      <Filter>src\LoaderGUI</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Loader.cpp">
+      <Filter>src\LoaderGUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Loader.h">
-      <Filter>src</Filter>
+      <Filter>src\LoaderGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Inject.h">
+      <Filter>src\Inject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
