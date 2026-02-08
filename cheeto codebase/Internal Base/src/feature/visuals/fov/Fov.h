@@ -1,4 +1,4 @@
-#pragma lonce
+#pragma once
 
 namespace FOV
 {

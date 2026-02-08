@@ -3,17 +3,11 @@
 #include <wrl.h>
 #include <string>
 #include <Shlwapi.h>
-#include "WebView2.h"
+#include "Loader.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 
-using Microsoft::WRL::ComPtr;
-
-static HWND							   g_hwnd{};
-static ComPtr<ICoreWebView2Controller> g_controller;
-static ComPtr<ICoreWebView2>		   g_webview;
-
-static std::wstring ExeDir()
+std::wstring Loader::ExeDir()
 {
 	wchar_t path[MAX_PATH]{};
 	GetModuleFileNameW(nullptr, path, MAX_PATH);
@@ -22,7 +16,7 @@ static std::wstring ExeDir()
 	return (pos == std::wstring::npos) ? L"." : p.substr(0, pos);
 }
 
-static std::wstring PathToFileUri(const std::wstring& path)
+std::wstring Loader::PathToFileUri(const std::wstring& path)
 {
 	wchar_t uri[2048]{};
 	DWORD	len = (DWORD)_countof(uri);
@@ -30,7 +24,7 @@ static std::wstring PathToFileUri(const std::wstring& path)
 	return FAILED(hr) ? L"" : std::wstring(uri);
 }
 
-static void OnJsMessage(const std::wstring& msg)
+void Loader::OnJsMessage(const std::wstring& msg)
 {
 	if (msg == L"clicked")
 	{
@@ -42,16 +36,16 @@ static void OnJsMessage(const std::wstring& msg)
 	}
 	else if (msg == L"close")
 	{
-		PostQuitMessage(0);
+		PostMessageW(g_hwnd, WM_CLOSE, 0, 0); // better than PostQuitMessage
 	}
 	else if (msg == L"drag")
 	{
 		ReleaseCapture();
-		PostMessage(g_hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+		PostMessageW(g_hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
 	}
 }
 
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Loader::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
@@ -63,6 +57,13 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 			g_controller->put_Bounds(r);
 		}
 		return 0;
+
+	case WM_CLOSE:
+		g_webview.Reset();
+		g_controller.Reset();
+		DestroyWindow(hwnd);
+		return 0;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -70,7 +71,7 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 	return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ PWSTR, _In_ int nCmdShow)
+int WINAPI Loader::Run(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
 	WNDCLASSW wc{};
 	wc.lpfnWndProc	 = WndProc;
@@ -116,16 +117,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ PWSTR, _I
 					CoTaskMemFree(s);
 				}
 				return S_OK;
-			})
-			.Get(),
-			&tok);
+			}).Get(), &tok);
 
 			g_webview->Navigate(PathToFileUri(ExeDir() + L"\\Loader.html").c_str());
 			return S_OK;
-		})
-		.Get());
-	})
-	.Get());
+		}).Get());
+	}).Get());
 
 	MSG m{};
 	while (GetMessageW(&m, nullptr, 0, 0))
@@ -134,4 +131,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ PWSTR, _I
 		DispatchMessageW(&m);
 	}
 	return 0;
+}
+
+// default main entry point for params
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int nCmdShow)
+{
+	return Loader::Run(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow);
 }

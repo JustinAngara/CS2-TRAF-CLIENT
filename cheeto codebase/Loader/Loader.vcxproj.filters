@@ -16,4 +16,9 @@
       <Filter>src</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Loader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
