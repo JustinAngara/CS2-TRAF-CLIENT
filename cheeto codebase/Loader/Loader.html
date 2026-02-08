@@ -1,14 +1,146 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Loader</title>
+	<style>
+		:root {
+			--primary: #be00ff;
+			--bg: #161b22;
+			--text: #fff;
+		}
+
+		body {
+			margin: 0;
+			background: var(--bg);
+			font-family: 'Segoe UI', sans-serif;
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+			color: var(--text);
+			box-sizing: border-box;
+		}
+
+		.title-bar {
+			height: 30px;
+			display: flex;
+			justify-content: flex-end;
+			background: rgba(0,0,0,0.2);
+			flex-shrink: 0;
+		}
+
+		.drag-area {
+			flex-grow: 1;
+			-webkit-app-region: no-drag;
+		}
+
+		.win-btn {
+			width: 45px;
+			height: 30px;
+			border: none;
+			background: transparent;
+			color: #888;
+			font-size: 14px;
+			cursor: pointer;
+			outline: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+			.win-btn:hover {
+				background: #333;
+				color: #fff;
+			}
+
+		#close-btn:hover {
+			background: #e81123;
+		}
+
+		.content {
+			padding: 20px 40px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			height: 100%;
+		}
+
+		h2 {
+			margin: 0 0 5px;
+			font-weight: 300;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			font-size: 1.2rem;
+		}
+
+		.status {
+			color: #666;
+			font-size: 0.8rem;
+			margin-bottom: 20px;
+			height: 20px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		#btn {
+			width: 100%;
+			padding: 12px;
+			background: transparent;
+			border: 1px solid var(--primary);
+			color: var(--primary);
+			font-weight: bold;
+			cursor: pointer;
+			transition: 0.3s;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			font-size: 0.9rem;
+		}
+
+			#btn:hover {
+				background: var(--primary);
+				color: var(--bg);
+			}
+
+			#btn:disabled {
+				border-color: #333;
+				color: #555;
+				background: #111;
+				cursor: not-allowed;
+			}
+	</style>
+</head>
 <body>
-	<button id="btn">Call C++</button>
+	<div class="title-bar">
+		<div class="drag-area" id="drag-zone"></div>
+		<button class="win-btn" id="min-btn">&#9472;</button>
+		<button class="win-btn" id="close-btn">&#10005;</button>
+	</div>
 
+	<div class="content">
+		<h2>CS2 Traf Loader</h2>
+		<div class="status" id="status">By Justin</div>
+		<button id="btn">Load</button>
+	</div>
 
-	<!-- dom manipulation -->
 	<script>
-      document.getElementById("btn").onclick = () => {
-        window.chrome.webview.postMessage("clicked");
-      };
+		const send = (msg) => window.chrome.webview.postMessage(msg);
+		document.getElementById("min-btn").onclick = () => send("minimize");
+		document.getElementById("close-btn").onclick = () => send("close");
+		document.getElementById("drag-zone").onmousedown = (e) => { if (e.button === 0) send("drag"); };
+
+		const btn = document.getElementById("btn");
+		const status = document.getElementById("status");
+
+		btn.onclick = () => {
+			send("clicked");
+			btn.disabled = true;
+			btn.innerText = "LOADING...";
+			status.innerText = "INJECTING MODULE...";
+			status.style.color = "#be00ff";
+		};
 	</script>
 </body>
 </html>
