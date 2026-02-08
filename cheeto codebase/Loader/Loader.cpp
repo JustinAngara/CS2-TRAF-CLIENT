@@ -4,6 +4,7 @@
 #include <string>
 #include <Shlwapi.h>
 #include "Loader.h"
+#include "Inject.h"
 
 #pragma comment(lib, "Shlwapi.lib")
 
@@ -28,7 +29,9 @@ void Loader::OnJsMessage(const std::wstring& msg)
 {
 	if (msg == L"clicked")
 	{
+		Inject::Run();
 		MessageBoxW(g_hwnd, L"Injection Started", L"Status", MB_OK);
+		PostMessageW(g_hwnd, WM_CLOSE, 0, 0); 
 	}
 	else if (msg == L"minimize")
 	{
@@ -36,7 +39,7 @@ void Loader::OnJsMessage(const std::wstring& msg)
 	}
 	else if (msg == L"close")
 	{
-		PostMessageW(g_hwnd, WM_CLOSE, 0, 0); // better than PostQuitMessage
+		PostMessageW(g_hwnd, WM_CLOSE, 0, 0); 
 	}
 	else if (msg == L"drag")
 	{
