@@ -21,6 +21,9 @@
     <ClCompile Include="Loader.cpp">
       <Filter>src\LoaderGUI</Filter>
     </ClCompile>
+    <ClCompile Include="Inject.cpp">
+      <Filter>src\Inject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loader.h">

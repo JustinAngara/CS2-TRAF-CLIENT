@@ -3,5 +3,6 @@
 
 namespace Inject
 {
+	void Run();
 	
 }
