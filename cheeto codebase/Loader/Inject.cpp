@@ -1,14 +1,8 @@
 #include "Inject.h"
-
-
-#include "ext/HandleGuard.h"
-#include "ext/Resource.h"
 #include "ext/InjectorContext.h"
 #include "ext/ManualMap.h"
-#include "ext/Conditionals.h"
 #include "ext/ShellcodeHelper.h"
 #include "ext/Memory.h" 
-#include "ext/Procedure.h"
 #include "ext/Cleanup.h"
 #include "Loader.h"
 #include <Windows.h>
@@ -16,7 +10,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <iostream>
 
 std::wstring currentDir = Loader::ExeDir();
 const std::wstring DLL_PATH		  = currentDir + L"\\Internal Base.dll";
