@@ -10,7 +10,7 @@
 #include "ext/Memory.h" 
 #include "ext/Procedure.h"
 #include "ext/Cleanup.h"
-
+#include "Loader.h"
 #include <Windows.h>
 #include <tlhelp32.h>
 #include <vector>
@@ -18,7 +18,8 @@
 #include <fstream>
 #include <iostream>
 
-const std::wstring DLL_PATH		  = LR"(C:\Users\justi\source\repos\asphyxia\asphyxia-cs2\cheeto codebase\x64\Release\Internal Base.dll)";
+std::wstring currentDir = Loader::ExeDir();
+const std::wstring DLL_PATH		  = currentDir + L"\\Internal Base.dll";
 const std::wstring TARGET_PROCESS = L"cs2.exe";
 
 DWORD GetProcessIdByName(const std::wstring& processName)
