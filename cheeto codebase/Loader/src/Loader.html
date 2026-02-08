@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<body>
+	<button id="btn">Call C++</button>
+
+
+	<!-- dom manipulation -->
+	<script>
+      document.getElementById("btn").onclick = () => {
+        window.chrome.webview.postMessage("clicked");
+      };
+	</script>
+</body>
+</html>
