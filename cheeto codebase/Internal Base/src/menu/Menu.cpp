@@ -116,7 +116,7 @@ void Menu::createSubESP()
 	MenuStyles::CustomColor("Team color", Globals::esp_box_color);
 
 
-	// ImGui::Spacing();//////////////////////////////////////////
+	ImGui::Spacing();//////////////////////////////////////////
 
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150.f);
 	MenuStyles::CustomColor("Enemy color", Globals::esp_box_color_2);
@@ -159,9 +159,13 @@ void Menu::createAimbot()
 
 	MenuStyles::CustomCheckbox("Enable Body Aim", &Globals::aimbot_force_baim);
 	MenuStyles::CustomSlider("Body Aim", &Globals::aimbot_baim_min, 0, 100);
+}
 
+void Menu::createBonesSelection()
+{
 	
 }
+
 
 void Menu::createNoRecoil()
 {

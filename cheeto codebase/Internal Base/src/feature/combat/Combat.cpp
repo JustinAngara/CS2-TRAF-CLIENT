@@ -77,12 +77,18 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 }
 
 
-// TODO: Fix this method, account for some arbritrary magnitude and apply (still needs fixingfebruary)
+// TODO: Fix this method, account for some arbritrary magnitude and apply (still needs fixing february)
 void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 {
 	
 	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector enemyPos = enemy->m_vOldOrigin() + enemy->m_vecViewOffset();
+
+	std::cout << "====================================================================";
+	std::cout << "local pos (" << localPos.x << ", " << localPos.y << ", " << localPos.z << ")";
+	std::cout << "enemy pos (" << enemyPos.x << ", " << enemyPos.y << ", " << enemyPos.z << ")";
+	std::cout << "====================================================================";
+
 }
 
 

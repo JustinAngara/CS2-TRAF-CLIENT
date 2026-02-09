@@ -136,8 +136,5 @@ int WINAPI Loader::Run(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 	return 0;
 }
 
-// default main entry point for params
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int nCmdShow)
-{
-	return Loader::Run(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow);
-}
+// default main entry point for params, utilize the encapsulate entry ig
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int nCmdShow) { return Loader::Run(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow); }

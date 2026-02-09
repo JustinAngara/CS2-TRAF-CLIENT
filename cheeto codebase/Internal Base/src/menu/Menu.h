@@ -19,11 +19,14 @@ namespace Menu
 	static void createSubESP();
 	static void createESP();
 	static void createAimbot();
+	static void createBonesSelection();
 	static void createBhop();
 	static void createAutoFire();
 	static void createNoRecoil();
 	static void createFovCrosshair();
 	static void createAutoStop();
+
+
 	
 
 }
