@@ -33,6 +33,8 @@ namespace MenuStyles
 	void CustomColor(const char* label, float col[4]);
 
 
+
+	///////////////////////////// template definitions live in MenuStyles.inl
 	template<typename T>
 	void CustomSlider(const char* label, T* v, T minVal, T maxVal);
 
