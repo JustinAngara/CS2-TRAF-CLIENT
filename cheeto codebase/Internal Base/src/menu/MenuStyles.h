@@ -2,7 +2,8 @@
 #pragma once
 
 #include "../../ext/imgui/imgui.h"
-
+#include "../sdk/utils/MenuColors.h"
+#include <vector>
 struct ImDrawList;
 namespace MenuStyles
 {
@@ -31,8 +32,14 @@ namespace MenuStyles
 	void CustomCheckbox(const char* label, bool* v);
 	void CustomColor(const char* label, float col[4]);
 
+
 	template<typename T>
 	void CustomSlider(const char* label, T* v, T minVal, T maxVal);
+
+	template<typename T>
+	void CustomSelection(const char* label, int* current_index, const std::vector<T>& items);
+
+
 }
 
 

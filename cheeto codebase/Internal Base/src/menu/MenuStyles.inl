@@ -1,7 +1,11 @@
 #pragma once
+
+#include "MenuStyles.h"
 #include <type_traits>
 #include <cmath>
 #include <algorithm>
+#include <vector>
+#include <string>
 
 namespace MenuStyles
 {
@@ -112,4 +116,116 @@ namespace MenuStyles
 
 		ImGui::PopID();
 	}
+
+
+	template <typename T>
+	void CustomSelection(const char* label, int* current_index, const std::vector<T>& items)
+	{
+		ImGui::PushID(label);
+
+		ImVec2		p	   = ImGui::GetCursorScreenPos();
+		ImDrawList* dl	   = ImGui::GetWindowDrawList();
+		float		width  = 180.f;
+		float		height = 24.f;
+
+		ImGui::InvisibleButton("selection", { width, height });
+		bool hovered = ImGui::IsItemHovered();
+
+		if (ImGui::IsItemClicked())
+			ImGui::OpenPopup("options");
+
+		if (hovered)
+			dl->AddRectFilled(
+			{ p.x - 2, p.y - 2 },
+			{ p.x + width + 2, p.y + height + 2 },
+			MenuColors::purple_glow,
+			6.f);
+
+		ImU32 bg_col = hovered ? MenuColors::hover_gray : MenuColors::dark_gray;
+		dl->AddRectFilled(p, { p.x + width, p.y + height }, bg_col, 5.f);
+
+		ImU32 border_col = hovered ? MenuColors::light_purple : MenuColors::gray;
+		dl->AddRect(p, { p.x + width, p.y + height }, border_col, 5.f, 0, 2.f);
+
+		if (*current_index >= 0 && *current_index < (int)items.size())
+		{
+			ImVec2 text_pos = { p.x + 8, p.y + 4 };
+
+			if constexpr (std::is_same_v<T, const char*>)
+			{
+				dl->AddText(text_pos, MenuColors::white, items[*current_index]);
+			}
+			else if constexpr (std::is_same_v<T, std::string>)
+			{
+				dl->AddText(text_pos, MenuColors::white, items[*current_index].c_str());
+			}
+			else
+			{
+				dl->AddText(text_pos, MenuColors::white, std::to_string(items[*current_index]).c_str());
+			}
+		}
+
+		ImVec2 arrow_center	   = { p.x + width - 15, p.y + height / 2 };
+		float  arrow_size	   = 4.f;
+		ImVec2 arrow_points[3] = {
+			{ arrow_center.x - arrow_size, arrow_center.y - arrow_size / 2 },
+			{ arrow_center.x + arrow_size, arrow_center.y - arrow_size / 2 },
+			{ arrow_center.x, arrow_center.y + arrow_size }
+		};
+		dl->AddTriangleFilled(arrow_points[0], arrow_points[1], arrow_points[2], MenuColors::light_gray);
+
+		if (ImGui::BeginPopup("options"))
+		{
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+
+			for (size_t i = 0; i < items.size(); i++)
+			{
+				ImVec2 option_p = ImGui::GetCursorScreenPos();
+
+				ImGui::PushID((int)i);
+
+				const char* item_text;
+				std::string temp_str;
+
+				if constexpr (std::is_same_v<T, const char*>)
+				{
+					item_text = items[i];
+				}
+				else if constexpr (std::is_same_v<T, std::string>)
+				{
+					item_text = items[i].c_str();
+				}
+				else
+				{
+					temp_str  = std::to_string(items[i]);
+					item_text = temp_str.c_str();
+				}
+
+				if (ImGui::Selectable(item_text, *current_index == (int)i, 0, { width - 10, 20 }))
+					*current_index = (int)i;
+
+				ImGui::PopID();
+
+				if (*current_index == (int)i)
+				{
+					ImDrawList* popup_dl = ImGui::GetWindowDrawList();
+					popup_dl->AddRectFilled(
+					{ option_p.x - 3, option_p.y },
+					{ option_p.x, option_p.y + 20 },
+					MenuColors::vibrant_purple,
+					2.f);
+				}
+			}
+
+			ImGui::PopStyleVar();
+			ImGui::EndPopup();
+		}
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+		ImGui::TextUnformatted(label);
+
+		ImGui::PopID();
+	}
+
 }
