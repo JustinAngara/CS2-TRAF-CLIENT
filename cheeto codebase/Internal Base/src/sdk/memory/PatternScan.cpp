@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <Psapi.h>
 #include <vector>
-#include <iostream>
 
 uintptr_t Memory::GetModuleBase(const char* module)
 {

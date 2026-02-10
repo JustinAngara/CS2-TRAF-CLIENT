@@ -38,8 +38,8 @@ namespace MenuStyles
 	template<typename T>
 	void CustomSlider(const char* label, T* v, T minVal, T maxVal);
 
-	template<typename T>
-	void CustomSelection(const char* label, int* current_index, const std::vector<T>& items);
+	//template<typename T>
+	//void CustomSelection(const char* label, int* current_index, const std::vector<T>& items);
 
 
 }
