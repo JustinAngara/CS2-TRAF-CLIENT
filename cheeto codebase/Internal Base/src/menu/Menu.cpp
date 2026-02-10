@@ -164,7 +164,12 @@ void Menu::createAimbot()
 void Menu::createBonesSelection()
 {
 	
-	
+	std::vector<std::string> modes	  = { "Mode 1", "Mode 2", "Mode 3" };
+	static int				 selected = 0;
+	MenuStyles::CustomSelection("Mode", &selected, modes);
+
+	std::vector<int> values = { 100, 200, 300 };
+	MenuStyles::CustomSelection("Value", &selected, values);
 }
 
 
@@ -256,6 +261,8 @@ void Menu::Render()
 	ImGui::Spacing();
 	createAutoStop();
 
+
+	createBonesSelection();
 	////////////////// CONTENT END
 
 
