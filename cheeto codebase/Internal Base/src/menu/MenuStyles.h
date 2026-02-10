@@ -8,7 +8,6 @@ struct ImDrawList;
 namespace MenuStyles
 {
 
-
 	// time
 	void AdvanceTime(float dt);
 	float Time();
