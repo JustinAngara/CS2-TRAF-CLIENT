@@ -1,6 +1,9 @@
 #pragma once
 #include <cstddef>
 
+/*
+	going to switch up how we do the offsets
+*/
 
 namespace Offsets
 {

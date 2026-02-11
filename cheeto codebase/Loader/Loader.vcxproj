@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)ext</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)ext\debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>Injectorv2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)ext</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)ext\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>Injectorv2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
@@ -130,7 +130,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)ext</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)ext\debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>Injectorv2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
@@ -149,7 +149,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)ext</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)ext\release</AdditionalLibraryDirectories>
       <AdditionalDependencies>Injectorv2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>

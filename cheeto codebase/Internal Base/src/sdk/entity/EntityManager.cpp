@@ -8,6 +8,9 @@ EntityManager::EntityManager()
 {
     uintptr_t client = Memory::GetModuleBase("client.dll");
     entityListAddress = client ? client + Offsets::dwEntityList : 0;
+
+	std::cout << "I AM IN ENTITY LIST ADDRESS dwEntityList: 0x" << entityListAddress << '\n';
+
 }
 
 EntityManager& EntityManager::Get()

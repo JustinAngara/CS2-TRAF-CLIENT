@@ -1,5 +1,4 @@
-﻿// Menu.cpp (updated)
-#include "Menu.h"
+﻿#include "Menu.h"
 #include "MenuStyles.h"
 
 #include "../../ext/imgui/imgui.h"

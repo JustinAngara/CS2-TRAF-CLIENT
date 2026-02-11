@@ -4,6 +4,14 @@
 #include "ext/ShellcodeHelper.h"
 #include "ext/Memory.h" 
 #include "ext/Cleanup.h"
+
+
+#ifdef _DEBUG
+#pragma comment(lib, "ext/debug/Injectorv2.lib")
+#else
+#pragma comment(lib, "ext/release/Injectorv2.lib")
+#endif
+
 #include "Loader.h"
 #include <Windows.h>
 #include <tlhelp32.h>
