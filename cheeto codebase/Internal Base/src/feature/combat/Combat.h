@@ -37,6 +37,7 @@ public:
 private:
 	static C_CSPlayerPawn* g_bestTarget;
 	static float		   m_bestDistance;
+
 	// instance variables to handle gracefully we maybe dont need
 	//static DWORD lastAimTime;
 	//static DWORD lastShootTime;
