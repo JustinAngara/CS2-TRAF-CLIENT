@@ -224,7 +224,7 @@
     <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sdk\utils\csgoinput.h">
+    <ClInclude Include="src\sdk\utils\CSGOInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\sdk\utils\Memory.h">

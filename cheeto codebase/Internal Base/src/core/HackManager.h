@@ -1,8 +1,6 @@
 #pragma once
-#include <cstdint>
 
-// TODO: create a bunch of getter methods
-// use a std::pair style of status and return like getViewAngles, client, etc and other shit like that
+#include <cstdint>
 class HackManager
 {
 public:
