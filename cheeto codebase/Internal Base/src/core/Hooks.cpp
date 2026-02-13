@@ -12,11 +12,8 @@
 #include "../../src/sdk/memory/PatternScan.h"
 #include "HackManager.h"
 #include "../../src/sdk/utils/usermode.h"
-#include "../../src/feature/visuals/Visuals.h"
-#include "../feature/misc/Misc.h"
-#include "../feature/combat/Combat.h"
-#include "../feature/misc/bhop/Bhop.h"
 #include "../feature/visuals/esp/Esp.h"
+#include "Setup.h"
 
 #pragma comment(lib, "d3d11.lib")
 
@@ -152,6 +149,7 @@ void Hooks::Setup()
 	if (SUCCEEDED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
 		nullptr, 0, D3D11_SDK_VERSION, &sd, &sc, &dev, &fl, &ctx)))
 	{
+		Setup::Run();
 		void** vtable = *reinterpret_cast<void***>(sc);
 		void* present = vtable[8];
 		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));

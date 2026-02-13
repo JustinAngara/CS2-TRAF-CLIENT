@@ -1,14 +1,35 @@
 #pragma once
-
-
+#include <string>
 /* 
 TODO: Finish the logger
+	  Write to file
 */
+
+
 namespace Logger
 {
-	void PrintLocalPlayer();
-	void PrintEntity();
-	void PrintCoords();
-	void PrintXYZ();
+	// instance variables
+	inline std::string folderLoc{ "" };
+
+	std::string_view GetFolderLoc();
+	void SetFolderLoc(std::string_view loc);
+
+
+
+	namespace Entity
+	{
+		void PrintLocalPlayer();
+		void PrintEntity();
+		void PrintViewAngles();
+		void PrintXYZ();
+	}
+
+	namespace Memory
+	{
+		void PrintOffsets();
+		void PrintMemScan();
+		void PrintAddressFromOffset();
+	}
+
 
 }

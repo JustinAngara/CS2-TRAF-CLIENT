@@ -75,6 +75,7 @@
     <ClInclude Include="src\core\HackManager.h" />
     <ClInclude Include="src\core\Hooks.h" />
     <ClInclude Include="src\core\Interfaces.h" />
+    <ClInclude Include="src\core\Setup.h" />
     <ClInclude Include="src\feature\combat\Combat.h" />
     <ClInclude Include="src\feature\combat\Attack\Aimbot.h" />
     <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h" />
