@@ -35,6 +35,7 @@
     <ClCompile Include="src\core\Hooks.cpp" />
     <ClCompile Include="src\core\Main.cpp" />
     <ClCompile Include="src\core\HackManager.cpp" />
+    <ClCompile Include="src\core\Setup.cpp" />
     <ClCompile Include="src\feature\combat\AutoFire\AutoFire.cpp" />
     <ClCompile Include="src\feature\combat\AutoFire\AutoFire.h" />
     <ClCompile Include="src\feature\combat\Combat.cpp" />

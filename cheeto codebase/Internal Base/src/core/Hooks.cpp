@@ -12,9 +12,8 @@
 #include "../../src/sdk/memory/PatternScan.h"
 #include "HackManager.h"
 #include "../../src/sdk/utils/usermode.h"
-#include "../feature/visuals/esp/Esp.h"
 #include "Setup.h"
-
+#include "../feature/visuals/esp/Esp.h"
 #pragma comment(lib, "d3d11.lib")
 
 // global stuff
@@ -93,9 +92,7 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features
 	// encapsulate a general hack manager to pass in vars/update state
 
-	// setup area
-	ESP::setup();
-	
+	ESP::setup(); /// TODO: this fucking name sucks ass fix later
 	HackManager::Loop();
 	ImGui::Render();
 
