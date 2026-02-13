@@ -92,6 +92,7 @@
     <ClInclude Include="src\sdk\entity\EntityManager.h" />
     <ClInclude Include="src\sdk\interfaces\Iglobalvars.h" />
     <ClInclude Include="src\sdk\interfaces\Imemalloc.h" />
+    <ClInclude Include="src\sdk\Logger\Logger.h" />
     <ClInclude Include="src\sdk\memory\OffsetGrabber\OffsetGrabber.h" />
     <ClInclude Include="src\sdk\memory\Offsets.h" />
     <ClInclude Include="src\sdk\memory\Patterns.h" />
