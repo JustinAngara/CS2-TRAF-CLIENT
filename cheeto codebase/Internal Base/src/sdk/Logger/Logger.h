@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include "../../../ext/spdlog/logger.h"
+#include "../../../ext/spdlog/spdlog.h"
 /* 
 TODO: Finish the logger
 	  Write to file
