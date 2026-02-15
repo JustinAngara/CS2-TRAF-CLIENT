@@ -1,5 +1,4 @@
 #include "Logger.h"
-#include <string_view>
 #include <string>
 #include <iostream>
 
@@ -7,7 +6,9 @@
 // logger setup
 //////////////////////////
 void Logger::Setup::Init()
-{  
+{
+	std::string wasd{ "" };
+	SetFolderLoc(wasd);
 	
 }
 
@@ -15,12 +16,13 @@ void Logger::Setup::Init()
 // logger iv
 //////////////////////////
 
-std::string_view Logger::GetFolderLoc()
+std::string Logger::GetFolderLoc()
 {
 	std::cout << "okay i am in here of logger\n";
+	return "";
 }
 
-void Logger::SetFolderLoc(std::string_view loc)
+void Logger::SetFolderLoc(std::string loc)
 {
 }
 
