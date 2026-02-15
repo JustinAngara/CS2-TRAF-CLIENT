@@ -599,5 +599,6 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="src\sdk\entity\cpp.hint" />
   </ItemGroup>
 </Project>

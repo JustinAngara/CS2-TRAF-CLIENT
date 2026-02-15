@@ -1,4 +1,9 @@
 #pragma once
+
+// DISABLE WARNINGS - TODO FIX THE UNDERLYING CAUSE CAUSE IM STUPID ASF
+#pragma warning(disable : 4267) 
+#pragma warning(disable : 4114)
+
 #include <cstdint>
 #include "../memory/Offsets.h"
 #include "../utils/Vector.h"

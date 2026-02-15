@@ -218,6 +218,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="src\menu\MenuStyles.inl" />
+    <None Include="src\sdk\entity\cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

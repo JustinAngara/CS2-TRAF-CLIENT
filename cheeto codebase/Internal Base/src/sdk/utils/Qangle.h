@@ -2,7 +2,7 @@
 // used: [crt] isfinite, fmodf, remainderf
 #include <cmath>
 
-#include "vector.h"
+#include "Vector.h"
 #include <algorithm>
 // used: clamp
 
