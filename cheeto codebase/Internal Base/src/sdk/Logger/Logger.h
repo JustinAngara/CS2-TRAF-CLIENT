@@ -11,9 +11,14 @@ namespace Logger
 {
 	// instance variables
 	inline std::string folderLoc{ "" };
-
 	std::string_view GetFolderLoc();
 	void SetFolderLoc(std::string_view loc);
+
+	
+	namespace Setup
+	{
+		void Init();
+	}
 
 
 
