@@ -1,30 +1,32 @@
 #include "Logger.h"
 #include <string>
-#include <iostream>
-
+#include "../../sdk/entity/EntityManager.h"
+#include <ctime>
 //////////////////////////
-// logger setup
+// logger setup & mutators
 //////////////////////////
-void Logger::Setup::Init()
+void Logger::Setup::Init(std::string folder)
 {
-	std::string wasd{ "" };
-	SetFolderLoc(wasd);
 	
+	SetFolderLoc(folder);
+
+	// no params cuz i said so
+	SetDate();     // gets the current date automatically
+	SetFileName(); // sets the name automatically
 }
 
-//////////////////////////
-// logger iv
-//////////////////////////
+// folder
+void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
+std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
 
-std::string Logger::GetFolderLoc()
-{
-	std::cout << "okay i am in here of logger\n";
-	return "";
-}
+// date
+void Logger::Setup::SetDate() {}
+time_t Logger::Setup::GetDate(){}
 
-void Logger::SetFolderLoc(std::string loc)
-{
-}
+// name
+std::string Logger::Setup::GetFileName() {}
+void Logger::Setup::SetFileName() {}
+
 
 //////////////////////////
 // logger entity
@@ -45,6 +47,15 @@ void Logger::Entity::PrintXYZ()
 {
 }
 
+
+void Logger::Entity::PrintAllEntities()
+{
+	const auto& list = EntityManager::Get().GetEntities();
+	for (const auto& e : list)
+	{
+				
+	}
+}
 
 //////////////////////////
 // logger memory
