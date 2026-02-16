@@ -13,7 +13,7 @@ DWORD WINAPI MainThread(LPVOID module)
 	AllocConsole();
 	FILE* f;
 	freopen_s(&f, "CONOUT$", "w", stdout);
-	std::cout << "[INFO] DLL injected, waiting for CS2 to initialize...\n";
+	//std::cout << "[INFO] DLL injected, waiting for CS2 to initialize...\n";
 #endif
 
 	// Wait for game window to exist
@@ -23,7 +23,7 @@ DWORD WINAPI MainThread(LPVOID module)
 		gameWindow = FindWindowA("SDL_app", nullptr); // CS2 uses SDL
 		if (gameWindow)
 		{
-			std::cout << "[INFO] Found CS2 window\n";
+			// std::cout << "[INFO] Found CS2 window\n";
 			break;
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -31,16 +31,16 @@ DWORD WINAPI MainThread(LPVOID module)
 
 	if (!gameWindow)
 	{
-		std::cout << "[ERROR] Could not find CS2 window!\n";
+		//std::cout << "[ERROR] Could not find CS2 window!\n";
 		std::this_thread::sleep_for(std::chrono::seconds(5));
 		FreeLibraryAndExitThread(static_cast<HMODULE>(module), 0);
 		return 0;
 	}
 
-	std::cout << "[INFO] Setting up hooks...\n";
+	//std::cout << "[INFO] Setting up hooks...\n";
 	Hooks::Setup();
 
-	std::cout << "[INFO] Hooks initialized. Press END to unload.\n";
+	//std::cout << "[INFO] Hooks initialized. Press END to unload.\n";
 
 	while (!(GetAsyncKeyState(VK_END) & 1))
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));

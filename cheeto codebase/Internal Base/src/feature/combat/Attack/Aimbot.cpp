@@ -79,15 +79,15 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	HackManager::g_client = Memory::GetModuleBase("client.dll");
 	if (!HackManager::g_client)
 	{
-		std::cout << "shit gClient is wrong\n";
-		std::cout << HackManager::g_client << ", please work\n";
+		//std::cout << "shit gClient is wrong\n";
+		//std::cout << HackManager::g_client << ", please work\n";
 		return;
 	}
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
 	if (!currentAngles) 
 	{
-		std::cout << "shit current angles is wrong\n";
+		//std::cout << "shit current angles is wrong\n";
 		return;
 	}
 

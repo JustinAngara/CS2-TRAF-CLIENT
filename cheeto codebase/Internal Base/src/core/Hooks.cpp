@@ -111,11 +111,11 @@ void Hooks::Setup()
 	if (initialized) return;
 	initialized = true;
 
-	std::cout << "[INFO] Initializing hooks...\n";
+	//std::cout << "[INFO] Initializing hooks...\n";
 
 	if (MH_Initialize() != MH_OK)
 	{
-		std::cout << "[ERROR] MH_Initialize failed\n";
+		//std::cout << "[ERROR] MH_Initialize failed\n";
 		return;
 	}
 
@@ -155,7 +155,7 @@ void Hooks::Setup()
 		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ?? ?? 48 8B 01 FF 90 ?? ?? 84");
 		if (inputSystemAddr)
 		{
-			std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
+			//std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
 
 			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
 			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
@@ -183,7 +183,7 @@ void Hooks::Setup()
 
 	DestroyWindow(hwnd);
 	UnregisterClassW(wc.lpszClassName, wc.hInstance);
-	std::cout << "[INFO] Hook setup complete\n";
+	//std::cout << "[INFO] Hook setup complete\n";
 }
 
 // btw this doesn't work
