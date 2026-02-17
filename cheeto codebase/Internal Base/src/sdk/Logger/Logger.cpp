@@ -33,7 +33,7 @@ void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
 std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
 
 // name
-std::string Logger::Setup::GetFileName() {}
+std::string Logger::Setup::GetFileName(){ return ""; }
 
 void Logger::Setup::SetFileName()
 {
