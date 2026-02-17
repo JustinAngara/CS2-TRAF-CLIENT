@@ -16,8 +16,17 @@ void Logger::Setup::Init(std::string folder)
 	SetFileName(); // sets the name automatically
 }
 
-// date
-time_t Logger::GetDate() { return time(NULL); }
+std::string Logger::GetDate()
+{
+	time_t rawTime = time(NULL);
+	std::tm timeInfo;
+	localtime_s(&timeInfo, &rawTime);
+	std::ostringstream ss;
+	ss << std::put_time(&timeInfo, " [%H:%M:%S]");
+	g_date = ss.str();
+
+	return g_date;
+}
 
 // folder
 void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
