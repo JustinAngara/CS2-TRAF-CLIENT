@@ -17,7 +17,7 @@ void Logger::Setup::Init(std::string folder)
 }
 
 // date
-time_t Logger::Setup::GetDate() { return time(NULL); }
+time_t Logger::GetDate() { return time(NULL); }
 
 // folder
 void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
