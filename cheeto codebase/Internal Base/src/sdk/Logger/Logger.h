@@ -15,7 +15,9 @@ namespace Logger
 	inline std::string g_fileName{ "" }; // date + " " + randomLetters
 	inline time_t	   g_date{};
 
-	time_t GetDate(); // this gets called a lot thats why it isn't setup
+
+	// TODO: Change to string, i dont fuck with this time_t shit
+	time_t GetDate(); // this gets called a lot thats why it isn't setup 
 
 	namespace Setup
 	{
@@ -71,9 +73,9 @@ struct LineString
 		localtime_s(&timeInfo, &rawTime);
 
 		std::ostringstream ss;
+		ss << '\n';
 		ss << std::put_time(&timeInfo, " [%H:%M:%S]");
-
-		return data + ss.str();
+		return ss.str() + data + "-=-=-=-=END-=-=-=-=";
 	}
 
 };
