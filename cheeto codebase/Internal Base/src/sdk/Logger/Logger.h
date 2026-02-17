@@ -1,12 +1,31 @@
 #pragma once
 #include <string>
-#include <string_view>
-#include <ctime>
-/* 
-TODO: Finish the logger
-	  Write to file
-*/
+#include <sstream>
+#include <string>      
+#include <vector>    
+#include <mutex>       
+#include <shared_mutex> 
 
+struct LineString
+{
+	std::string data;
+
+	template <typename T>
+	LineString& operator+=(const T& value)
+	{
+		std::ostringstream ss;
+
+		ss << value << "\n"; // adds teh append everytime you do builder += "data...."
+
+		data += ss.str();
+		return *this;
+	}
+	operator std::string() const
+	{
+		return data;
+	}
+
+};
 
 namespace Logger
 {
@@ -15,24 +34,24 @@ namespace Logger
 	inline std::string g_fileName{ "" }; // date + " " + randomLetters
 	inline time_t	   g_date{};
 
-	
+
+
+
+
 	namespace Setup
 	{
 		void Init(std::string file);
 
-		// getters
-		std::string GetFolderLoc();
-		time_t		GetDate();
-		std::string GetFileName();
+		time_t GetDate();
 
-		// setters
-		void SetFolderLoc(std::string loc);
-		void SetDate();     // just do it manually here, no setters
-		void SetFileName(); // same here, just call it in init
+		std::string GetFolderLoc();
+		void		SetFolderLoc(std::string loc);
+
+
+		std::string GetFileName();
+		void		SetFileName(); // same here, just call it in init
 
 	}
-
-
 
 	namespace Entity
 	{

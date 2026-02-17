@@ -160,7 +160,9 @@ namespace Utils
 	// validates if a memory address pointer is within a safe readable range
 	inline bool IsValidPtr(uintptr_t addr)
 	{
-		return addr > 0x10000 && addr < 0x7FFFFFFFFFFF;
+		constexpr uintptr_t maxPtr = 0x7FFFFFFFFFFF;
+		constexpr uintptr_t minPtr = 0x10000;
+		return addr > minPtr && addr < maxPtr;
 	}
 
 	// clamps and wraps angle values to keep yaw between -180 and 180, pitch between -89 and 89, and zeros roll
@@ -208,12 +210,7 @@ namespace Utils
 	}
 
 	// projects a 3d world position onto 2d screen coordinates using the view-projection matrix
-	inline bool WorldToScreen(
-	const Vector& world,
-	Vector& screen,
-	const float* matrix,
-	float width,
-	float height)
+	inline bool WorldToScreen( const Vector& world, Vector& screen, const float* matrix, float width, float height)
 	{
 		float w = matrix[12] * world.x + matrix[13] * world.y + matrix[14] * world.z + matrix[15];
 		if (w < 0.01f)

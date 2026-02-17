@@ -2,6 +2,9 @@
 #include <string>
 #include "../../sdk/entity/EntityManager.h"
 #include <ctime>
+
+
+
 //////////////////////////
 // logger setup & mutators
 //////////////////////////
@@ -10,22 +13,23 @@ void Logger::Setup::Init(std::string folder)
 	
 	SetFolderLoc(folder);
 
-	// no params cuz i said so
-	SetDate();     // gets the current date automatically
 	SetFileName(); // sets the name automatically
 }
+
+// date
+time_t Logger::Setup::GetDate() { return time(NULL); }
 
 // folder
 void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
 std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
 
-// date
-void Logger::Setup::SetDate() {}
-time_t Logger::Setup::GetDate(){}
-
 // name
 std::string Logger::Setup::GetFileName() {}
-void Logger::Setup::SetFileName() {}
+
+void Logger::Setup::SetFileName()
+{
+	g_fileName = GetDate() + " - Log";
+}
 
 
 //////////////////////////
@@ -33,6 +37,9 @@ void Logger::Setup::SetFileName() {}
 //////////////////////////
 void Logger::Entity::PrintLocalPlayer()
 {
+
+	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
+	std::string	temp{};
 }
 
 void Logger::Entity::PrintEntity()

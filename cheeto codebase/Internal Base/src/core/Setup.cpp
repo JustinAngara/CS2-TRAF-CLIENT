@@ -4,6 +4,7 @@
 #include <iostream>
 void Setup::Run()
 {
-	Logger::Setup::Init(); // this is setup init for logger
+	std::string file{ "" };
+	Logger::Setup::Init(file); // this is setup init for logger
 
 }
