@@ -5,8 +5,9 @@
 #include <vector>    
 #include <mutex>       
 #include <iomanip>       
-#include <shared_mutex> 
+#include <shared_mutex>
 
+struct LineString;
 
 namespace Logger
 {
@@ -18,6 +19,7 @@ namespace Logger
 
 	// TODO: Change to string, i dont fuck with this time_t shit
 	std::string GetDate(); // this gets called a lot thats why it isn't setup 
+	void		WriteToFile(LineString ls);
 
 	namespace Setup
 	{
@@ -72,3 +74,38 @@ struct LineString
 	}
 
 };
+
+
+// toggle this line to enable/disable logger
+#define ENABLE_LOGGING 
+
+#ifdef ENABLE_LOGGING
+    #define LOG_INIT(file)        Logger::Setup::Init(file)
+    #define LOG(ls)               Logger::WriteToFile(ls)
+
+    // entity
+    #define LOG_PLAYER()          Logger::Entity::PrintLocalPlayer()
+    #define LOG_ENTITY()          Logger::Entity::PrintEntity()
+    #define LOG_ANGLES()          Logger::Entity::PrintViewAngles()
+    #define LOG_XYZ()             Logger::Entity::PrintXYZ()
+    #define LOG_ALL_ENTITIES()    Logger::Entity::PrintAllEntities()
+
+    // memory
+    #define LOG_OFFSETS()         Logger::Memory::PrintOffsets()
+    #define LOG_MEMSCAN()         Logger::Memory::PrintMemScan()
+    #define LOG_ADDR_OFFSET()     Logger::Memory::PrintAddressFromOffset()
+#else
+    // optimize away
+    #define LOG_INIT(file)        do { (void)(file); } while(0)
+    #define LOG(ls)               do { (void)(ls); } while(0)
+
+    #define LOG_PLAYER()          do {} while(0)
+    #define LOG_ENTITY()          do {} while(0)
+    #define LOG_ANGLES()          do {} while(0)
+    #define LOG_XYZ()             do {} while(0)
+    #define LOG_ALL_ENTITIES()    do {} while(0)
+
+    #define LOG_OFFSETS()         do {} while(0)
+    #define LOG_MEMSCAN()         do {} while(0)
+    #define LOG_ADDR_OFFSET()     do {} while(0)
+#endif

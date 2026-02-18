@@ -3,7 +3,8 @@
 #include "../../sdk/entity/EntityManager.h"
 #include <ctime>
 
-
+#include <fstream>
+#include <iostream>
 
 //////////////////////////
 // logger setup & mutators
@@ -15,6 +16,21 @@ void Logger::Setup::Init(std::string folder)
 
 	SetFileName(); // sets the name automatically
 }
+
+void Logger::WriteToFile(LineString ls)
+{
+	// 'static' ensures the file stays open across calls for better performance
+	static std::ofstream logFile("getthefuckingname.txt", std::ios::app);
+	std::string data = ls; 
+
+	if (!logFile.is_open())
+	{
+		std::cerr << "can't open fucking file\n";
+		return;
+	} 
+		logFile << data << '\n'; // safe operation to ensure to write before crash
+}
+
 
 std::string Logger::GetDate()
 {
@@ -49,10 +65,12 @@ void Logger::Entity::PrintLocalPlayer()
 
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	std::string	temp{};
+	
 }
 
 void Logger::Entity::PrintEntity()
 {
+
 }
 
 void Logger::Entity::PrintViewAngles()
