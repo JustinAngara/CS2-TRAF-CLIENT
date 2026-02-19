@@ -6,9 +6,46 @@
 #include <mutex>       
 #include <iomanip>       
 #include <shared_mutex>
+#include "../entity/EntityManager.h"
+#include <utility> 
+
+
+/** Usage
+* LogSys::Run<LogSys::Channel::Entity>(Logger::Entity::PrintLocalPlayer);
+* LogSys::Run<LogSys::Channel::Memory>(Logger::Memory::PrintMemScan, rawPointer, 128);
+* LogSys::Run<LogSys::Channel::Entity>(Logger::Entity::PrintEntity, myEntity);
+*/
+namespace LogSys
+{
+	enum class Channel
+	{
+		Master,
+		Entity,
+		Memory
+	};
+
+	template <Channel C>
+	constexpr bool IsEnabled()
+	{
+		if constexpr (C == Channel::Master) return true;  //////////master switch
+		if constexpr (C == Channel::Entity) return true; 
+		if constexpr (C == Channel::Memory) return true;  
+		return false;
+	}
+
+	template <Channel C, typename Func, typename... Args>
+	inline void Run(Func&& func, Args&&... args)
+	{
+		if constexpr (IsEnabled<Channel::Master>() && IsEnabled<C>())
+		{
+			std::forward<Func>(func)(std::forward<Args>(args)...);
+		}
+	}
+}
+
+
 
 struct LineString;
-
 namespace Logger
 {
 	// instance variables
@@ -35,17 +72,19 @@ namespace Logger
 
 	namespace Entity
 	{
+		void PrintEntity(Entity_t& entity);
+		void PrintViewAnglesEntity(Entity_t& entity);
+		void PrintXYZEntity(Entity_t& entity);
 		void PrintLocalPlayer();
-		void PrintEntity();
-		void PrintViewAngles();
-		void PrintXYZ();
 		void PrintAllEntities();
+	
 	}
 
+	// TODO: Figure out what i want to do with memory
 	namespace Memory
 	{
-		void PrintOffsets();
-		void PrintMemScan();
+		void PrintOffsetsCheck();
+		void PrintMemScan(uintptr_t rawPointer, int bufferSize); 
 		void PrintAddressFromOffset();
 	}
 
@@ -75,37 +114,3 @@ struct LineString
 
 };
 
-
-// toggle this line to enable/disable logger
-#define ENABLE_LOGGING 
-
-#ifdef ENABLE_LOGGING
-    #define LOG_INIT(file)        Logger::Setup::Init(file)
-    #define LOG(ls)               Logger::WriteToFile(ls)
-
-    // entity
-    #define LOG_PLAYER()          Logger::Entity::PrintLocalPlayer()
-    #define LOG_ENTITY()          Logger::Entity::PrintEntity()
-    #define LOG_ANGLES()          Logger::Entity::PrintViewAngles()
-    #define LOG_XYZ()             Logger::Entity::PrintXYZ()
-    #define LOG_ALL_ENTITIES()    Logger::Entity::PrintAllEntities()
-
-    // memory
-    #define LOG_OFFSETS()         Logger::Memory::PrintOffsets()
-    #define LOG_MEMSCAN()         Logger::Memory::PrintMemScan()
-    #define LOG_ADDR_OFFSET()     Logger::Memory::PrintAddressFromOffset()
-#else
-    // optimize away
-    #define LOG_INIT(file)        do { (void)(file); } while(0)
-    #define LOG(ls)               do { (void)(ls); } while(0)
-
-    #define LOG_PLAYER()          do {} while(0)
-    #define LOG_ENTITY()          do {} while(0)
-    #define LOG_ANGLES()          do {} while(0)
-    #define LOG_XYZ()             do {} while(0)
-    #define LOG_ALL_ENTITIES()    do {} while(0)
-
-    #define LOG_OFFSETS()         do {} while(0)
-    #define LOG_MEMSCAN()         do {} while(0)
-    #define LOG_ADDR_OFFSET()     do {} while(0)
-#endif

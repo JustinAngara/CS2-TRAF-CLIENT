@@ -13,22 +13,25 @@ void Logger::Setup::Init(std::string folder)
 {
 	
 	SetFolderLoc(folder);
+	SetFileName();
 
-	SetFileName(); // sets the name automatically
+
 }
 
 void Logger::WriteToFile(LineString ls)
 {
 	// 'static' ensures the file stays open across calls for better performance
-	static std::ofstream logFile("getthefuckingname.txt", std::ios::app);
+	static std::ofstream logFile(g_folderLoc + "\\" + g_fileName + ".txt", std::ios::app);
 	std::string data = ls; 
 
 	if (!logFile.is_open())
 	{
-		std::cerr << "can't open fucking file\n";
+		std::cerr << "can't open file\n";
 		return;
 	} 
-		logFile << data << '\n'; // safe operation to ensure to write before crash
+	logFile << data << '\n'; // safe operation to ensure to write before crash
+	
+
 }
 
 
@@ -49,17 +52,31 @@ void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
 std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
 
 // name
-std::string Logger::Setup::GetFileName(){ return ""; }
+std::string Logger::Setup::GetFileName(){ return g_fileName; }
 
 void Logger::Setup::SetFileName()
 {
-	g_fileName = GetDate() + " - Log";
+	g_fileName = "[" + GetDate() + "] Log";
 }
 
 
 //////////////////////////
 // logger entity
 //////////////////////////
+
+void Logger::Entity::PrintEntity(Entity_t& entity)
+{
+	
+}
+
+void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
+{
+}
+
+void Logger::Entity::PrintXYZEntity(Entity_t& entity)
+{
+}
+
 void Logger::Entity::PrintLocalPlayer()
 {
 
@@ -67,20 +84,6 @@ void Logger::Entity::PrintLocalPlayer()
 	std::string	temp{};
 	
 }
-
-void Logger::Entity::PrintEntity()
-{
-
-}
-
-void Logger::Entity::PrintViewAngles()
-{
-}
-
-void Logger::Entity::PrintXYZ()
-{
-}
-
 
 void Logger::Entity::PrintAllEntities()
 {
@@ -94,11 +97,11 @@ void Logger::Entity::PrintAllEntities()
 //////////////////////////
 // logger memory
 //////////////////////////
-void Logger::Memory::PrintOffsets()
+void Logger::Memory::PrintOffsetsCheck()
 {
 }
 
-void Logger::Memory::PrintMemScan()
+void Logger::Memory::PrintMemScan(uintptr_t rawPointer, int bufferSize)
 {
 }
 
