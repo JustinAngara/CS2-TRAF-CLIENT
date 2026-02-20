@@ -66,7 +66,8 @@ void Logger::Setup::SetFileName()
 
 void Logger::Entity::PrintEntity(Entity_t& entity)
 {
-	
+	// e.pawn, e.controller figure out what iw ant to do
+
 }
 
 void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
@@ -88,9 +89,10 @@ void Logger::Entity::PrintLocalPlayer()
 void Logger::Entity::PrintAllEntities()
 {
 	const auto& list = EntityManager::Get().GetEntities();
-	for (const auto& e : list)
+	for (auto e : list)
 	{
-				
+		PrintEntity(e);
+		
 	}
 }
 

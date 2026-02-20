@@ -80,7 +80,7 @@ namespace Logger
 	
 	}
 
-	// TODO: Figure out what i want to do with memory
+	// TODO: Figure out what i want to do with memory statements. 
 	namespace Memory
 	{
 		void PrintOffsetsCheck();
@@ -89,7 +89,6 @@ namespace Logger
 	}
 
 }
-
 
 
 struct LineString
