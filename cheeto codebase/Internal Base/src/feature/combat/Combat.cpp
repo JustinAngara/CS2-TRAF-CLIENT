@@ -81,7 +81,7 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 {
 	
-	Vector localPos	 = local->m_vOldOrigin() + local->m_vecViewOffset();
+	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
 	Vector enemyPos = enemy->m_vOldOrigin() + enemy->m_vecViewOffset();
 
 	//std::cout << "====================================================================";

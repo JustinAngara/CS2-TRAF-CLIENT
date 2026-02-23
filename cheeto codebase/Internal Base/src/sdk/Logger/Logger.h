@@ -95,6 +95,9 @@ struct LineString
 {
 	std::string data;
 
+	LineString(std::string s) :
+		data(s){}
+
 	template <typename T>
 	LineString& operator+=(const T& value)
 	{

@@ -2,7 +2,7 @@
 #include <string>
 #include "../../sdk/entity/EntityManager.h"
 #include <ctime>
-
+#include <format>
 #include <fstream>
 #include <iostream>
 
@@ -76,6 +76,14 @@ void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
 
 void Logger::Entity::PrintXYZEntity(Entity_t& entity)
 {
+	LineString ls{ "Entity's PrintXYZ" }; // constructor
+
+	Vector localPos = entity.pawn->m_vOldOrigin() + entity.pawn->m_vecViewOffset();
+
+	ls += std::format("(X, Y, Z) -> ({}, {}, {})", localPos.x, localPos.y, localPos.z);
+
+	WriteToFile(ls);
+
 }
 
 void Logger::Entity::PrintLocalPlayer()
