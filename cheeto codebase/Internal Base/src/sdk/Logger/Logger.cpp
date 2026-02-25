@@ -15,7 +15,7 @@ void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
 std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
 // name
 std::string Logger::Setup::GetFileName(){ return g_fileName; }
-void Logger::Setup::SetFileName() { g_fileName = "[" + GetDate() + "] Log"; }
+void Logger::Setup::SetFileName() { g_fileName = "[" + GetDate() + "] Log Test"; }
 
 
 void Logger::Setup::Init(std::string folder)
@@ -23,9 +23,11 @@ void Logger::Setup::Init(std::string folder)
 	// do a bunch of this shit here. i don't want to test right now so someone fix this 	
 	SetFolderLoc(folder);
 	SetFileName();
-
-
+	LineString ls{ "irjgioerjiogje" };
+	WriteToFile(ls);
 }
+
+
 
 void Logger::WriteToFile(LineString ls)
 {
@@ -37,23 +39,11 @@ void Logger::WriteToFile(LineString ls)
 	{
 		std::cerr << "can't open file\n";
 		return;
-	} 
+	}
+
 	logFile << data << '\n'; // safe operation to ensure to write before crash
 	
 
-}
-
-
-std::string Logger::GetDate()
-{
-	time_t rawTime = time(NULL);
-	std::tm timeInfo;
-	localtime_s(&timeInfo, &rawTime);
-	std::ostringstream ss;
-	ss << std::put_time(&timeInfo, " [%H:%M:%S]");
-	g_date = ss.str();
-
-	return g_date;
 }
 
 //////////////////////////

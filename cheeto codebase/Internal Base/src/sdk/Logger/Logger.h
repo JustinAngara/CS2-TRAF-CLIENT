@@ -10,6 +10,8 @@
 #include <utility> 
 
 
+
+
 /** Usage
 * LogSys::Run<LogSys::Channel::Entity>(Logger::Entity::PrintLocalPlayer);
 * LogSys::Run<LogSys::Channel::Memory>(Logger::Memory::PrintMemScan, rawPointer, 128);
@@ -54,9 +56,7 @@ namespace Logger
 	inline std::string g_date{};
 
 
-	// TODO: Change to string, i dont fuck with this time_t shit
-	std::string GetDate(); // this gets called a lot thats why it isn't setup 
-	void		WriteToFile(LineString ls);
+	void WriteToFile(LineString ls);
 
 	namespace Setup
 	{
@@ -92,12 +92,32 @@ namespace Logger
 }
 
 
+
+
+//////////////////////////
+// i want to abstract this away,
+// im scared i will accidentally
+// use logger some fuck ass loc
+//////////////////////////
+inline std::string GetDate()
+{
+	time_t	rawTime = time(NULL);
+	std::tm timeInfo;
+	localtime_s(&timeInfo, &rawTime);
+	std::ostringstream ss;
+	ss << std::put_time(&timeInfo, " [%H:%M:%S]");
+	Logger::g_date = ss.str();
+	return Logger::g_date;
+}
+
 struct LineString
 {
 	std::string data;
 
 	LineString(std::string s) :
 		data(s){}
+
+
 
 	template <typename T>
 	LineString& operator+=(const T& value)
@@ -111,7 +131,7 @@ struct LineString
 
 	operator std::string() const
 	{
-		std::string temp = Logger::GetDate();
+		std::string temp = GetDate();
 		return temp + data + "-=-=-=-=END-=-=-=-=";
 	}
 
