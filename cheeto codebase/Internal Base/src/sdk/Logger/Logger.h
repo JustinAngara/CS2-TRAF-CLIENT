@@ -83,7 +83,8 @@ namespace Logger
 	// TODO: Figure out what i want to do with memory statements. 
 	namespace Memory
 	{
-		void PrintOffsetsCheck();
+		void PrintAllOffsetsCheck();
+		void PrintOffsetsCheck(const uintptr_t offset);
 		void PrintMemScan(uintptr_t rawPointer, int bufferSize); 
 		void PrintAddressFromOffset();
 	}

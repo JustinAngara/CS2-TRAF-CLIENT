@@ -9,9 +9,18 @@
 //////////////////////////
 // logger setup & mutators
 //////////////////////////
+
+// folder
+void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
+std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
+// name
+std::string Logger::Setup::GetFileName(){ return g_fileName; }
+void Logger::Setup::SetFileName() { g_fileName = "[" + GetDate() + "] Log"; }
+
+
 void Logger::Setup::Init(std::string folder)
 {
-	
+	// do a bunch of this shit here. i don't want to test right now so someone fix this 	
 	SetFolderLoc(folder);
 	SetFileName();
 
@@ -47,19 +56,6 @@ std::string Logger::GetDate()
 	return g_date;
 }
 
-// folder
-void Logger::Setup::SetFolderLoc(std::string loc) { g_folderLoc = loc; }
-std::string Logger::Setup::GetFolderLoc()         { return g_folderLoc; }
-
-// name
-std::string Logger::Setup::GetFileName(){ return g_fileName; }
-
-void Logger::Setup::SetFileName()
-{
-	g_fileName = "[" + GetDate() + "] Log";
-}
-
-
 //////////////////////////
 // logger entity
 //////////////////////////
@@ -72,16 +68,18 @@ void Logger::Entity::PrintEntity(Entity_t& entity)
 
 void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
 {
+	LineString ls{ "Entity's ViewAngles" }; // constructor
+
+	//Vector	   localPos = entity.pawn->m_vOldOrigin() + entity.pawn->m_vecViewOffset();
+	//ls += std::format("(X, Y, Z) -> ({}, {}, {})", localPos.x, localPos.y, localPos.z);
+	WriteToFile(ls);
 }
 
 void Logger::Entity::PrintXYZEntity(Entity_t& entity)
 {
 	LineString ls{ "Entity's PrintXYZ" }; // constructor
-
 	Vector localPos = entity.pawn->m_vOldOrigin() + entity.pawn->m_vecViewOffset();
-
 	ls += std::format("(X, Y, Z) -> ({}, {}, {})", localPos.x, localPos.y, localPos.z);
-
 	WriteToFile(ls);
 
 }
@@ -107,8 +105,16 @@ void Logger::Entity::PrintAllEntities()
 //////////////////////////
 // logger memory
 //////////////////////////
-void Logger::Memory::PrintOffsetsCheck()
+
+/// @brief For fuck sake only run this on init/setup
+///		   You need to run the fucking damn shit and see if it matches
+void Logger::Memory::PrintAllOffsetsCheck()
 {
+	
+}
+void Logger::Memory::PrintOffsetsCheck(const uintptr_t offset)
+{
+	
 }
 
 void Logger::Memory::PrintMemScan(uintptr_t rawPointer, int bufferSize)
