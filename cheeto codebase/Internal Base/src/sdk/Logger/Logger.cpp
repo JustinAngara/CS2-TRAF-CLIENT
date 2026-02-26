@@ -52,8 +52,9 @@ void Logger::WriteToFile(LineString ls)
 
 void Logger::Entity::PrintEntity(Entity_t& entity)
 {
+	LineString ls{ "" }; 
 	// e.pawn, e.controller figure out what iw ant to do
-
+	WriteToFile(ls);
 }
 
 void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
@@ -76,20 +77,25 @@ void Logger::Entity::PrintXYZEntity(Entity_t& entity)
 
 void Logger::Entity::PrintLocalPlayer()
 {
+	LineString ls{ "" };
 
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	std::string	temp{};
 	
+	WriteToFile(ls);
 }
 
 void Logger::Entity::PrintAllEntities()
 {
+	LineString ls{ "Start of Print ALL Entities ...{" };
+
 	const auto& list = EntityManager::Get().GetEntities();
 	for (auto e : list)
 	{
 		PrintEntity(e);
-		
 	}
+	ls += "\n...}";
+	WriteToFile(ls);
 }
 
 //////////////////////////
@@ -100,20 +106,27 @@ void Logger::Entity::PrintAllEntities()
 ///		   You need to run the fucking damn shit and see if it matches
 void Logger::Memory::PrintAllOffsetsCheck()
 {
+	LineString ls{ "" };
 	
+	WriteToFile(ls);
 }
 void Logger::Memory::PrintOffsetsCheck(const uintptr_t offset)
 {
+	LineString ls{ "" };
 	
+	WriteToFile(ls);
 }
 
 void Logger::Memory::PrintMemScan(uintptr_t rawPointer, int bufferSize)
 {
+	LineString ls{ "" };
+
+	WriteToFile(ls);
 }
 
 void Logger::Memory::PrintAddressFromOffset()
 {
+	LineString ls{ "" };
+
+	WriteToFile(ls);
 }
-
-
-
