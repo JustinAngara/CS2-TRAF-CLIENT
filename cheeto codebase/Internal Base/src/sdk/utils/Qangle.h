@@ -214,13 +214,14 @@ struct QAngle_t
 
 	/// clamp each angle component by minimal/maximal allowed value for source sdk games
 	/// @returns: clamped angle
-	constexpr QAngle_t& Clamp()
-	{
-		this->x = std::clamp(this->x, -89.f, 89.f);
-		this->y = std::clamp(this->y, -180.f, 180.f);
-		this->z = std::clamp(this->z, -45.f, 45.f);
-		return *this;
-	}
+	// deprecated
+	//constexpr QAngle_t Clamp()
+	//{
+	//	this->x = std::clamp(this->x, -89.f, 89.f);
+	//	this->y = std::clamp(this->y, -180.f, 180.f);
+	//	this->z = std::clamp(this->z, -45.f, 45.f);
+	//	return *this;
+	//}
 
 	/// map polar angles to the range of [-180, 180] degrees
 	/// @returns: normalized angle
@@ -232,15 +233,18 @@ struct QAngle_t
 		return *this;
 	}
 
-	/// convert angle to direction vectors
-	/// @param[out] pvecForward [optional] output for converted forward vector
-	/// @param[out] pvecRight [optional] output for converted right vector
-	/// @param[out] pvecUp [optional] output for converted up vector
-	void ToDirections(Vector* pvecForward, Vector* pvecRight = nullptr, Vector* pvecUp = nullptr) const;
+	// deprecated i have no fucking where i copied and pasted this shit from
+	/*
+		/// convert angle to direction vectors
+		/// @param[out] pvecForward [optional] output for converted forward vector
+		/// @param[out] pvecRight [optional] output for converted right vector
+		/// @param[out] pvecUp [optional] output for converted up vector
+		//void ToDirections(Vector* pvecForward, Vector* pvecRight = nullptr, Vector* pvecUp = nullptr) const;
 
-	/// @param[in] vecOrigin [optional] origin for converted matrix
-	/// @returns: matrix converted from angle
-	[[nodiscard]] Matrix3x4_t ToMatrix(const Vector& vecOrigin = {}) const;
+		/// @param[in] vecOrigin [optional] origin for converted matrix
+		/// @returns: matrix converted from angle
+		//[[nodiscard]] Matrix3x4_t ToMatrix(const Vector& vecOrigin = {}) const;
+	*/
 
 public:
 	float x = 0.0f, y = 0.0f, z = 0.0f;

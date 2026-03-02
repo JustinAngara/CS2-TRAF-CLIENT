@@ -4,10 +4,10 @@
 #include <dxgi.h>
 #include "../../src/sdk/utils/usermode.h"
 
-/*
-	Everything done is through a tick-based style
-	everything needs re-rendering/processing
-	is called on a (1000/60)hz basis
+/**
+* Everything done is through a tick-based style
+* everything needs re-rendering/processing
+* is called on a (1000/60)hz basis
 */
 
 class Hooks
@@ -20,21 +20,20 @@ public:
 	static LRESULT __stdcall hkWndProc(HWND, UINT, WPARAM, LPARAM);
 	static HRESULT __stdcall hkPresent(IDXGISwapChain*, UINT, UINT);
 	static void __fastcall hkCreateMove(void* thisptr, int slot, bool active); // btw this doesn't work dont use
+
 	// originals
 	using CreateMove_t = void(__fastcall*)(void*, int, bool);
 	inline static CreateMove_t oCreateMove = nullptr;
 	inline static WNDPROC oWndProc = nullptr;
 	inline static HRESULT(__stdcall* oPresent)(IDXGISwapChain*, UINT, UINT) = nullptr;
 
-
 	// basically we brute force this bullshit
 	struct DEBUG
 	{
-	 //debug
-	 using D_CreateMove_t = double(__fastcall*)(void*, unsigned int, CUserCmd*); // we want to use CUserCmd infra
-	 static double __fastcall D_hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd);
-
-	}
+		//debug
+		using D_CreateMove_t = double(__fastcall*)(void*, unsigned int, CUserCmd*); // we want to use CUserCmd infra
+		static double __fastcall D_hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd);
+	};
 
 	
 
