@@ -54,6 +54,9 @@ void Logger::Entity::PrintEntity(Entity_t& entity)
 {
 	LineString ls{ "" }; 
 	// e.pawn, e.controller figure out what iw ant to do
+	ls += "IsAlive: " + entity.controller->IsAlive();
+	ls += "Health: " + entity.controller->m_iHealth();
+	ls += "Shots Fired: " + entity.pawn->m_iShotsFired();
 	WriteToFile(ls);
 }
 
@@ -61,8 +64,9 @@ void Logger::Entity::PrintViewAnglesEntity(Entity_t& entity)
 {
 	LineString ls{ "Entity's ViewAngles" }; // constructor
 
-	//Vector	   localPos = entity.pawn->m_vOldOrigin() + entity.pawn->m_vecViewOffset();
-	//ls += std::format("(X, Y, Z) -> ({}, {}, {})", localPos.x, localPos.y, localPos.z);
+	Vector localPos = entity.pawn->m_vOldOrigin() + entity.pawn->m_vecViewOffset();
+	ls += std::format("(X, Y, Z) -> ({}, {}, {})", localPos.x, localPos.y, localPos.z);
+
 	WriteToFile(ls);
 }
 

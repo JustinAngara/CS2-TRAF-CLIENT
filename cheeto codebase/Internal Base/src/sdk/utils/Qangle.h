@@ -212,17 +212,6 @@ struct QAngle_t
 		return std::sqrtf(x * x + y * y);
 	}
 
-	/// clamp each angle component by minimal/maximal allowed value for source sdk games
-	/// @returns: clamped angle
-	// deprecated
-	//constexpr QAngle_t Clamp()
-	//{
-	//	this->x = std::clamp(this->x, -89.f, 89.f);
-	//	this->y = std::clamp(this->y, -180.f, 180.f);
-	//	this->z = std::clamp(this->z, -45.f, 45.f);
-	//	return *this;
-	//}
-
 	/// map polar angles to the range of [-180, 180] degrees
 	/// @returns: normalized angle
 	QAngle_t& Normalize()
@@ -234,6 +223,7 @@ struct QAngle_t
 	}
 
 	// deprecated i have no fucking where i copied and pasted this shit from
+	// TODO: Justify this or delete
 	/*
 		/// convert angle to direction vectors
 		/// @param[out] pvecForward [optional] output for converted forward vector
@@ -244,6 +234,19 @@ struct QAngle_t
 		/// @param[in] vecOrigin [optional] origin for converted matrix
 		/// @returns: matrix converted from angle
 		//[[nodiscard]] Matrix3x4_t ToMatrix(const Vector& vecOrigin = {}) const;
+
+
+		/// clamp each angle component by minimal/maximal allowed value for source sdk games
+		/// @returns: clamped angle
+		// deprecated
+		//constexpr QAngle_t Clamp()
+		//{
+		//	this->x = std::clamp(this->x, -89.f, 89.f);
+		//	this->y = std::clamp(this->y, -180.f, 180.f);
+		//	this->z = std::clamp(this->z, -45.f, 45.f);
+		//	return *this;
+		//}
+
 	*/
 
 public:
