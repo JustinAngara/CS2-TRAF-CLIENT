@@ -11,6 +11,8 @@ okay this is a test sorry for spamming
 */
 namespace OffsetGrabber
 {
+	bool Isvalid();
+	void Setup();
 	void Run();
 
 }

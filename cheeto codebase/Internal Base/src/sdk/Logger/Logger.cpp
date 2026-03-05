@@ -23,7 +23,8 @@ void Logger::Setup::Init(std::string folder)
 	// do a bunch of this shit here. i don't want to test right now so someone fix this 	
 	SetFolderLoc(folder);
 	SetFileName();
-	LineString ls{ "irjgioerjiogje" };
+	LineString ls{ "INIT" };
+	ls += "Folder: " + folder;
 	WriteToFile(ls);
 }
 
