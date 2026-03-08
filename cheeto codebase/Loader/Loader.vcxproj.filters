@@ -10,6 +10,12 @@
     <Filter Include="src\LoaderGUI">
       <UniqueIdentifier>{203ce923-dfe0-4acb-bd86-8f15a526036e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Memory">
+      <UniqueIdentifier>{1c8f947d-78bb-406b-b8a9-e5fa9383ba44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Memory\OffsetGrabber">
+      <UniqueIdentifier>{98828d76-1770-49c6-b1e2-f376fd51913e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
