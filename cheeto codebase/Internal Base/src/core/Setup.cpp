@@ -1,14 +1,11 @@
 #include "Setup.h"
 #include "../feature/visuals/esp/Esp.h"
 #include "../sdk/Logger/Logger.h"
-#include "../sdk/memory/OffsetGrabber/OffsetGrabber.h"
 #include <iostream>
 
 // perform logger handler
 void Setup::Run()
 {
-	// lets do the fuckin thang
-	OffsetGrabber::Run();
 
 
 	std::string file{ "" };
