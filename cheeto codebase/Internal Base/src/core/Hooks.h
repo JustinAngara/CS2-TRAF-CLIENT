@@ -27,13 +27,6 @@ public:
 	inline static WNDPROC oWndProc = nullptr;
 	inline static HRESULT(__stdcall* oPresent)(IDXGISwapChain*, UINT, UINT) = nullptr;
 
-	// basically we brute force this bullshit
-	struct DEBUG
-	{
-		//debug
-		using D_CreateMove_t = double(__fastcall*)(void*, unsigned int, CUserCmd*); // we want to use CUserCmd infra
-		static double __fastcall D_hkCreateMove(void* thisptr, unsigned int a2, CUserCmd* pCmd);
-	};
 
 	
 

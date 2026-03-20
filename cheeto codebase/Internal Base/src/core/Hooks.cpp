@@ -152,28 +152,28 @@ void Hooks::Setup()
 		MH_CreateHook(present, &hkPresent, reinterpret_cast<void**>(&oPresent));
 
 		// Hook CreateMove via vtable
-		uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ?? ?? 48 8B 01 FF 90 ?? ?? 84");
-		if (inputSystemAddr)
-		{
-			//std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
+		//uintptr_t inputSystemAddr = Memory::PatternScan("client.dll", "48 8B 0D ?? ?? 48 8B 01 FF 90 ?? ?? 84");
+		//if (inputSystemAddr)
+		//{
+		//	//std::cout << "[INFO] Found input system at: 0x" << std::hex << inputSystemAddr << std::dec << "\n";
 
-			int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
-			uintptr_t inputPtr = inputSystemAddr + 7 + offset;
-			void** input = *reinterpret_cast<void***>(inputPtr);
-			// in Setup(), replace the vtable hooking loop with:
-			/*
-			if (input && *input)
-			{
-				void** inputVtable = *reinterpret_cast<void***>(input);
+		//	int32_t offset = *reinterpret_cast<int32_t*>(inputSystemAddr + 3);
+		//	uintptr_t inputPtr = inputSystemAddr + 7 + offset;
+		//	void** input = *reinterpret_cast<void***>(inputPtr);
+		//	// in Setup(), replace the vtable hooking loop with:
+		//	/*
+		//	if (input && *input)
+		//	{
+		//		void** inputVtable = *reinterpret_cast<void***>(input);
 
-				// Hook ONLY index 5 (the actual CreateMove)
-				if (MH_CreateHook(inputVtable[5], &hkCreateMove, reinterpret_cast<void**>(&oCreateMove)) == MH_OK)
-				{
-					std::cout << "[SUCCESS] Hooked CreateMove at vtable[5]\n";
-				}
-			}
-			*/
-		}
+		//		// Hook ONLY index 5 (the actual CreateMove)
+		//		if (MH_CreateHook(inputVtable[5], &hkCreateMove, reinterpret_cast<void**>(&oCreateMove)) == MH_OK)
+		//		{
+		//			std::cout << "[SUCCESS] Hooked CreateMove at vtable[5]\n";
+		//		}
+		//	}
+		//	*/
+		//}
 
 		MH_EnableHook(MH_ALL_HOOKS);
 		sc->Release();
@@ -187,9 +187,9 @@ void Hooks::Setup()
 }
 
 // btw this doesn't work
-void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
-{
-	oCreateMove(thisptr, slot, active);
+//void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
+//{
+//	oCreateMove(thisptr, slot, active);
 	/*
 	CCSGOInput* input = (CCSGOInput*)thisptr;
 
@@ -215,7 +215,7 @@ void __fastcall Hooks::hkCreateMove(void* thisptr, int slot, bool active)
 		input->m_buttons &= ~IN_JUMP;
 	}
 	*/
-}
+//}
 
 //DEBUG  START ------------------
 /*

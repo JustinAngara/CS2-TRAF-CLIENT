@@ -9,7 +9,7 @@
 namespace Offsets
 {
 	// -> offsets.h on a2x dumper
-	constexpr uintptr_t		 dwEntityList			 = 0x24AE268;  
+	constexpr uintptr_t		 dwEntityList			 = 0x24AF268;  
 	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2069B50; 
 	constexpr uintptr_t		 dwLocalPlayerController = 0x22F4188;  
 	constexpr uintptr_t		 dwViewMatrix			 = 0x230FF20;  
@@ -29,7 +29,7 @@ namespace Offsets
 	// -> C_CSPlayerPawn
 	constexpr uintptr_t m_iShotsFired	= 0x270C;
 	constexpr uintptr_t m_aimPunchAngle = 0x16CC;
-	constexpr uintptr_t m_fFlags		= 0x400; // 
+	constexpr uintptr_t m_fFlags		= 0x400; 
 
 	constexpr uintptr_t m_szTeamname   = 0x63C; 
 	constexpr uintptr_t m_hPlayerPawn  = 0x90C;
@@ -40,9 +40,11 @@ namespace Offsets
 	constexpr std::ptrdiff_t m_pObserverServices  = 0x13F0;
 	constexpr std::ptrdiff_t m_hObserverTarget	  = 0x4C;
 	constexpr std::ptrdiff_t m_iObserverMode	  = 0x48;
-	constexpr std::ptrdiff_t m_entitySpottedState = 0x1180; 
+	constexpr std::ptrdiff_t m_entitySpottedState = 0x26E0; 
 	constexpr std::ptrdiff_t m_aimPunchAngleVel	  = 0x16D8;
-	constexpr std::ptrdiff_t m_aimPunchCache	  = 0x16F0;
+
+	//ashfiasiuofhusa
+	constexpr std::ptrdiff_t m_aimPunchCache = 0x16F0;
 
 	constexpr std::ptrdiff_t jump = 0x205BAF0;
 
