@@ -10,12 +10,12 @@ namespace Offsets
 {
 	// -> offsets.h on a2x dumper
 	constexpr uintptr_t		 dwEntityList			 = 0x24AE268;  
-	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2068B60; 
-	constexpr uintptr_t		 dwLocalPlayerController = 0x22F3178;  
-	constexpr uintptr_t		 dwViewMatrix			 = 0x230EF20;  
-	constexpr uintptr_t		 dwViewAngles			 = 0x2319648;  
-	constexpr uintptr_t		 dwGlobalVars			 = 0x205D5C0;    
-	constexpr std::ptrdiff_t dwSensitivity			 = 0x230A7F8;  
+	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2069B50; 
+	constexpr uintptr_t		 dwLocalPlayerController = 0x22F4188;  
+	constexpr uintptr_t		 dwViewMatrix			 = 0x230FF20;  
+	constexpr uintptr_t		 dwViewAngles			 = 0x231A648;  
+	constexpr uintptr_t		 dwGlobalVars			 = 0x205E5C0;    
+	constexpr std::ptrdiff_t dwSensitivity			 = 0x230B7F8;  
 
 	////////////// -> client.dll.hpp on a2x dumper and on
 	constexpr uintptr_t m_iHealth		 = 0x354; 
@@ -29,7 +29,7 @@ namespace Offsets
 	// -> C_CSPlayerPawn
 	constexpr uintptr_t m_iShotsFired	= 0x270C;
 	constexpr uintptr_t m_aimPunchAngle = 0x16CC;
-	constexpr uintptr_t m_fFlags		= 0x400;
+	constexpr uintptr_t m_fFlags		= 0x400; // 
 
 	constexpr uintptr_t m_szTeamname   = 0x63C; 
 	constexpr uintptr_t m_hPlayerPawn  = 0x90C;
