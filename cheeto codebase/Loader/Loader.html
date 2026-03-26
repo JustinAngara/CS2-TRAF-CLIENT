@@ -99,17 +99,45 @@
 			font-size: 0.9rem;
 		}
 
-			#btn:hover {
-				background: var(--primary);
-				color: var(--bg);
-			}
+		#btn:hover {
+			background: var(--primary);
+			color: var(--bg);
+		}
 
-			#btn:disabled {
-				border-color: #333;
-				color: #555;
-				background: #111;
-				cursor: not-allowed;
-			}
+		#btn:disabled {
+			border-color: #333;
+			color: #555;
+			background: #111;
+			cursor: not-allowed;
+		}
+
+
+		#update-btn {
+			width: 100%;
+			padding: 12px;
+			background: transparent;
+			border: 1px solid #444;
+			color: #888;
+			font-weight: bold;
+			cursor: pointer;
+			transition: 0.3s;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			font-size: 0.9rem;
+			margin-top: 10px;
+		}
+
+		#update-btn:hover {
+			border-color: var(--primary);
+			color: var(--primary);
+		}
+
+		#update-btn:disabled {
+			border-color: #333;
+			color: #555;
+			background: #111;
+			cursor: not-allowed;
+		}
 	</style>
 </head>
 <body>
@@ -123,6 +151,7 @@
 		<h2>CS2 Traf Loader</h2>
 		<div class="status" id="status">By Justin</div>
 		<button id="btn">Load</button>
+		<button id="update-btn">Update Offsets</button>
 	</div>
 
 	<script>
@@ -133,12 +162,21 @@
 
 		const btn = document.getElementById("btn");
 		const status = document.getElementById("status");
+		const updateBtn = document.getElementById("update-btn");
 
 		btn.onclick = () => {
 			send("clicked");
 			btn.disabled = true;
 			btn.innerText = "LOADING...";
 			status.innerText = "INJECTING MODULE...";
+			status.style.color = "#be00ff";
+		};
+
+		updateBtn.onclick = () => {
+			send("update_offsets");
+			updateBtn.disabled = true;
+			updateBtn.innerText = "UPDATING...";
+			status.innerText = "UPDATING OFFSETS...";
 			status.style.color = "#be00ff";
 		};
 	</script>

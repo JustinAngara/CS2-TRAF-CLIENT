@@ -48,4 +48,9 @@ namespace Offsets
 
 	constexpr std::ptrdiff_t jump = 0x205BAF0;
 
+
+	void loadOffset(std::string offsetName)
+	{
+		
+	}
 }
