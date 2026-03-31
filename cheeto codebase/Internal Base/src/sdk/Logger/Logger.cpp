@@ -86,7 +86,6 @@ void Logger::Entity::PrintLocalPlayer()
 
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	std::string	temp{};
-	
 	WriteToFile(ls);
 }
 

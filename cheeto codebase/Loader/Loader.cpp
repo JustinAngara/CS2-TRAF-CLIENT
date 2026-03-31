@@ -25,6 +25,8 @@ std::wstring Loader::PathToFileUri(const std::wstring& path)
 	return FAILED(hr) ? L"" : std::wstring(uri);
 }
 
+
+
 void Loader::OnJsMessage(const std::wstring& msg)
 {
 	if (msg == L"clicked")
@@ -32,6 +34,13 @@ void Loader::OnJsMessage(const std::wstring& msg)
 		Inject::Run();
 		MessageBoxW(g_hwnd, L"Injection Started", L"Status", MB_OK);
 		PostMessageW(g_hwnd, WM_CLOSE, 0, 0); 
+	}
+
+	else if (msg == L"update_offsets")
+	{
+		// entry point for the update offsets part
+		MessageBoxW(g_hwnd, L"Starting to see update offsets", L"Status", MB_OK);
+		PostMessageW(g_hwnd, WM_CLOSE, 0, 0);
 	}
 	else if (msg == L"minimize")
 	{

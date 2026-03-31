@@ -11,6 +11,7 @@ namespace Loader
     int WINAPI Run(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR cmdLine, int nCmdShow);
 
     void OnJsMessage(const std::wstring& msg);
+    
     std::wstring PathToFileUri(const std::wstring& path);
     std::wstring ExeDir();
 
