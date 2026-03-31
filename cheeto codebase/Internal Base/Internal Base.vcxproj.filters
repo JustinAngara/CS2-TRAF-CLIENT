@@ -120,6 +120,9 @@
     <ClCompile Include="src\sdk\Logger\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\sdk\memory\Offsets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\Hooks.h">

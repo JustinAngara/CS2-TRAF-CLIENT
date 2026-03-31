@@ -39,6 +39,7 @@ void Loader::OnJsMessage(const std::wstring& msg)
 	else if (msg == L"update_offsets")
 	{
 		// entry point for the update offsets part
+
 		MessageBoxW(g_hwnd, L"Starting to see update offsets", L"Status", MB_OK);
 		PostMessageW(g_hwnd, WM_CLOSE, 0, 0);
 	}

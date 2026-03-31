@@ -1,13 +1,26 @@
 #pragma once
 #include <cstddef>
-
+#include <string>
 /*
 	going to switch up how we do the offsets
 	utilzie the loader to check for updates		
 */
 
+// migration to new way to handle offsets
+// TODO: FINISH THIS
+// THIS IS NOT FOR PROD YET, IDGAF ABOUT MACROS JUST DONT USE YET
+
+class PseudoMigration
+{
+public:
+	static uintptr_t GrabOffsets(std::string var, std::string dllPath); // foo( dwEntityList, {client.dll, offsets.dll} )
+private:
+	static std::string m_fileLoc;
+};
+
 namespace Offsets
 {
+
 	// -> offsets.h on a2x dumper
 	constexpr uintptr_t		 dwEntityList			 = 0x24AF268;  
 	constexpr uintptr_t		 dwLocalPlayerPawn		 = 0x2069B50; 
@@ -49,8 +62,7 @@ namespace Offsets
 	constexpr std::ptrdiff_t jump = 0x205BAF0;
 
 
-	void loadOffset(std::string offsetName)
-	{
-		
-	}
+
 }
+
+
