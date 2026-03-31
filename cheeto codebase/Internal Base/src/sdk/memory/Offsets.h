@@ -13,9 +13,12 @@
 class PseudoMigration
 {
 public:
+	
 	static uintptr_t GrabOffsets(std::string var, std::string dllPath); // foo( dwEntityList, {client.dll, offsets.dll} )
+	static void setFolderLoc(std::string fl) { s_folderLoc = fl; };
+
 private:
-	static std::string m_fileLoc;
+	static std::string s_folderLoc;
 };
 
 namespace Offsets
