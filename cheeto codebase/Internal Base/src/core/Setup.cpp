@@ -1,7 +1,6 @@
 #include "Setup.h"
 #include "../feature/visuals/esp/Esp.h"
 //#include "../sdk/Logger/Logger.h"
-#include <iostream>
 
 // perform logger handler
 void Setup::Run()

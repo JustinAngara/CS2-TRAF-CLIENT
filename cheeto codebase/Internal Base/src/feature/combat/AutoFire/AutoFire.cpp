@@ -1,5 +1,4 @@
 #include "AutoFire.h"
-#include <iostream>
 #include "../../../sdk/utils/Globals.h"
 #include "../../../sdk/entity/EntityManager.h"
 #include "../../../sdk/utils/Utils.h"

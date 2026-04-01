@@ -4,7 +4,6 @@
 #include "../../../sdk/utils/Utils.h"
 #include "../../../sdk/utils/Globals.h"
 #include "../../../../ext/imgui/imgui.h"
-#include <iostream>
 #include <algorithm>
 
 // static members

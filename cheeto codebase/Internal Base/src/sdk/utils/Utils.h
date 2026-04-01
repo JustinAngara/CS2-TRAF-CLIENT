@@ -3,7 +3,6 @@
 
 #include <Windows.h>
 #include <vector>
-#include <iostream>
 #include <cmath>
 #include <algorithm>
 #include "../utils/Vector.h"

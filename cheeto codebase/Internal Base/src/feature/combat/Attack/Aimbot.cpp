@@ -7,7 +7,6 @@
 #include "../../../feature/combat/Combat.h"
 #include "../../../feature/combat/Recoil/Recoil.h"
 #include <Windows.h>
-#include <iostream>
 #include "../../../core/HackManager.h"
 
 void Aimbot::run()

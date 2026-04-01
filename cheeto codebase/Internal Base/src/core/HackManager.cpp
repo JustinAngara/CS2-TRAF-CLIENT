@@ -5,7 +5,7 @@
 #include "../feature/misc/bhop/Bhop.h"
 #include "../feature/visuals/esp/Esp.h"
 #include <cstdint>
-#include <iostream>
+#include <iostream> // TODO: DEPRECATED, UTILIZE LOGGER
 
 uintptr_t HackManager::g_client{  };
 
@@ -17,6 +17,7 @@ void HackManager::Loop()
 	C_CSPlayerPawn* local = EntityManager::Get().GetLocalPawn();
 	g_client = Memory::GetModuleBase("client.dll");
 
+	
 	std::cout << "this is g client 0x" << g_client << "\n";
 
 	ESP::setup();

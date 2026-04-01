@@ -2,7 +2,6 @@
 #include "../memory/PatternScan.h"
 #include "../memory/Offsets.h"
 #include <chrono>
-#include <iostream>
 
 EntityManager::EntityManager()
 {
