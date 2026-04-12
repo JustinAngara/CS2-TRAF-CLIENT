@@ -60,5 +60,8 @@ namespace Globals
 
 	// AUTO STOP
 	inline bool autostop_enabled = false;
+
+	// BONES
+
 	
 }

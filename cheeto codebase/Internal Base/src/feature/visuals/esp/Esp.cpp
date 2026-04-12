@@ -38,7 +38,6 @@ void ESP::setup()
 	Globals::esp_name_color[0], Globals::esp_name_color[1],
 	Globals::esp_name_color[2], Globals::esp_name_color[3]));
 
-
 }
 
 void ESP::renderEntity(Entity_t& ent, C_CSPlayerPawn* localPawn)

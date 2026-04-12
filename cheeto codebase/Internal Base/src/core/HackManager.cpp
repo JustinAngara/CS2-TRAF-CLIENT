@@ -20,7 +20,6 @@ void HackManager::Loop()
 	
 	std::cout << "this is g client 0x" << g_client << "\n";
 
-	ESP::setup();
 
 	int iterator = 0, size = entities.size();
 	// entity list is not getting hit
