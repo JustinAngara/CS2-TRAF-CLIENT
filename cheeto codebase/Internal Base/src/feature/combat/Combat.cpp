@@ -35,12 +35,12 @@ void Combat::Render()
 ////////////////////////////// HELPERS /////////////////////////////////
 ////////////////////////////// TARGET PLAYER STUFF
 
-C_CSPlayerPawn* Combat::GetBestTarget(C_CSPlayerPawn* local)
+C_CSPlayerPawn* Combat::Enemy::GetBestTarget(C_CSPlayerPawn* local)
 {
 	return g_bestTarget;
 }
 
-void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
+void Combat::Enemy::DetermineBestPlayer(Entity_t& ent, int i, int size)
 {
 	if (i == 0)
 	{
@@ -78,7 +78,7 @@ void Combat::DetermineBestPlayer(Entity_t& ent, int i, int size)
 
 
 // TODO: Fix this method, account for some arbritrary magnitude and apply (still needs fixing february)
-void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
+void Combat::Enemy::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 {
 	
 	Vector localPos = local->m_vOldOrigin() + local->m_vecViewOffset();
@@ -92,10 +92,11 @@ void Combat::DetermineClosest(C_CSPlayerPawn* local, C_CSPlayerPawn* enemy)
 }
 
 
-BoneID Combat::FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
+BoneID Combat::Enemy::FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, bool validBaim = false)
 {
 	if (!local || !target) return BoneID::Head;
 
+	// this should probablty be in the fucking globals
 	constexpr BoneID iterateBones[] = {
 		BoneID::Head,
 		BoneID::Neck,
@@ -139,7 +140,7 @@ BoneID Combat::FindNearestBoneId(C_CSPlayerPawn* local, C_CSPlayerPawn* target, 
 	return bestBone;
 }
 
-bool Combat::IsVisible(C_CSPlayerPawn* target, int localIndex)
+bool Combat::Enemy::IsVisible(C_CSPlayerPawn* target, int localIndex)
 {
 
 	if (!target || localIndex <= 0) return false;
@@ -154,7 +155,7 @@ bool Combat::IsVisible(C_CSPlayerPawn* target, int localIndex)
 }
 
 ////////////////////////////// ANGLE STUFF
-Vector Combat::GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+Vector Combat::Angle::GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
@@ -167,7 +168,7 @@ Vector Combat::GetDeltaAngle(C_CSPlayerPawn* local, C_CSPlayerPawn* target, Bone
 }
 
 
-void Combat::LockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
+void Combat::Angle::LockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID targetBone)
 {
 
 	Vector* currentAngles = reinterpret_cast<Vector*>(HackManager::g_client + Offsets::dwViewAngles);
@@ -183,13 +184,13 @@ void Combat::LockAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target, BoneID 
 
 
 ////////////////////////////// MOUSE TO FIRE STUFF 
-void Combat::clickFire(FireInput input)
+void Combat::Action::clickFire(FireInput input)
 {
 	holdFire(input);
 	releaseFire(input);
 }
 
-void Combat::holdFire(FireInput input)
+void Combat::Action::holdFire(FireInput input)
 {
 	// if autostop -> then basically 'release' the keys and perform stop then allow the shoot to occur
 	AutoStop::Run();
@@ -205,7 +206,7 @@ void Combat::holdFire(FireInput input)
 	}
 }
 
-void Combat::releaseFire(FireInput input)
+void Combat::Action::releaseFire(FireInput input)
 {
 	if (input == FireInput::KeyboardL)
 	{
@@ -220,7 +221,7 @@ void Combat::releaseFire(FireInput input)
 }
 
 
-bool Combat::isMB1Held()
+bool Combat::Action::isMB1Held()
 {
 	return (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 }

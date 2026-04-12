@@ -80,6 +80,7 @@
     <ClInclude Include="src\core\Setup.h" />
     <ClInclude Include="src\feature\combat\Combat.h" />
     <ClInclude Include="src\feature\combat\Attack\Aimbot.h" />
+    <ClInclude Include="src\feature\combat\Header.h" />
     <ClInclude Include="src\feature\combat\legitbot\LegitAimbot.h" />
     <ClInclude Include="src\feature\combat\Recoil\Recoil.h" />
     <ClInclude Include="src\feature\misc\AutoStop\AutoStop.h" />

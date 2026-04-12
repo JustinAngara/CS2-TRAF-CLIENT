@@ -14,13 +14,13 @@ void Aimbot::run()
 	// this allows standard functionality
 	if (!Globals::aimbot_enabled)
 	{
-		if (Combat::isMB1Held())
+		if (Combat::Action::isMB1Held())
 		{
-			Combat::holdFire();
+			Combat::Action::holdFire();
 		}
 		else
 		{
-			Combat::releaseFire();
+			Combat::Action::releaseFire();
 		}
 		return;
 	}
@@ -29,13 +29,13 @@ void Aimbot::run()
 	if (!local || !local->IsAlive())
 	{
 		// if player is dead but MB1 is pressed, pass through to 'L'
-		if (Combat::isMB1Held())
+		if (Combat::Action::isMB1Held())
 		{
-			Combat::holdFire();
+			Combat::Action::holdFire();
 		}
 		else
 		{
-			Combat::releaseFire();
+			Combat::Action::releaseFire();
 		}
 		return;
 	}
@@ -47,19 +47,19 @@ void Aimbot::run()
 	}
 
 	// if MB1 is not pressed, release fire and return
-	if (!Combat::isMB1Held())
+	if (!Combat::Action::isMB1Held())
 	{
-		Combat::releaseFire();
+		Combat::Action::releaseFire();
 		return;
 	}
 
-	C_CSPlayerPawn* bestTarget = Combat::GetBestTarget(local);
+	C_CSPlayerPawn* bestTarget = Combat::Enemy::GetBestTarget(local);
 
 	
 	if (!bestTarget)
 	{
 		// no target found
-		Combat::holdFire();
+		Combat::Action::holdFire();
 		return;
 	}
 
@@ -91,10 +91,10 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 	}
 
 	bool validBaim = Globals::aimbot_force_baim && target->m_iHealth() <= Globals::aimbot_baim_min;
-	BoneID targetBone = Combat::FindNearestBoneId(local, target, validBaim);
+	BoneID targetBone = Combat::Enemy::FindNearestBoneId(local, target, validBaim);
 	Vector targetPos = Utils::GetBonePos(target, targetBone);
 
-	Vector delta = Combat::GetDeltaAngle(local, target, targetBone);
+	Vector delta = Combat::Angle::GetDeltaAngle(local, target, targetBone);
 
 
 	// get recoil compensation
@@ -137,7 +137,7 @@ void Aimbot::aimAtTarget(C_CSPlayerPawn* local, C_CSPlayerPawn* target)
 
 		if (timeOnTarget >= Globals::aimbot_shoot_delay && timeSinceShot >= Globals::aimbot_fire_rate)
 		{
-			Combat::clickFire();
+			Combat::Action::clickFire();
 			lastShootTime = currentTime;
 		}
 	}
