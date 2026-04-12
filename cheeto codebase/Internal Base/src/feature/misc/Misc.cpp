@@ -1,6 +1,5 @@
 #include "Misc.h"
 #include "bhop/Bhop.h"
-#include "../../sdk/utils/usermode.h"
 
 void Misc::Render()
 {

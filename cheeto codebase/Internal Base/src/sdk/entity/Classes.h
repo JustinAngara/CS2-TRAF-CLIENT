@@ -6,8 +6,7 @@
 
 #include <cstdint>
 #include "../memory/Offsets.h"
-#include "../utils/Vector.h"
-#include "../utils/Memory.h"        
+#include "../utils/Vector.h"    
 #include "../memory/PatternScan.h"  
 #define SCHEMA(type, name, offset) \
     type name() const { \
