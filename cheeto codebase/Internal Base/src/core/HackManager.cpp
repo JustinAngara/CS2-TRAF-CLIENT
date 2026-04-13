@@ -5,7 +5,6 @@
 #include "../feature/misc/bhop/Bhop.h"
 #include "../feature/visuals/esp/Esp.h"
 #include <cstdint>
-#include <iostream> // TODO: DEPRECATED, UTILIZE LOGGER
 
 uintptr_t HackManager::g_client{  };
 
@@ -18,12 +17,12 @@ void HackManager::Loop()
 	g_client = Memory::GetModuleBase("client.dll");
 
 	
-	std::cout << "this is g client 0x" << g_client << "\n";
+	//std::cout << "this is g client 0x" << g_client << "\n";
 
 
 	int iterator = 0, size = entities.size();
 	// entity list is not getting hit
-	std::cout << "this is entity list size: " << size << "\n";
+	//std::cout << "this is entity list size: " << size << "\n";
 
 	for (auto ent : entities)
 	{

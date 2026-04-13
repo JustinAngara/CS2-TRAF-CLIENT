@@ -24,7 +24,7 @@ void Combat::Render()
 	Recoil::Run(localPlayer);
 
 	// namespace functions calls
-	AutoFire::run();
+	AutoFire::Run();
 
 	// classes/objects calls
 	aimbot.run();

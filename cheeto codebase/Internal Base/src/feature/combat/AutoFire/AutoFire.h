@@ -2,7 +2,7 @@
 
 namespace AutoFire
 {
-	void run();
+	void Run();
 	
 }
 
