@@ -9,6 +9,13 @@
 namespace Bhop
 {
 	static bool wasOnGround = false;
+	static bool isOnGround  = false;
 
+	void Run()
+	{
+		if (!Globals::bhop_enabled) return;
+
+		if (!wasOnGround && isOnGround) return; // this should do the method to jump
+	}
 	
 }

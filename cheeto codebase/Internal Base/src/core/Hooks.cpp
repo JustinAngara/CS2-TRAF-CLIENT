@@ -11,7 +11,6 @@
 #include "../../src/sdk/memory/Offsets.h"
 #include "../../src/sdk/memory/PatternScan.h"
 #include "HackManager.h"
-#include "../../src/sdk/utils/usermode.h"
 #include "Setup.h"
 #pragma comment(lib, "d3d11.lib")
 
@@ -55,8 +54,7 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 		g_Device->CreateRenderTargetView(backBuffer, nullptr, &g_RTV);
 		backBuffer->Release();
 
-		oWndProc = (WNDPROC)SetWindowLongPtr(
-		g_Window, GWLP_WNDPROC, (LONG_PTR)hkWndProc);
+		oWndProc = (WNDPROC)SetWindowLongPtr(g_Window, GWLP_WNDPROC, (LONG_PTR)hkWndProc);
 
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
@@ -83,9 +81,11 @@ HRESULT __stdcall Hooks::hkPresent(IDXGISwapChain* swapChain, UINT sync, UINT fl
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	
+	// menu shit
 	if (GetAsyncKeyState(VK_INSERT) & 1) Menu::IsOpen = !Menu::IsOpen;
-
 	if (Menu::IsOpen) Menu::Render();
+	
 
 	///////////////// THIS IS WHERE GAME TICK IS LATCHED ONTO ADD STUFF HERE
 	// from here i want to create a entity hook that iterates through every entity and performs updates to features

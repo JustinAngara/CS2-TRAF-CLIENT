@@ -2,7 +2,6 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <dxgi.h>
-#include "../../src/sdk/utils/usermode.h"
 
 /**
 * Everything done is through a tick-based style
