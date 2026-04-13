@@ -43,7 +43,7 @@ void HackManager::RunFeatures()
 {
 	Combat::Render();
 	Visuals::Render();
-	//Misc::Render();
+	Misc::Render();
 
 
 }

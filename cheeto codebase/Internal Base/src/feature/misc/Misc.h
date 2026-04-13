@@ -2,5 +2,4 @@
 
 namespace Misc {
 	void Render();
-	void Run();
 }
