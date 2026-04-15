@@ -10,8 +10,8 @@ void Setup::Run()
 	std::cout << "hit iostream\n"; // TEMP TEMP TEMP
 
 	//////// logger
-	std::string logFolder{ "./logs" };
-	Logger::Setup::Init( logFolder ); // this is setup init for logger
+	//std::string logFolder{ "./logs" };
+	//Logger::Setup::Init( logFolder ); // this is setup init for logger
 
 	// i dont want annoying spam
 	//Logger::Memory::PrintAllOffsetsCheck(); // okay this should only be ran once pleaes figureo ut a way to see how to ensure this

@@ -1,6 +1,5 @@
 #include "Hooks.h"
 
-#include <iostream>
 #include "../../ext/imgui/imgui.h"
 #include "../../ext/imgui/imgui_impl_win32.h"
 #include "../../ext/imgui/imgui_impl_dx11.h"
@@ -15,11 +14,11 @@
 #pragma comment(lib, "d3d11.lib")
 
 // global stuff
-static ID3D11Device* g_Device = nullptr;
-static ID3D11DeviceContext* g_Context = nullptr;
-static ID3D11RenderTargetView* g_RTV = nullptr;
-static HWND g_Window = nullptr;
-static bool g_Init = false;
+static ID3D11Device*		   g_Device	 = nullptr;
+static ID3D11DeviceContext*	   g_Context = nullptr;
+static ID3D11RenderTargetView* g_RTV	 = nullptr;
+static HWND					   g_Window	 = nullptr;
+static bool					   g_Init	 = false;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 
